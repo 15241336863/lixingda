@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SVG图标</title>
+    <script src="https://at.alicdn.com/t/c/font_5231914_u5uklir9fo.js"></script>
+    <link rel="stylesheet" href="./css/svg005.css">
+    <style>
+</style>
+</head>
+<body>
+   <h3>SVG图标</h3>
+    <div class="tab-nav">
+        <div class="tab-item active" onclick="changeTab(this)">
+            <svg class="icon" aria-hidden="true">
+                <use xlink:href="#icon-shouye-shouye"></use>
+            </svg>
+              <span>首页</span>
+              <!--div.budge-dot回车-->
+            <div class="budge-dot" id="budge-home">6</div>
+        </div>
+         <div class="tab-item" onclick="changeTab(this)">
+            <svg class="icon" aria-hidden="true">
+                <use xlink:href="#icon-wode1"></use>
+            </svg>
+              <span>我的</span>
+              <!--div.budge-num数字红点-->
+              <div class="budge-num" id="budge-plan">8</div>
+        </div>
+         <div class="tab-item" onclick="changeTab(this)">
+            <svg class="icon" aria-hidden="true">
+                <use xlink:href="#icon-gouwuche"></use>
+            </svg>
+              <span>购物车</span>
+                <!--div.budge-num max数字红点-->
+                <div class="budge-num max" id="budge-collect">99+</div>
+        </div>
+         <div class="tab-item" onclick="changeTab(this)">
+            <svg class="icon" aria-hidden="true">
+                <use xlink:href="#icon-shoucang1"></use>
+            </svg>
+              <span>收藏</span>
+              <!--div.budge-border数字红点-->
+                <div class="budge-border">
+        99+</div>
+    </div>
+    <script>
+        // 写一个函数，当我点击当天的item时候，颜色发生变化
+        function changeTab(current){
+            let tabs=document.querySelectorAll('.tab-item');
+            for(let i=0;i<tabs.length;i++){
+                tabs[i].classList.remove('active');
+            }
+        //2.给当前点击的加上active高亮
+        current.classList.add('active');
+        }
+    </script>
+</body>
+</html>
