@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>LXD Nav · iconfont-4 SVG 图标</title>
+
+  <style>
+    /* ===== LXD 移动端全局变量（与 iconfont-3 统一） ===== */
+    :root {
+      --lxd-nav-bg:        #ffffff;
+      --lxd-nav-border:     #e8e0d6;
+      --lxd-nav-inactive:   #9a9590;
+      --lxd-nav-active:     #c9a64b;
+      --lxd-nav-active-bg:  rgba(201,166,75,0.10);
+      --lxd-badge-red:      #ff3b30;
+      --lxd-badge-text:     #ffffff;
+      --lxd-page-bg:        #faf6f1;
+      --lxd-card-bg:        #ffffff;
+      --lxd-card-text:      #2b2b2b;
+      --lxd-safe-bottom:    env(safe-area-inset-bottom, 0px);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+    html, body {
+      height: 100%;
+      overflow-x: hidden;
+    }
+
+    body.lxd_mobile_page {
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", Arial, sans-serif;
+      background: var(--lxd-page-bg);
+      color: var(--lxd-card-text);
+      font-size: 14px;
+      line-height: 1.5;
+      padding-bottom: calc(70px + var(--lxd-safe-bottom));
+    }
+
+    /* ===== 页面内容 ===== */
+    .lxd_page_header {
+      background: linear-gradient(135deg, #1a2e28, #2a4a3e);
+      color: #c9a64b;
+      padding: 20px 16px;
+      text-align: center;
+      letter-spacing: 2px;
+      font-size: 16px;
+    }
+
+    .lxd_content_area { padding: 16px; }
+
+    .lxd_content_area .lxd_card {
+      background: var(--lxd-card-bg);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .lxd_content_area .lxd_card h3 {
+      margin-bottom: 8px;
+      color: var(--lxd-nav-active);
+      font-size: 15px;
+    }
+
+    .lxd_content_area .lxd_card p { color: #666; font-size: 13px; }
+
+    .lxd_home_entry {
+      display: inline-block;
+      margin: 16px;
+      padding: 8px 16px;
+      background: var(--lxd-nav-active);
+      color: #fff;
+      border-radius: 20px;
+      text-decoration: none;
+      font-size: 13px;
+    }
+
+    /* ======================================================
+       ===== SVG 图标通用样式 =====
+       ====================================================== */
+    .svgfont {
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      fill: currentColor;     /* 跟随父级 color */
+      vertical-align: -0.1em;
+      flex-shrink: 0;
+    }
+
+    /* ===== 底部固定导航 ===== */
+    nav.lxd_tabbar {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      width: 100%;
+      padding-bottom: var(--lxd-safe-bottom);
+      padding-top: 6px;
+      background: var(--lxd-nav-bg);
+      border-top: 1px solid var(--lxd-nav-border);
+      box-shadow: 0 -2px 12px rgba(0,0,0,0.06);
+      display: flex;
+      z-index: 999;
+    }
+
+    .lxd_tabbar .lxd_tab_item {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 0 calc(8px + var(--lxd-safe-bottom));
+      position: relative;
+      cursor: pointer;
+      user-select: none;
+      -webkit-user-select: none;
+      text-decoration: none;
+      color: var(--lxd-nav-inactive);
+      transition: color 0.2s ease, transform 0.15s ease;
+    }
+
+    .lxd_tabbar .lxd_tab_item:active { transform: scale(0.94); }
+
+    /* ===== 图标容器 ===== */
+    .lxd_tabbar .lxd_tab_icon_wrap {
+      position: relative;
+      width: 24px;
+      height: 24px;
+      margin-bottom: 4px;
+      transition: transform 0.2s ease;
+    }
+    /* 默认显示 normal，隐藏 active */
+    .lxd_tabbar .lxd_icon_normal { position: absolute; inset: 0; }
+    .lxd_tabbar .lxd_icon_active { position: absolute; inset: 0; display: none; }
+
+    /* ===== 激活态 ===== */
+    .lxd_tabbar .lxd_tab_item.lxd_active { color: var(--lxd-nav-active); }
+    .lxd_tabbar .lxd_tab_item.lxd_active .lxd_tab_icon_wrap {
+      transform: translateY(-2px) scale(1.05);
+    }
+    .lxd_tabbar .lxd_tab_item.lxd_active .lxd_icon_normal { display: none; }
+    .lxd_tabbar .lxd_tab_item.lxd_active .lxd_icon_active { display: inline-block; }
+
+    /* ===== 标签文字 ===== */
+    .lxd_tabbar .lxd_tab_item .lxd_tab_label {
+      font-size: 11px;
+      line-height: 1;
+      letter-spacing: 0.5px;
+    }
+
+    /* ===== 徽章（数字） ===== */
+    .lxd_tabbar .lxd_tab_item .lxd_badge {
+      position: absolute;
+      top: 2px;
+      right: 20%;
+      min-width: 18px;
+      height: 18px;
+      padding: 0 5px;
+      border-radius: 9px;
+      background: var(--lxd-badge-red);
+      color: var(--lxd-badge-text);
+      font-size: 11px;
+      font-weight: bold;
+      line-height: 18px;
+      text-align: center;
+      z-index: 10;
+      box-shadow: 0 1px 3px rgba(255,59,48,0.4);
+      transform: translate(30%, -30%);
+      pointer-events: none;
+    }
+
+    /* ===== 红点 ===== */
+    .lxd_tabbar .lxd_tab_item .lxd_dot {
+      position: absolute;
+      top: 4px;
+      right: 22%;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--lxd-badge-red);
+      z-index: 10;
+      box-shadow: 0 0 0 2px var(--lxd-nav-bg);
+      pointer-events: none;
+    }
+
+    @media (min-width: 480px) {
+      .svgfont { width: 26px; height: 26px; }
+      .lxd_tabbar .lxd_tab_item .lxd_tab_label { font-size: 12px; }
+    }
+  </style>
+</head>
+<body class="lxd_mobile_page">
+
+  <!-- ==========================================================
+       ===== 隐藏的 SVG Sprite 容器（内嵌所有 symbol） =====
+       图标来自 font/iconfont.js 原始 symbol 定义
+       ========================================================== -->
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden;">
+    <!-- 首页 normal -->
+    <symbol id="icon-shouye" viewBox="0 0 1024 1024">
+      <path d="M992.7 493.1L554.3 54.8c-11.6-11.6-27-16.9-42.3-16.3-15.3-0.6-30.7 4.7-42.3 16.3L31.3 493.1c-22.1 22-22.1 58.1 0 80.2 22 22.1 58.1 22.1 80.2 0L512 172.8l400.5 400.5c22.1 22.1 58.1 22.1 80.2 0 22-22.1 22-58.1 0-80.2z" fill="#515151"/>
+      <path d="M144.4 604.1V941c0 27.6 18.4 44.5 46 44.5h193V725.1c0-31.3 23.1-53.6 54.5-53.6H584c31.3 0 59.4 22.3 59.4 53.6v260.4h188.1c27.6 0 46.9-16.9 46.9-44.5V595.4l-362.6-362-371.4 370.7z" fill="#515151"/>
+    </symbol>
+
+    <!-- 首页 active -->
+    <symbol id="icon-shouye_3" viewBox="0 0 1024 1024">
+      <path d="M725 920.1H614c-24.6 0-44.6-20-44.6-44.6v-214H456.6v214c0 24.6-20 44.6-44.6 44.6H298.5c-68.8 0-124.9-56-124.9-124.8v-259l-61.7 1c-19.4 0.9-35.7-11.2-42.4-28.8-6.7-17.6-1.6-37.4 12.6-49.7L483.9 113c16.7-14.4 41.5-14.4 58.2 0l401.7 345.8c14.2 12.2 19.3 32.1 12.6 49.7-6.7 17.6-24.3 28.9-42.4 28.8l-64.1-1v259c0 68.8-56 124.8-124.9 124.8z m-66.3-89.2H725c19.6 0 35.6-16 35.6-35.6V490.9c0-12 4.8-23.4 13.3-31.8 5.6-5.6 12.6-9.5 20.2-11.4L513 205.7 231.3 448.2c6.8 2.1 13.1 5.8 18.3 10.9 8.5 8.4 13.3 19.9 13.3 31.8v304.3c0 19.6 16 35.6 35.6 35.6h68.8V658.4c0-47.5 38.6-86.1 86.1-86.1h119.2c47.5 0 86.1 38.6 86.1 86.1v172.5z" fill="#333333"/>
+    </symbol>
+
+    <!-- 收藏 normal（空心星） -->
+    <symbol id="icon-shoucang" viewBox="0 0 1426 1024">
+      <path d="M985.6 1022.976c-14.848 0-31.744-4.096-47.104-12.288L716.288 899.584l-223.744 111.104c-14.336 7.68-30.208 11.776-47.104 11.776-21.504 0-42.496-6.656-59.392-19.456-31.232-23.552-47.104-64-39.936-101.376l45.568-237.056-175.616-163.328c-27.136-27.648-37.376-67.072-27.136-104.448l0.512-1.024c12.8-38.4 44.544-65.024 82.944-70.144l243.712-44.544L625.152 58.88C642.56 23.552 678.4 1.024 716.288 1.024c39.424 0 76.288 23.552 91.648 58.368l109.056 221.696 243.712 42.496c38.4 5.632 70.656 33.28 81.408 71.168 12.288 36.864 2.048 77.312-25.6 104.96l-0.512 0.512-174.592 164.864 44.032 237.568c7.168 37.888-8.192 76.288-39.424 100.352-17.92 12.8-38.912 19.968-60.416 19.968z" fill="#707070"/>
+    </symbol>
+
+    <!-- 收藏 active（实心星·已收藏） -->
+    <symbol id="icon-shoucang-yishoucang" viewBox="0 0 1024 1024">
+      <path d="M536.9344 860.3136c-26.8288-14.7968-70.5024-14.6944-97.1776 0L251.2384 964.096c-53.6064 29.5424-88.7808 2.56-78.5408-59.8016l35.9936-219.8016c5.12-31.3344-8.448-74.752-30.0544-96.768L26.1632 431.9744c-43.4176-44.288-29.696-87.6544 30.0032-96.768l210.7392-32c30.0032-4.608 65.28-31.5392 78.6432-59.8528L439.808 43.4176c26.8288-56.8832 70.4512-56.6784 97.1264 0l94.208 199.9872c13.4656 28.4672 48.896 55.296 78.6944 59.8528l210.7392 32.0512c60.0064 9.1136 73.216 52.5824 30.0544 96.7168l-152.5248 155.648c-21.7088 22.1696-35.1232 65.6896-30.0544 96.8192l35.9936 219.8016c10.24 62.5664-25.1392 89.1904-78.5408 59.8016l-188.5696-103.7824z" fill="#515151"/>
+    </symbol>
+
+    <!-- 购物车 normal -->
+    <symbol id="icon-gouwuche" viewBox="0 0 1024 1024">
+      <path d="M919.84384 210.41664H241.17248L229.40672 113.3568c-1.92-15.83616-16.5376-28.79488-32.49664-28.79488H190.464c-2.72384 0-5.30944 0.384-7.7312 1.09056H99.77344c-19.14368 0-34.81088 14.3616-34.81088 31.90784s15.6672 31.90784 34.816 31.90784H169.3184L235.7248 697.344c1.92 15.84128 16.54272 28.8 32.49664 28.8h6.4512c2.69312 0 5.25824-0.37888 7.6544-1.07008h548.82304c19.14368 0 34.80576-14.35648 34.80576-31.90784 0-17.55136-15.66208-31.90784-34.80576-31.90784H295.81824l-8.13056-67.11296h545.1776c15.95392 0 31.89248-12.72832 35.42016-28.288l74.15296-327.14752c3.52768-15.55456-6.64064-28.288-22.59456-28.288zM294.58944 865.72032c0 42.8032 34.70336 77.51168 77.51168 77.51168s77.50656-34.70336 77.50656-77.5168c0-42.8032-34.69824-77.50656-77.50656-77.50656s-77.5168 34.70336-77.5168 77.51168z m384.23552 0c0 42.8032 34.70336 77.51168 77.5168 77.51168s77.50656-34.70336 77.50656-77.5168c0-42.8032-34.70336-77.50656-77.51168-77.50656-42.8032 0-77.51168 34.70336-77.51168 77.51168z" fill="#272636"/>
+    </symbol>
+
+    <!-- 购物车 active（满车·已装货） -->
+    <symbol id="icon-gouwucheman" viewBox="0 0 1024 1024">
+      <path d="M346.112 806.912q19.456 0 36.864 7.168t30.208 19.968 20.48 30.208 7.68 36.864-7.68 36.864-20.48 30.208-30.208 20.48-36.864 7.68q-20.48 0-37.888-7.68t-30.208-20.48-20.48-30.208-7.68-36.864 7.68-36.864 20.48-30.208 30.208-19.968 37.888-7.168zM772.096 808.96q19.456 0 37.376 7.168t30.72 19.968 20.48 30.208 7.68 36.864-7.68 36.864-20.48 30.208-30.72 20.48-37.376 7.68-36.864-7.68-30.208-20.48-20.48-30.208-7.68-36.864 7.68-36.864 20.48-30.208 30.208-19.968 36.864-7.168zM944.128 227.328q28.672 0 44.544 7.68t22.528 18.944 6.144 24.064-3.584 22.016-13.312 37.888-22.016 62.976-23.552 68.096-18.944 53.248q-13.312 40.96-33.28 56.832t-49.664 15.872l-35.84 0-65.536 0-86.016 0-96.256 0-253.952 0 14.336 92.16 517.12 0q49.152 0 49.152 41.984 0 20.48-9.728 35.328t-38.4 14.848l-49.152 0-94.208 0-118.784 0-119.808 0-99.328 0-55.296 0q-20.48 0-34.304-9.216t-23.04-24.064-14.848-32.256-8.704-32.768q-1.024-6.144-5.632-29.696t-11.264-58.88-14.848-78.848-16.384-87.552q-19.456-103.424-44.032-230.4l-76.8 0q-15.36 0-25.6-7.68t-16.896-18.432-9.216-23.04-2.56-22.528q0-20.48 13.824-33.792t37.376-13.312l21.504 0 21.504 0 25.6 0 34.816 0q20.48 0 32.768 6.144t19.456 15.36 10.24 19.456 5.12 17.408q2.048 8.192 4.096 23.04t4.096 30.208q3.072 18.432 6.144 38.912l700.416 0zM867.328 194.56l-374.784 0 135.168-135.168q23.552-23.552 51.712-24.064t51.712 23.04z"/>
+    </symbol>
+
+    <!-- 我的 normal -->
+    <symbol id="icon-wode" viewBox="0 0 1024 1024">
+      <path d="M511.3 676.7c-168.9 0-306.4-137.5-306.4-306.4S342.4 63.9 511.3 63.9c169 0 306.4 137.5 306.4 306.4S680.3 676.7 511.3 676.7z m0-523.4c-119.6 0-216.9 97.3-216.9 216.9s97.3 216.9 216.9 216.9 216.9-97.3 216.9-216.9-97.3-216.9-216.9-216.9zM853.5 958.5H169.1c-24.7 0-44.7-20-44.7-44.7v-71.5c0-74 60.2-134.3 134.3-134.3H764c74 0 134.3 60.2 134.3 134.3v71.5c0 24.6-20.1 44.7-44.8 44.7zM213.9 869h594.9v-26.8c0-24.7-20.1-44.8-44.8-44.8H258.7c-24.7 0-44.8 20.1-44.8 44.8V869z" fill="#333333"/>
+      <path d="M413.2 345m-45.3 0a45.3 45.3 0 1 0 90.6 0 45.3 45.3 0 1 0-90.6 0Z" fill="#333333"/>
+      <path d="M610 345m-45.3 0a45.3 45.3 0 1 0 90.6 0 45.3 45.3 0 1 0-90.6 0Z" fill="#333333"/>
+    </symbol>
+
+    <!-- 我的 active（选中态·更大） -->
+    <symbol id="icon-wodedangxuan" viewBox="0 0 1024 1024">
+      <path d="M961.72259555 1029.29749333H59.94723555c-18.64135111 0-37.28270222-9.32067555-48.93354666-23.30168888-11.65084445-16.31118222-16.31118222-34.95253333-11.65084444-53.59388445 46.60337778-237.67722667 240.00739555-414.77006222 473.02428444-433.41141333 78.06065778 0 162.52928 9.90321778 246.99790222 44.27320888 24.46677333 9.90321778 32.62236445 16.31118222 46.60337778 23.3016889 135.14979555 76.89557333 228.35655111 209.7152 258.64874666 365.83651555 4.66033778 18.64135111 0 37.28270222-13.98101333 53.59388445-11.65084445 13.98101333-30.29219555 23.30168889-48.93354667 23.30168888z" fill="#333303"/>
+      <path d="M512 539.96202667c-146.80064 0-267.96942222-121.16878222-267.96942222-267.96942222S365.19936 4.02318222 512 4.02318222s267.96942222 121.16878222 267.96942222 267.96942223S658.80064 539.96202667 512 539.96202667z" fill="#333303"/>
+      <path d="M512 502.09678222c-126.99420445 0-230.10417778-103.10997333-230.10417778-230.10417777S385.00579555 41.88842667 512 41.88842667s230.10417778 103.10997333 230.10417778 230.10417778-103.10997333 230.10417778-230.10417778 230.10417777z" fill="#333303"/>
+    </symbol>
+  </svg>
+
+  <!-- 页面内容示例 -->
+  <header class="lxd_page_header">
+    iconfont-4 · SVG 图标 & 下导航
+  </header>
+
+  <main class="lxd_content_area">
+    <section class="lxd_card">
+      <h3>💡 说明</h3>
+      <p>本页面演示 iconfont 图标以纯 SVG 方式在移动端固定底部导航中使用，与 iconfont-3（字体图标）一一对应，4 个 Tab 均配有 normal / active 两套图标。</p>
+    </section>
+    <section class="lxd_card">
+      <h3>🔔 角标示意</h3>
+      <p>收藏 Tab 右上角显示<span style="color:#ff3b30">红点</span>，购物车 Tab 右上角显示<span style="color:#ff3b30">数字徽章 "5"</span>。</p>
+    </section>
+    <section class="lxd_card">
+      <h3>📐 实现方式</h3>
+      <p>图标以 SVG Sprite 形式 inline 到页面顶部，导航中使用 <code>&lt;use xlink:href="#icon-xxx"&gt;</code> 引用；完全不依赖 iconfont.css 和字体文件。</p>
+    </section>
+    <a href="index.html" class="lxd_home_entry">← 返回首页</a>
+  </main>
+
+  <!-- ===== 移动端底部固定导航（SVG 方式） ===== -->
+  <nav class="lxd_tabbar" id="lxd_tabbar">
+
+    <!-- Tab 1: 首页 -->
+    <a class="lxd_tab_item lxd_active" data-tab="home" href="javascript:void(0)">
+      <span class="lxd_tab_icon_wrap">
+        <svg class="svgfont lxd_icon_normal" aria-hidden="true"><use xlink:href="#icon-shouye"></use></svg>
+        <svg class="svgfont lxd_icon_active" aria-hidden="true"><use xlink:href="#icon-shouye_3"></use></svg>
+      </span>
+      <span class="lxd_tab_label">首页</span>
+    </a>
+
+    <!-- Tab 2: 收藏（带红点） -->
+    <a class="lxd_tab_item" data-tab="favorite" href="javascript:void(0)">
+      <span class="lxd_tab_icon_wrap">
+        <svg class="svgfont lxd_icon_normal" aria-hidden="true"><use xlink:href="#icon-shoucang"></use></svg>
+        <svg class="svgfont lxd_icon_active" aria-hidden="true"><use xlink:href="#icon-shoucang-yishoucang"></use></svg>
+      </span>
+      <span class="lxd_tab_label">收藏</span>
+      <span class="lxd_dot" aria-label="有新消息"></span>
+    </a>
+
+    <!-- Tab 3: 购物车（带数字徽章） -->
+    <a class="lxd_tab_item" data-tab="cart" href="javascript:void(0)">
+      <span class="lxd_tab_icon_wrap">
+        <svg class="svgfont lxd_icon_normal" aria-hidden="true"><use xlink:href="#icon-gouwuche"></use></svg>
+        <svg class="svgfont lxd_icon_active" aria-hidden="true"><use xlink:href="#icon-gouwucheman"></use></svg>
+      </span>
+      <span class="lxd_tab_label">购物车</span>
+      <span class="lxd_badge" aria-label="5 件商品">5</span>
+    </a>
+
+    <!-- Tab 4: 我的 -->
+    <a class="lxd_tab_item" data-tab="mine" href="javascript:void(0)">
+      <span class="lxd_tab_icon_wrap">
+        <svg class="svgfont lxd_icon_normal" aria-hidden="true"><use xlink:href="#icon-wode"></use></svg>
+        <svg class="svgfont lxd_icon_active" aria-hidden="true"><use xlink:href="#icon-wodedangxuan"></use></svg>
+      </span>
+      <span class="lxd_tab_label">我的</span>
+    </a>
+
+  </nav>
+
+  <script>
+    // ===== 所有 JS 变量均以 lxd_ 开头 =====
+    const lxd_tabs = document.querySelectorAll('.lxd_tabbar .lxd_tab_item');
+    const lxd_badgeEl = document.querySelector('.lxd_tabbar .lxd_badge');
+
+    lxd_tabs.forEach(function(lxd_tab) {
+      lxd_tab.addEventListener('click', function() {
+        lxd_tabs.forEach(function(t) { t.classList.remove('lxd_active'); });
+        lxd_tab.classList.add('lxd_active');
+
+        if (lxd_tab.dataset.tab === 'cart' && lxd_badgeEl) {
+          const lxd_val = parseInt(lxd_badgeEl.textContent, 10);
+          if (lxd_val > 1) {
+            lxd_badgeEl.textContent = lxd_val - 1;
+          } else {
+            lxd_badgeEl.style.display = 'none';
+          }
+        }
+
+        if (lxd_tab.dataset.tab === 'favorite') {
+          const lxd_dot = lxd_tab.querySelector('.lxd_dot');
+          if (lxd_dot) lxd_dot.style.display = 'none';
+        }
+      });
+    });
+  </script>
+</body>
+</html>

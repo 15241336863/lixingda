@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LXD Icon Atelier · Font Awesome 字体图标</title>
+
+  <!-- Font Awesome 6.6.0 本地资源 -->
+  <link rel="stylesheet" href="cdn/css/all.min.css">
+
+  <style>
+    /* ===== LXD 艺术品牌样式 ===== */
+    :root {
+      --lxd-bg: #faf6f1;
+      --lxd-bg-deep: #1a2e28;
+      --lxd-gold: #c9a64b;
+      --lxd-gold-dark: #a68a3a;
+      --lxd-text: #2b2b2b;
+      --lxd-text-muted: #7a7570;
+      --lxd-card: #ffffff;
+      --lxd-border: #e8e0d6;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body.lxd_fa_page {
+      font-family: Georgia, "Noto Serif SC", "SimSun", serif;
+      background: var(--lxd-bg);
+      color: var(--lxd-text);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* 顶部导航 */
+    header.lxd_nav {
+      background: var(--lxd-bg-deep);
+      padding: 1.2rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .lxd_logo {
+      color: var(--lxd-gold);
+      font-size: 1.4rem;
+      font-weight: bold;
+      letter-spacing: 2px;
+      font-style: italic;
+    }
+
+    nav.lxd_nav_links a {
+      color: var(--lxd-bg);
+      text-decoration: none;
+      margin-left: 1.5rem;
+      font-size: 0.95rem;
+      transition: color 0.3s;
+    }
+
+    nav.lxd_nav_links a:hover { color: var(--lxd-gold); }
+
+    /* Hero 区 */
+    section.lxd_hero {
+      text-align: center;
+      padding: 5rem 2rem 3rem;
+      background: linear-gradient(135deg, var(--lxd-bg) 0%, #f0e8dd 100%);
+    }
+
+    .lxd_hero h1 {
+      font-size: 3rem;
+      color: var(--lxd-bg-deep);
+      margin-bottom: 1rem;
+      letter-spacing: 4px;
+    }
+
+    .lxd_hero h1 .fa-solid {
+      color: var(--lxd-gold);
+      margin-right: 0.5rem;
+    }
+
+    .lxd_hero p {
+      font-size: 1.1rem;
+      color: var(--lxd-text-muted);
+      max-width: 600px;
+      margin: 0 auto;
+      font-style: italic;
+    }
+
+    .lxd_hero .lxd_subtitle {
+      display: block;
+      margin-top: 0.8rem;
+      font-size: 0.85rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--lxd-gold-dark);
+    }
+
+    /* 分类标题 */
+    .lxd_section {
+      padding: 3rem 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .lxd_section h2 {
+      font-size: 1.8rem;
+      color: var(--lxd-bg-deep);
+      margin-bottom: 2rem;
+      padding-bottom: 0.8rem;
+      border-bottom: 2px solid var(--lxd-gold);
+      display: inline-block;
+    }
+
+    .lxd_section h2 i {
+      color: var(--lxd-gold);
+      margin-right: 0.6rem;
+    }
+
+    /* 图标网格 */
+    .lxd_icon_grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .lxd_icon_card {
+      background: var(--lxd-card);
+      border: 1px solid var(--lxd-border);
+      border-radius: 12px;
+      padding: 2rem 1rem;
+      text-align: center;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .lxd_icon_card::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      background: radial-gradient(circle, rgba(201,166,75,0.15) 0%, transparent 70%);
+      transform: translate(-50%, -50%);
+      transition: width 0.4s ease, height 0.4s ease;
+    }
+
+    .lxd_icon_card:hover {
+      transform: translateY(-6px);
+      border-color: var(--lxd-gold);
+      box-shadow: 0 12px 32px rgba(201,166,75,0.2);
+    }
+
+    .lxd_icon_card:hover::after { width: 200px; height: 200px; }
+
+    .lxd_icon_card i {
+      font-size: 2.5rem;
+      color: var(--lxd-bg-deep);
+      margin-bottom: 1rem;
+      display: block;
+      transition: color 0.3s, transform 0.3s;
+      position: relative;
+      z-index: 1;
+    }
+
+    .lxd_icon_card:hover i {
+      color: var(--lxd-gold);
+      transform: scale(1.1);
+    }
+
+    .lxd_icon_name {
+      font-family: 'Courier New', monospace;
+      font-size: 0.75rem;
+      color: var(--lxd-text-muted);
+      letter-spacing: 0.5px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* 页脚 */
+    footer.lxd_footer {
+      background: var(--lxd-bg-deep);
+      color: #aaa;
+      text-align: center;
+      padding: 2rem;
+      margin-top: 3rem;
+      font-size: 0.85rem;
+    }
+
+    footer.lxd_footer .lxd_back_home {
+      color: var(--lxd-gold);
+      text-decoration: none;
+      border: 1px solid var(--lxd-gold);
+      padding: 0.5rem 1.5rem;
+      border-radius: 20px;
+      display: inline-block;
+      margin-bottom: 1rem;
+      transition: background 0.3s;
+    }
+
+    footer.lxd_footer .lxd_back_home:hover {
+      background: var(--lxd-gold);
+      color: var(--lxd-bg-deep);
+    }
+
+    /* 响应式 */
+    @media (max-width: 600px) {
+      .lxd_hero h1 { font-size: 2rem; letter-spacing: 2px; }
+      .lxd_section h2 { font-size: 1.4rem; }
+      .lxd_icon_grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 1rem; }
+      .lxd_icon_card { padding: 1.5rem 0.5rem; }
+      .lxd_icon_card i { font-size: 2rem; }
+      header.lxd_nav { flex-direction: column; gap: 0.8rem; }
+      nav.lxd_nav_links a { margin-left: 1rem; }
+    }
+  </style>
+</head>
+<body class="lxd_fa_page">
+
+  <!-- 顶部导航（返回首页 + 互链 iconfont-2） -->
+  <header class="lxd_nav">
+    <div class="lxd_logo">LXD · Atelier</div>
+    <nav class="lxd_nav_links">
+      <a href="index.html"><i class="fa-solid fa-house"></i> 首页</a>
+      <a href="iconfont-1.html" style="color: var(--lxd-gold)">FA · 字体图标</a>
+      <a href="iconfont-2.html">Lucide · SVG</a>
+    </nav>
+  </header>
+
+  <!-- Hero 区 -->
+  <section class="lxd_hero">
+    <h1><i class="fa-solid fa-palette"></i> Icon Atelier</h1>
+    <p>" 好的图标，是沉默的设计 —— 它在恰当的时候，为恰当的人，说出恰当的话。"</p>
+    <span class="lxd_subtitle">Handcrafted with Font Awesome 6.6 &middot; Web Fonts</span>
+  </section>
+
+  <!-- Brands 图标组 -->
+  <section class="lxd_section">
+    <h2><i class="fa-solid fa-certificate"></i> 品牌 &amp; 社交 (Brands)</h2>
+    <div class="lxd_icon_grid" id="lxd_grid_brands"></div>
+  </section>
+
+  <!-- Solid 创意图标组 -->
+  <section class="lxd_section">
+    <h2><i class="fa-solid fa-sparkles"></i> 创意 &amp; 灵感 (Solid)</h2>
+    <div class="lxd_icon_grid" id="lxd_grid_utility"></div>
+  </section>
+
+  <!-- 页脚 -->
+  <footer class="lxd_footer">
+    <a href="index.html" class="lxd_back_home"><i class="fa-solid fa-arrow-left"></i> 返回首页</a>
+    <p>LXD &middot; Icon Atelier &copy; 2026 &nbsp;|&nbsp; Font Awesome v6.6.0 Free</p>
+  </footer>
+
+  <script>
+    // ===== 所有 JS 变量均以 lxd_ 开头 =====
+    const lxd_brands = [
+      { cls: 'github',      name: 'github' },
+      { cls: 'dribbble',    name: 'dribbble' },
+      { cls: 'behance',     name: 'behance' },
+      { cls: 'instagram',   name: 'instagram' },
+      { cls: 'linkedin',    name: 'linkedin' },
+      { cls: 'twitter',     name: 'twitter / x' },
+      { cls: 'medium',      name: 'medium' },
+      { cls: 'youtube',     name: 'youtube' },
+      { cls: 'pinterest',   name: 'pinterest' },
+      { cls: 'whatsapp',    name: 'whatsapp' },
+      { cls: 'weixin',      name: 'wechat' },
+      { cls: 'weibo',       name: 'weibo' }
+    ];
+
+    const lxd_utility = [
+      { cls: 'palette',            name: 'palette · 调色板' },
+      { cls: 'pen-nib',            name: 'pen-nib · 画笔' },
+      { cls: 'wand-magic-sparkles',name: 'wand · 魔法棒' },
+      { cls: 'lightbulb',          name: 'lightbulb · 灵感' },
+      { cls: 'star',               name: 'star · 星辰' },
+      { cls: 'heart',              name: 'heart · 心动' },
+      { cls: 'book-open',          name: 'book-open · 开卷' },
+      { cls: 'feather-pointed',    name: 'feather · 羽毛笔' },
+      { cls: 'mug-hot',            name: 'mug-hot · 午后' },
+      { cls: 'camera-retro',       name: 'camera-retro · 复古' },
+      { cls: 'music',              name: 'music · 乐章' },
+      { cls: 'film',               name: 'film · 胶片' },
+      { cls: 'globe',              name: 'globe · 天地' },
+      { cls: 'cloud',              name: 'cloud · 云' },
+      { cls: 'moon',               name: 'moon · 月' },
+      { cls: 'sun',                name: 'sun · 日' },
+      { cls: 'leaf',               name: 'leaf · 叶' },
+      { cls: 'mountain',           name: 'mountain · 山' },
+      { cls: 'scroll',             name: 'scroll · 卷轴' },
+      { cls: 'eye',                name: 'eye · 洞察' },
+      { cls: 'key',                name: 'key · 秘钥' },
+      { cls: 'gem',                name: 'gem · 瑰宝' },
+      { cls: 'rocket',             name: 'rocket · 启航' },
+      { cls: 'award',              name: 'award · 荣誉' }
+    ];
+
+    function lxd_renderIcons(containerId, prefix, iconList) {
+      const lxd_container = document.getElementById(containerId);
+      iconList.forEach(function(lxd_item) {
+        const lxd_card = document.createElement('div');
+        lxd_card.className = 'lxd_icon_card';
+        lxd_card.innerHTML =
+          '<i class="' + prefix + ' fa-' + lxd_item.cls + '"></i>' +
+          '<span class="lxd_icon_name">' + lxd_item.name + '</span>';
+        lxd_container.appendChild(lxd_card);
+      });
+    }
+
+    // 渲染品牌图标
+    lxd_renderIcons('lxd_grid_brands',  'fa-brands', lxd_brands);
+    // 渲染创意图标
+    lxd_renderIcons('lxd_grid_utility', 'fa-solid',  lxd_utility);
+  </script>
+</body>
+</html>

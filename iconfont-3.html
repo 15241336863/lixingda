@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>LXD Nav · iconfont-3 字体图标</title>
+
+  <!-- ===== iconfont 本地字体（字体图标方式） ===== -->
+  <link rel="stylesheet" href="font/iconfont.css">
+
+  <style>
+    /* ===== LXD 移动端全局变量 ===== */
+    :root {
+      --lxd-nav-bg:        #ffffff;
+      --lxd-nav-border:     #e8e0d6;
+      --lxd-nav-inactive:   #9a9590;
+      --lxd-nav-active:     #c9a64b;
+      --lxd-nav-active-bg:  rgba(201,166,75,0.10);
+      --lxd-badge-red:      #ff3b30;
+      --lxd-badge-text:     #ffffff;
+      --lxd-page-bg:        #faf6f1;
+      --lxd-card-bg:        #ffffff;
+      --lxd-card-text:      #2b2b2b;
+      --lxd-safe-bottom:    env(safe-area-inset-bottom, 0px);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+    html, body {
+      height: 100%;
+      overflow-x: hidden;
+    }
+
+    body.lxd_mobile_page {
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", Arial, sans-serif;
+      background: var(--lxd-page-bg);
+      color: var(--lxd-card-text);
+      font-size: 14px;
+      line-height: 1.5;
+      /* 底部留出导航 + 安全区 */
+      padding-bottom: calc(70px + var(--lxd-safe-bottom));
+    }
+
+    /* ===== 内容区演示（模拟页面正文） ===== */
+    .lxd_page_header {
+      background: linear-gradient(135deg, #1a2e28, #2a4a3e);
+      color: #c9a64b;
+      padding: 20px 16px;
+      text-align: center;
+      letter-spacing: 2px;
+      font-size: 16px;
+    }
+
+    .lxd_content_area {
+      padding: 16px;
+    }
+
+    .lxd_content_area .lxd_card {
+      background: var(--lxd-card-bg);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .lxd_content_area .lxd_card h3 {
+      margin-bottom: 8px;
+      color: var(--lxd-nav-active);
+      font-size: 15px;
+    }
+
+    .lxd_content_area .lxd_card p {
+      color: #666;
+      font-size: 13px;
+    }
+
+    /* 首页入口链接（规则要求） */
+    .lxd_home_entry {
+      display: inline-block;
+      margin: 16px;
+      padding: 8px 16px;
+      background: var(--lxd-nav-active);
+      color: #fff;
+      border-radius: 20px;
+      text-decoration: none;
+      font-size: 13px;
+    }
+
+    /* ======================================================
+       ===== 底部固定导航（核心） =====
+       ====================================================== */
+    nav.lxd_tabbar {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      /* 内容宽度自适应：全屏 100% */
+      width: 100%;
+      /* 安全区 + 高度 */
+      padding-bottom: var(--lxd-safe-bottom);
+      padding-top: 6px;
+      background: var(--lxd-nav-bg);
+      border-top: 1px solid var(--lxd-nav-border);
+      box-shadow: 0 -2px 12px rgba(0,0,0,0.06);
+      display: flex;
+      z-index: 999;
+    }
+
+    .lxd_tabbar .lxd_tab_item {
+      flex: 1;               /* 4 项平分宽度 */
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 0 calc(8px + var(--lxd-safe-bottom));
+      position: relative;    /* 徽章/红点绝对定位父级 */
+      cursor: pointer;
+      user-select: none;
+      -webkit-user-select: none;
+      text-decoration: none;
+      color: var(--lxd-nav-inactive);
+      transition: color 0.2s ease, transform 0.15s ease;
+    }
+
+    .lxd_tabbar .lxd_tab_item:active { transform: scale(0.94); }
+
+    /* ===== 图标（字体图标） ===== */
+    .lxd_tabbar .lxd_tab_item .iconfont {
+      font-size: 24px;
+      line-height: 1;
+      margin-bottom: 4px;
+      position: relative;
+      z-index: 1;
+      transition: transform 0.2s ease;
+    }
+
+    /* 默认显示 normal 图标，隐藏 active 图标 */
+    .lxd_tabbar .lxd_tab_item .lxd_icon_active { display: none; }
+    .lxd_tabbar .lxd_tab_item .lxd_icon_normal { display: inline-block; }
+
+    /* ===== 激活态 ===== */
+    .lxd_tabbar .lxd_tab_item.lxd_active {
+      color: var(--lxd-nav-active);
+    }
+    .lxd_tabbar .lxd_tab_item.lxd_active .iconfont {
+      transform: translateY(-2px) scale(1.05);
+    }
+    /* active 时切换显示的图标 */
+    .lxd_tabbar .lxd_tab_item.lxd_active .lxd_icon_active { display: inline-block; }
+    .lxd_tabbar .lxd_tab_item.lxd_active .lxd_icon_normal { display: none; }
+
+    /* ===== 标签文字 ===== */
+    .lxd_tabbar .lxd_tab_item .lxd_tab_label {
+      font-size: 11px;
+      line-height: 1;
+      letter-spacing: 0.5px;
+    }
+
+    /* ===== 徽章（数字） ===== */
+    .lxd_tabbar .lxd_tab_item .lxd_badge {
+      position: absolute;
+      top: 2px;
+      right: 20%;
+      min-width: 18px;
+      height: 18px;
+      padding: 0 5px;
+      border-radius: 9px;
+      background: var(--lxd-badge-red);
+      color: var(--lxd-badge-text);
+      font-size: 11px;
+      font-weight: bold;
+      line-height: 18px;
+      text-align: center;
+      z-index: 10;
+      box-shadow: 0 1px 3px rgba(255,59,48,0.4);
+      /* 紧贴图标右上角 */
+      transform: translate(30%, -30%);
+      pointer-events: none;
+    }
+    /* 徽章大于两位数时横向拉长 */
+    .lxd_tabbar .lxd_tab_item .lxd_badge.lxd_badge_lg { min-width: 22px; padding: 0 6px; }
+
+    /* ===== 红点（无数字小圆点） ===== */
+    .lxd_tabbar .lxd_tab_item .lxd_dot {
+      position: absolute;
+      top: 4px;
+      right: 22%;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--lxd-badge-red);
+      z-index: 10;
+      box-shadow: 0 0 0 2px var(--lxd-nav-bg);
+      pointer-events: none;
+    }
+
+    /* ===== 响应式：480px 以上略微放大，仍保持移动端导航比例 ===== */
+    @media (min-width: 480px) {
+      .lxd_tabbar .lxd_tab_item .iconfont { font-size: 26px; }
+      .lxd_tabbar .lxd_tab_item .lxd_tab_label { font-size: 12px; }
+    }
+  </style>
+</head>
+<body class="lxd_mobile_page">
+
+  <!-- 页面内容示例 -->
+  <header class="lxd_page_header">
+    iconfont-3 · 字体图标 & 下导航
+  </header>
+
+  <main class="lxd_content_area">
+    <section class="lxd_card">
+      <h3>💡 说明</h3>
+      <p>本页面演示 iconfont 字体图标在移动端固定底部导航中的使用，4 个 Tab 分别配有 normal / active 两套图标，支持点击切换。</p>
+    </section>
+    <section class="lxd_card">
+      <h3>🔔 角标示意</h3>
+      <p>收藏 Tab 右上角显示<span style="color:#ff3b30">红点</span>（未读提示），购物车 Tab 右上角显示<span style="color:#ff3b30">数字徽章 "5"</span>（商品数量）。</p>
+    </section>
+    <section class="lxd_card">
+      <h3>📐 自适应</h3>
+      <p>导航宽度 100% 自适应，4 项 flex:1 平分；支持 iOS safe-area-inset-bottom 安全区。</p>
+    </section>
+    <a href="index.html" class="lxd_home_entry">← 返回首页</a>
+  </main>
+
+  <!-- ===== 移动端底部固定导航 ===== -->
+  <nav class="lxd_tabbar" id="lxd_tabbar">
+
+    <!-- Tab 1: 首页 -->
+    <a class="lxd_tab_item lxd_active" data-tab="home" href="javascript:void(0)">
+      <i class="iconfont lxd_icon_normal icon-shouye" aria-hidden="true"></i>
+      <i class="iconfont lxd_icon_active icon-shouye_3" aria-hidden="true"></i>
+      <span class="lxd_tab_label">首页</span>
+    </a>
+
+    <!-- Tab 2: 收藏（带红点） -->
+    <a class="lxd_tab_item" data-tab="favorite" href="javascript:void(0)">
+      <i class="iconfont lxd_icon_normal icon-shoucang" aria-hidden="true"></i>
+      <i class="iconfont lxd_icon_active icon-shoucang-yishoucang" aria-hidden="true"></i>
+      <span class="lxd_tab_label">收藏</span>
+      <span class="lxd_dot" aria-label="有新消息"></span>
+    </a>
+
+    <!-- Tab 3: 购物车（带数字徽章） -->
+    <a class="lxd_tab_item" data-tab="cart" href="javascript:void(0)">
+      <i class="iconfont lxd_icon_normal icon-gouwuche" aria-hidden="true"></i>
+      <i class="iconfont lxd_icon_active icon-gouwucheman" aria-hidden="true"></i>
+      <span class="lxd_tab_label">购物车</span>
+      <span class="lxd_badge" aria-label="5 件商品">5</span>
+    </a>
+
+    <!-- Tab 4: 我的 -->
+    <a class="lxd_tab_item" data-tab="mine" href="javascript:void(0)">
+      <i class="iconfont lxd_icon_normal icon-wode" aria-hidden="true"></i>
+      <i class="iconfont lxd_icon_active icon-wodedangxuan" aria-hidden="true"></i>
+      <span class="lxd_tab_label">我的</span>
+    </a>
+
+  </nav>
+
+  <script>
+    // ===== 所有 JS 变量均以 lxd_ 开头 =====
+    const lxd_tabs = document.querySelectorAll('.lxd_tabbar .lxd_tab_item');
+    const lxd_badgeEl = document.querySelector('.lxd_tabbar .lxd_badge');
+
+    // 点击切换 active 状态
+    lxd_tabs.forEach(function(lxd_tab) {
+      lxd_tab.addEventListener('click', function() {
+        // 先移除全部 active
+        lxd_tabs.forEach(function(t) { t.classList.remove('lxd_active'); });
+        // 当前项加上 active
+        lxd_tab.classList.add('lxd_active');
+
+        // 可选：若点击了购物车 tab，清空徽章（模拟"已读"）
+        if (lxd_tab.dataset.tab === 'cart' && lxd_badgeEl) {
+          // 演示：点击后数字减 1，到 0 隐藏
+          const lxd_val = parseInt(lxd_badgeEl.textContent, 10);
+          if (lxd_val > 1) {
+            lxd_badgeEl.textContent = lxd_val - 1;
+          } else {
+            lxd_badgeEl.style.display = 'none';
+          }
+        }
+
+        // 可选：若点击了收藏 tab，隐藏红点
+        if (lxd_tab.dataset.tab === 'favorite') {
+          const lxd_dot = lxd_tab.querySelector('.lxd_dot');
+          if (lxd_dot) lxd_dot.style.display = 'none';
+        }
+      });
+    });
+  </script>
+</body>
+</html>
