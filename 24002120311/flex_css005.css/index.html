@@ -1,0 +1,197 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>李兴达的《高级网页设计》课堂实践</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --bg: #f6f2ea;
+            --surface: rgba(255,255,255,0.38);
+            --text: #1d1d1d;
+            --muted: rgba(29,29,29,0.72);
+            --soft: #d96c4d;
+            --green: #0f766e;
+            --green-light: rgba(15,118,110,0.08);
+            --line: rgba(17,24,39,0.08);
+        }
+        body {
+            font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 0;
+        }
+        .container {
+            max-width: 1440px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background: #f7f2e8;
+            overflow: hidden;
+        }
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 78px;
+            padding: 0 48px 0 60px;
+            background: rgba(247,242,232,0.8);
+        }
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: #1e1e1e;
+        }
+        .brand-mark {
+            width: 26px; height: 26px; border-radius: 8px;
+            background: linear-gradient(135deg, #0f766e, #1f9a94);
+            color: #fff; display: inline-flex; align-items: center; justify-content: center;
+            font-size: 15px; font-weight: 700; box-shadow: 0 8px 18px rgba(15,118,110,.28);
+        }
+        .topbar a {
+            color: #1d1d1d; text-decoration: none; font-size: 15px; letter-spacing: 1px; opacity: 0.8;
+        }
+        .header { padding: 40px 60px 0 60px; position: relative; }
+        .hero {
+            display: grid;
+            grid-template-columns: 1.55fr 0.9fr;
+            gap: 44px;
+            align-items: start;
+            padding: 28px 0 10px;
+        }
+        .eyebrow { color: var(--soft); letter-spacing: 4px; text-transform: uppercase; font-size: 14px; font-weight: 600; margin-bottom: 18px; }
+        .quote { font-size: 18px; color: var(--soft); font-style: italic; margin-bottom: 22px; font-weight: 600; }
+        .title-wrap h2 { font-size: 18px; color: #1d1d1d; margin-bottom: 14px; font-weight: 700; }
+        .display-title { font-size: clamp(32px, 4vw, 78px); line-height: 0.95; font-weight: 800; color: #111827; letter-spacing: -3px; margin: 0; }
+        .display-title .accent { display: inline-block; color: #0f172a; }
+        .cta {
+            display: inline-block; margin-top: 26px; background: linear-gradient(135deg, #0f766e, #1ea8a2); color: #fff;
+            font-size: 18px; font-weight: 700; padding: 18px 32px; border-radius: 14px; text-decoration: none; box-shadow: 0 14px 30px rgba(15,118,110,.25);
+        }
+        .hero-copy p { color: rgba(17,24,39,0.72); max-width: 700px; font-size: 16px; line-height: 1.9; margin-top: 22px; }
+        .note-card {
+            align-self: center; background: rgba(255,255,255,0.4); border: 1px solid var(--line);
+            border-radius: 18px; box-shadow: 0 18px 30px rgba(17,24,39,.06); padding: 30px 28px; margin-top: 110px;
+        }
+        .note-card h3 { color: var(--green); font-size: 20px; margin-bottom: 14px; }
+        .note-card p { line-height: 1.8; color: var(--muted); font-size: 14px; }
+        .main { padding: 36px 60px 60px; }
+        .section-title { font-size: 26px; font-weight: 700; margin: 0 0 26px; color: #111827; }
+        .project-list { display: grid; grid-template-columns: repeat(3, minmax(220px, 1fr)); gap: 22px; margin-top: 12px; }
+        .project-item {
+            display: block; text-decoration: none; background: var(--surface); border: 1px solid var(--line); border-radius: 18px;
+            padding: 22px 20px 18px; min-height: 200px; box-shadow: 0 10px 24px rgba(17,24,39,.04); transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .project-item:hover { transform: translateY(-4px); box-shadow: 0 16px 25px rgba(17,24,39,.08); }
+        .project-tag { display: inline-block; color: var(--soft); font-size: 12px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 18px; font-weight: 700; }
+        .project-title { font-size: 22px; font-weight: 700; color: #111827; margin-bottom: 14px; }
+        .icon-box {
+            width: 58px; height: 58px; border-radius: 14px; display: flex; align-items: center; justify-content: center;
+            margin: 22px 0 18px; font-size: 28px; color: var(--green); background: var(--green-light);
+        }
+        .project-desc { line-height: 1.8; color: var(--muted); font-size: 14px; }
+        .prompt-box { margin-top: 38px; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 22px 20px; }
+        .prompt-box h3 { font-size: 18px; color: #111827; margin-bottom: 10px; }
+        .prompt-box p { color: var(--muted); line-height: 1.8; font-size: 14px; }
+        @media (max-width: 900px) {
+            .hero { grid-template-columns: 1fr; }
+            .project-list { grid-template-columns: 1fr; }
+            .note-card { margin-top: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="topbar">
+            <div class="brand">
+                <span class="brand-mark">A</span>
+                <span>李兴达 · 高级网页设计</span>
+            </div>
+            <a href="#">查看本次实践要求</a>
+        </div>
+
+        <header class="header">
+            <div class="hero">
+                <div class="hero-copy">
+                    <div class="eyebrow">CLASS PRACTICE / 2026</div>
+                    <div class="quote">“纸上得来终觉浅，绝知此事要躬行。”</div>
+
+                    <div class="title-wrap">
+                        <h2>李兴达的课程实践</h2>
+                        <p class="display-title"><span class="accent">《高级网页设计》</span></p>
+                    </div>
+
+                    <a class="cta" href="#course">课堂实践</a>
+
+                    <p>以结构为骨架，以视觉为表达，以交互为灵魂。这里汇总了课程中的主要实践内容，涵盖布局、字体图标、脚本逻辑与图形技术的综合展示。</p>
+                </div>
+
+                <div class="note-card">
+                    <h3>从基础开始，持续迭代</h3>
+                    <p>当前项目已从静态页面逐步扩展到具备布局、图标、交互、脚本等多个维度的综合实践内容，后续还将继续补充与完善更多模块。</p>
+                </div>
+            </div>
+        </header>
+
+        <main class="main" id="course">
+            <h2 class="section-title">课堂目录</h2>
+
+            <div class="project-list">
+                <a class="project-item" href="review_flex005.html">
+                    <div class="project-tag">01 / Layout</div>
+                    <div class="icon-box">▦</div>
+                    <div class="project-title">Flex 复习</div>
+                    <div class="project-desc">经典布局实践，涵盖导航、三栏排版、响应式卡片与侧边栏设计。</div>
+                </a>
+
+                <a class="project-item" href="font/demo_index.html">
+                    <div class="project-tag">02 / Typography</div>
+                    <div class="icon-box">Aa</div>
+                    <div class="project-title">字体图标</div>
+                    <div class="project-desc">图标系统与字体样式结合的展示页面，适合构建更高质量的视觉表达。</div>
+                </a>
+
+                <a class="project-item" href="svg005.html">
+                    <div class="project-tag">03 / Interaction</div>
+                    <div class="icon-box">◌</div>
+                    <div class="project-title">SVG 交互</div>
+                    <div class="project-desc">使用 SVG 完成图形绘制与视觉表达，增强页面的表现力与交互可视化能力。</div>
+                </a>
+            </div>
+
+            <div class="project-list" style="margin-top: 22px;">
+                <a class="project-item" href="function005.html">
+                    <div class="project-tag">04 / Function</div>
+                    <div class="icon-box">ƒ</div>
+                    <div class="project-title">JS 函数</div>
+                    <div class="project-desc">随机数猜数字等交互逻辑，以函数形式实现条件判断与循环控制。</div>
+                </a>
+
+                <a class="project-item" href="JS_boj_apply.html">
+                    <div class="project-tag">05 / Application</div>
+                    <div class="icon-box">◎</div>
+                    <div class="project-title">JS 对象的应用</div>
+                    <div class="project-desc">将对象与方法结合页面场景，展现更真实的应用逻辑和内容渲染。</div>
+                </a>
+
+                <a class="project-item" href="#">
+                    <div class="project-tag">06 / Upcoming</div>
+                    <div class="icon-box">＋</div>
+                    <div class="project-title">后续模块</div>
+                    <div class="project-desc">更多课程实践将在后续继续补充完善，持续更新前端学习过程中的精华内容。</div>
+                </a>
+            </div>
+
+            <div class="prompt-box">
+                <h3>本提示词</h3>
+                <p>创建一个新页面，包括本目录下的所有网页的超链接，使用原生代码，不使用 CDN，新页面名称为 index.html，主题为李兴达的《高级网页设计》课堂实践，美化页面，课堂目录中包含 flex 复习、字体图标、其余模块后续在增加、JS 函数、JS 对象的应用、JS 对象。页面中包括本提示词。</p>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

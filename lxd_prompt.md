@@ -41,3 +41,52 @@
 创建skill:提交项目：使用git commit并push到gitee仓库，仓库地址:`https://gitee.com/neusoft_wangyao_jsj/xiaoli.git`
 
 ---
+
+**时间**: 2026-10-28
+**模型**: GLM-5.3-Flash
+**提示词**:
+
+`D:\HuaweiMoveData\Users\HW\Documents\WXWork\1688855501606208\Cache\File\2026-10\starter-level1.html` 根据要求帮我做一下（等级一·基础：补全 5 个函数——班级概览统计、学生卡片列表渲染、不及格预警、搜索、排序，聚焦核心 DOM 查找 + 基础数组方法）
+
+---
+
+**时间**: 2026-10-28
+**模型**: GLM-5.3-Flash
+**提示词**:
+
+`D:\HuaweiMoveData\Users\HW\Documents\WXWork\1688855501606208\Cache\File\2026-10\data.js` 这个是人数要求（老师原版数据：18 名学生 2024001~2024018，科目为语文/数学/英语/网页设计/数据库，gender 为男/女，含 abbr 缩写字段）
+
+---
+
+**时间**: 2026-10-28
+**模型**: GLM-5.3-Flash
+**提示词**:
+
+帮我逐一解释一下这个代码（starter-level1 0311 L .html）。你需要告诉我你用了什么模型
+
+---
+
+**时间**: 2026-10-30
+**模型**: GLM-5.3-Flash
+**提示词**:
+
+帮我逐一解释一下这个代码（starter-level1 0311 L .html）。你需要告诉我你用了什么模型
+
+---
+
+**时间**: 2026-10-30
+**模型**: DeepSeek-V4.1-Flash
+**提示词**:
+
+Trae 打开文件夹，进入用户根目录
+获得 git 公钥，没有则先创建一个
+
+---
+
+**时间**: 2026-10-30
+**模型**: DeepSeek-V4.1-Flash
+**提示词**:
+
+创建技能skill：提交到github，将本项目提交commit并push到`https://github.com/15241336863/lixingda` 网址，使用已设置公钥。
+
+---
