@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!--
+    作者：李兴达
+    建立时间：2026-11-04
+    使用大模型：GLM-5.3-Flash
+    功能名称：新闻 Tab 选项卡页面
+  -->
+  <title>新闻 Tab 选项卡</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+      background: #eef1f5;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 24px 12px 48px;
+    }
+
+    .lxd_page { width: 100%; max-width: 680px; }
+
+    .lxd_header { text-align: center; margin-bottom: 16px; }
+    .lxd_header h1 { font-size: 22px; color: #1f2d3d; }
+    .lxd_header p { font-size: 12px; color: #909399; margin-top: 6px; }
+
+    /* 选项卡卡片容器 */
+    .lxd_card {
+      background: #fff;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(31, 45, 61, 0.08);
+    }
+
+    /* 选项卡按钮行：4 项等分 */
+    .lxd_tabs {
+      display: flex;
+      border-bottom: 1px solid #e4e7ed;
+    }
+
+    .lxd_tab_btn {
+      flex: 1;
+      border: none;
+      background: none;
+      padding: 13px 4px;
+      font-size: 15px;
+      color: #606266;
+      cursor: pointer;
+      position: relative;
+      transition: color 0.2s;
+    }
+
+    .lxd_tab_btn:hover { color: #1e5eb4; }
+
+    /* 选中态：文字变蓝 + 底部指示条 */
+    .lxd_tab_btn.lxd_active {
+      color: #1e5eb4;
+      font-weight: bold;
+    }
+    .lxd_tab_btn.lxd_active::after {
+      content: "";
+      position: absolute;
+      left: 25%;
+      right: 25%;
+      bottom: 0;
+      height: 3px;
+      border-radius: 2px;
+      background: #1e5eb4;
+    }
+
+    /* 内容面板：默认隐藏，带 lxd_active 才显示 */
+    .lxd_tab_panel { display: none; }
+    .lxd_tab_panel.lxd_active { display: block; }
+
+    /* 新闻列表 */
+    .lxd_news_list { list-style: none; padding: 6px 16px; }
+
+    .lxd_news_list li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 2px;
+      border-bottom: 1px dashed #e4e7ed;
+      font-size: 14px;
+      color: #303133;
+    }
+    .lxd_news_list li:last-child { border-bottom: none; }
+    .lxd_news_list li:hover { color: #1e5eb4; }
+
+    .lxd_news_date {
+      flex-shrink: 0;
+      font-size: 12px;
+      color: #909399;
+    }
+
+    /* 最热新闻的热度标记 */
+    .lxd_hot_tag {
+      display: inline-block;
+      margin-left: 6px;
+      padding: 1px 6px;
+      border-radius: 8px;
+      background: #fde2e2;
+      color: #d03050;
+      font-size: 11px;
+    }
+
+    .lxd_home {
+      display: block;
+      text-align: center;
+      margin-top: 16px;
+      font-size: 13px;
+      color: #1e5eb4;
+      text-decoration: none;
+    }
+    .lxd_home:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="lxd_page">
+    <header class="lxd_header">
+      <h1>今日新闻速览</h1>
+      <p>点击选项卡切换新闻分类</p>
+    </header>
+
+    <section class="lxd_card">
+      <!-- 选项卡按钮区：data-tab 指向对应面板 id -->
+      <div class="lxd_tabs" id="lxd_newsTabs">
+        <button class="lxd_tab_btn lxd_active" data-tab="lxd_panel_domestic">国内新闻</button>
+        <button class="lxd_tab_btn" data-tab="lxd_panel_province">省内新闻</button>
+        <button class="lxd_tab_btn" data-tab="lxd_panel_world">国际新闻</button>
+        <button class="lxd_tab_btn" data-tab="lxd_panel_hot">最热新闻</button>
+      </div>
+
+      <!-- 面板一：国内新闻（默认选中显示） -->
+      <div class="lxd_tab_panel lxd_active" id="lxd_panel_domestic">
+        <ul class="lxd_news_list">
+          <li><span>全国秋粮收购全面展开，仓储准备充足</span><span class="lxd_news_date">11-04</span></li>
+          <li><span>高速铁路新线开通运营，京津冀通勤再提速</span><span class="lxd_news_date">11-03</span></li>
+          <li><span>多部门联合部署冬季能源保供工作</span><span class="lxd_news_date">11-03</span></li>
+          <li><span>全国大学生职业规划大赛报名正式启动</span><span class="lxd_news_date">11-02</span></li>
+        </ul>
+      </div>
+
+      <!-- 面板二：省内新闻 -->
+      <div class="lxd_tab_panel" id="lxd_panel_province">
+        <ul class="lxd_news_list">
+          <li><span>大连软件产业集聚区新增多家高新技术企业</span><span class="lxd_news_date">11-04</span></li>
+          <li><span>沈阳地铁新线路进入空载试运行阶段</span><span class="lxd_news_date">11-03</span></li>
+          <li><span>辽宁多所高校举办秋季双选会，岗位超万个</span><span class="lxd_news_date">11-02</span></li>
+          <li><span>全省文旅消费季启动，多条精品线路发布</span><span class="lxd_news_date">11-01</span></li>
+        </ul>
+      </div>
+
+      <!-- 面板三：国际新闻 -->
+      <div class="lxd_tab_panel" id="lxd_panel_world">
+        <ul class="lxd_news_list">
+          <li><span>联合国气候变化大会筹备工作进入最后阶段</span><span class="lxd_news_date">11-04</span></li>
+          <li><span>多国代表签署数字经济合作框架协议</span><span class="lxd_news_date">11-03</span></li>
+          <li><span>国际航天机构公布新一轮月球探测计划</span><span class="lxd_news_date">11-02</span></li>
+          <li><span>全球人工智能安全峰会在日内瓦闭幕</span><span class="lxd_news_date">11-01</span></li>
+        </ul>
+      </div>
+
+      <!-- 面板四：最热新闻 -->
+      <div class="lxd_tab_panel" id="lxd_panel_hot">
+        <ul class="lxd_news_list">
+          <li><span>2026 网页设计大赛获奖名单公布</span><span class="lxd_hot_tag">热</span><span class="lxd_news_date">11-04</span></li>
+          <li><span>我国科研团队在新材料领域取得重要突破</span><span class="lxd_hot_tag">热</span><span class="lxd_news_date">11-04</span></li>
+          <li><span>冬季旅游预订量同比增长，冰雪经济升温</span><span class="lxd_hot_tag">热</span><span class="lxd_news_date">11-03</span></li>
+          <li><span>国产大飞机新增两条商业航线</span><span class="lxd_hot_tag">热</span><span class="lxd_news_date">11-02</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <a class="lxd_home" href="index.html">返回首页 index.html</a>
+  </div>
+
+  <!-- 外部引用 js 文件夹中的选项卡脚本 -->
+  <script src="js/lxd_tab.js"></script>
+</body>
+</html>
