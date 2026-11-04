@@ -22,7 +22,7 @@
     }
 
     /* 排行榜卡片容器 */
-    .Lxd_rank_card {
+    .lxd_rank_card {
       width: 100%;
       max-width: 570px;
       border: 1px solid #e8e8e8;
@@ -30,7 +30,7 @@
     }
 
     /* 顶行：左标题 + 右选项卡 */
-    .Lxd_rank_header {
+    .lxd_rank_header {
       display: flex;
       align-items: flex-end;
       justify-content: space-between;
@@ -38,7 +38,7 @@
       border-bottom: 1px solid #e8e8e8;
     }
 
-    .Lxd_rank_title {
+    .lxd_rank_title {
       font-size: 22px;
       color: #222;
       letter-spacing: 1px;
@@ -46,9 +46,9 @@
     }
 
     /* 选项卡：底部蓝色指示条表示选中 */
-    .Lxd_tabs { display: flex; }
+    .lxd_tabs { display: flex; }
 
-    .Lxd_tab_btn {
+    .lxd_tab_btn {
       border: none;
       background: none;
       cursor: pointer;
@@ -59,13 +59,13 @@
       transition: color 0.2s;
     }
 
-    .Lxd_tab_btn:hover { color: #2e6bd8; }
+    .lxd_tab_btn:hover { color: #2e6bd8; }
 
-    .Lxd_tab_btn.Lxd_active {
+    .lxd_tab_btn.lxd_active {
       color: #1a1a1a;
       font-weight: bold;
     }
-    .Lxd_tab_btn.Lxd_active::after {
+    .lxd_tab_btn.lxd_active::after {
       content: "";
       position: absolute;
       left: 10px;
@@ -75,17 +75,17 @@
       background: #2e6bd8;
     }
 
-    /* 内容面板：默认隐藏，带 Lxd_active 才显示 */
-    .Lxd_tab_panel { display: none; }
-    .Lxd_tab_panel.Lxd_active { display: block; }
+    /* 内容面板：默认隐藏，带 lxd_active 才显示 */
+    .lxd_tab_panel { display: none; }
+    .lxd_tab_panel.lxd_active { display: block; }
 
     /* 排行榜列表 */
-    .Lxd_rank_list {
+    .lxd_rank_list {
       list-style: none;
       padding: 12px 16px;
     }
 
-    .Lxd_rank_item {
+    .lxd_rank_item {
       display: flex;
       align-items: center;
       gap: 10px;
@@ -93,7 +93,7 @@
     }
 
     /* 序号方块：前三名红色，其余灰色 */
-    .Lxd_rank_no {
+    .lxd_rank_no {
       flex-shrink: 0;
       width: 18px;
       height: 18px;
@@ -104,10 +104,10 @@
       color: #fff;
       font-size: 12px;
     }
-    .Lxd_rank_no.Lxd_top3 { background: #e13c3c; }
+    .lxd_rank_no.lxd_top3 { background: #e13c3c; }
 
     /* 标题：单行显示，超出省略 */
-    .Lxd_rank_text {
+    .lxd_rank_text {
       flex: 1;
       font-size: 14px;
       color: #333;
@@ -116,9 +116,9 @@
       text-overflow: ellipsis;
       cursor: pointer;
     }
-    .Lxd_rank_text:hover { color: #e13c3c; }
+    .lxd_rank_text:hover { color: #e13c3c; }
 
-    .Lxd_home {
+    .lxd_home {
       display: block;
       text-align: center;
       margin-top: 14px;
@@ -126,90 +126,90 @@
       color: #2e6bd8;
       text-decoration: none;
     }
-    .Lxd_home:hover { text-decoration: underline; }
+    .lxd_home:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
-  <div class="Lxd_rank_card">
-    <div class="Lxd_rank_header">
-      <h2 class="Lxd_rank_title">排行榜</h2>
+  <div class="lxd_rank_card">
+    <div class="lxd_rank_header">
+      <h2 class="lxd_rank_title">排行榜</h2>
       <!-- 选项卡按钮区：data-tab 指向对应面板 id -->
-      <div class="Lxd_tabs" id="Lxd_rankTabs">
-        <button class="Lxd_tab_btn Lxd_active" data-tab="Lxd_panel_news">新闻</button>
-        <button class="Lxd_tab_btn" data-tab="Lxd_panel_stock">证券</button>
-        <button class="Lxd_tab_btn" data-tab="Lxd_panel_fund">理财</button>
-        <button class="Lxd_tab_btn" data-tab="Lxd_panel_blog">博客</button>
+      <div class="lxd_tabs" id="lxd_rankTabs">
+        <button class="lxd_tab_btn lxd_active" data-tab="lxd_panel_news">新闻</button>
+        <button class="lxd_tab_btn" data-tab="lxd_panel_stock">证券</button>
+        <button class="lxd_tab_btn" data-tab="lxd_panel_fund">理财</button>
+        <button class="lxd_tab_btn" data-tab="lxd_panel_blog">博客</button>
       </div>
     </div>
 
     <!-- 面板一：新闻（默认选中） -->
-    <div class="Lxd_tab_panel Lxd_active" id="Lxd_panel_news">
-      <ul class="Lxd_rank_list">
-        <li class="Lxd_rank_item"><span class="Lxd_rank_no Lxd_top3">1</span><span class="Lxd_rank_text">构建“股市+债市”稳市机制！央行新工具来了</span></li>
-        <li class="Lxd_rank_item"><span class="Lxd_rank_no Lxd_top3">2</span><span class="Lxd_rank_text">美媒：美军已准备好再打击伊朗 特朗普或中期选举后行动</span></li>
-        <li class="Lxd_rank_item"><span class="Lxd_rank_no Lxd_top3">3</span><span class="Lxd_rank_text">姆巴佩发表涉中国不当言论，多家品牌终止合作，媒体热议</span></li>
-        <li class="Lxd_rank_item"><span class="Lxd_rank_no">4</span><span class="Lxd_rank_text">东鹏饮料集团：零容忍伤害民族感情行为，终止与姆巴佩合作</span></li>
-        <li class="Lxd_rank_item"><span class="Lxd_rank_no">5</span><span class="Lxd_rank_text">300672，业绩暴涨超5600%！10股业绩大增（附股）</span></li>
-        <li class="Lxd_rank_item"><span class="Lxd_rank_no">6</span><span class="Lxd_rank_text">史上最大IPO要来了！7位创始人身价均超130亿美元</span></li>
-        <li class="Lxd_rank_item"><span class="Lxd_rank_no">7</span><span class="Lxd_rank_text">外交部：对英国警方任意、过度执法行为表示强烈不满</span></li>
-        <li class="Lxd_rank_item"><span class="Lxd_rank_no">8</span><span class="Lxd_rank_text">1000000美元！特朗普重金悬赏</span></li>
-        <li class="Lxd_rank_item"><span class="Lxd_rank_no">9</span><span class="Lxd_rank_text">张一鸣以6700亿元刷新中国首富财富记录！《2026胡润百富榜》发布</span></li>
-        <li class="Lxd_rank_item"><span class="Lxd_rank_no">10</span><span class="Lxd_rank_text">Gucci卖不动了 开云今年将关掉至少125家门店</span></li>
+    <div class="lxd_tab_panel lxd_active" id="lxd_panel_news">
+      <ul class="lxd_rank_list">
+        <li class="lxd_rank_item"><span class="lxd_rank_no lxd_top3">1</span><span class="lxd_rank_text">构建“股市+债市”稳市机制！央行新工具来了</span></li>
+        <li class="lxd_rank_item"><span class="lxd_rank_no lxd_top3">2</span><span class="lxd_rank_text">美媒：美军已准备好再打击伊朗 特朗普或中期选举后行动</span></li>
+        <li class="lxd_rank_item"><span class="lxd_rank_no lxd_top3">3</span><span class="lxd_rank_text">姆巴佩发表涉中国不当言论，多家品牌终止合作，媒体热议</span></li>
+        <li class="lxd_rank_item"><span class="lxd_rank_no">4</span><span class="lxd_rank_text">东鹏饮料集团：零容忍伤害民族感情行为，终止与姆巴佩合作</span></li>
+        <li class="lxd_rank_item"><span class="lxd_rank_no">5</span><span class="lxd_rank_text">300672，业绩暴涨超5600%！10股业绩大增（附股）</span></li>
+        <li class="lxd_rank_item"><span class="lxd_rank_no">6</span><span class="lxd_rank_text">史上最大IPO要来了！7位创始人身价均超130亿美元</span></li>
+        <li class="lxd_rank_item"><span class="lxd_rank_no">7</span><span class="lxd_rank_text">外交部：对英国警方任意、过度执法行为表示强烈不满</span></li>
+        <li class="lxd_rank_item"><span class="lxd_rank_no">8</span><span class="lxd_rank_text">1000000美元！特朗普重金悬赏</span></li>
+        <li class="lxd_rank_item"><span class="lxd_rank_no">9</span><span class="lxd_rank_text">张一鸣以6700亿元刷新中国首富财富记录！《2026胡润百富榜》发布</span></li>
+        <li class="lxd_rank_item"><span class="lxd_rank_no">10</span><span class="lxd_rank_text">Gucci卖不动了 开云今年将关掉至少125家门店</span></li>
       </ul>
     </div>
 
     <!-- 面板二：证券 -->
-    <div class="Lxd_tab_panel" id="Lxd_panel_stock">
-      <ul class="Lxd_rank_list">
-        <li class="Lxd_rank_item"><span class="Lxd_rank_no Lxd_top3">1</span><span class="Lxd_rank_text">沪指收涨0.8%重上3500点，两市成交额突破1.5万亿</span></li>
-        <li class="Lxd_rank_item"><span class="Lxd_rank_no Lxd_top3">2</span><span class="Lxd_rank_text">券商板块全线爆发，多只个股涨停封板</span></li>
-        <li class="Lxd_rank_item"><span class="Lxd_rank_no Lxd_top3">3</span><span class="Lxd_rank_text">北向资金今日净买入超80亿元，加仓金融与科技股</span></li>
-        <li class="Lxd_rank_item"><span class="Lxd_rank_no">4</span><span class="Lxd_rank_text">新股申购提示：下周三只新股集中发行（附申购指南）</span></li>
-        <li class="Lxd_rank_item"><span class="Lxd_rank_no">5</span><span class="Lxd_rank_text">龙虎榜揭秘：机构席位抢筹这三只成长股</span></li>
-        <li class="Lxd_rank_item"><span class="Lxd_rank_no">6</span><span class="Lxd_rank_text">可转债新规落地实施，T+0交易规则迎来调整</span></li>
-        <li class="Lxd_rank_item"><span class="Lxd_rank_no">7</span><span class="Lxd_rank_text">半导体龙头发布三季报，净利润同比增长65%</span></li>
-        <li class="Lxd_rank_item"><span class="Lxd_rank_no">8</span><span class="Lxd_rank_text">融资余额创年内新高，杠杆资金聚焦两大主线</span></li>
-        <li class="Lxd_rank_item"><span class="Lxd_rank_no">9</span><span class="Lxd_rank_text">港股恒生指数五连阳，南向资金持续流入</span></li>
-        <li class="Lxd_rank_item"><span class="Lxd_rank_no">10</span><span class="Lxd_rank_text">多只宽基ETF份额创新高，指数化投资渐成主流</span></li>
+    <div class="lxd_tab_panel" id="lxd_panel_stock">
+      <ul class="lxd_rank_list">
+        <li class="lxd_rank_item"><span class="lxd_rank_no lxd_top3">1</span><span class="lxd_rank_text">沪指收涨0.8%重上3500点，两市成交额突破1.5万亿</span></li>
+        <li class="lxd_rank_item"><span class="lxd_rank_no lxd_top3">2</span><span class="lxd_rank_text">券商板块全线爆发，多只个股涨停封板</span></li>
+        <li class="lxd_rank_item"><span class="lxd_rank_no lxd_top3">3</span><span class="lxd_rank_text">北向资金今日净买入超80亿元，加仓金融与科技股</span></li>
+        <li class="lxd_rank_item"><span class="lxd_rank_no">4</span><span class="lxd_rank_text">新股申购提示：下周三只新股集中发行（附申购指南）</span></li>
+        <li class="lxd_rank_item"><span class="lxd_rank_no">5</span><span class="lxd_rank_text">龙虎榜揭秘：机构席位抢筹这三只成长股</span></li>
+        <li class="lxd_rank_item"><span class="lxd_rank_no">6</span><span class="lxd_rank_text">可转债新规落地实施，T+0交易规则迎来调整</span></li>
+        <li class="lxd_rank_item"><span class="lxd_rank_no">7</span><span class="lxd_rank_text">半导体龙头发布三季报，净利润同比增长65%</span></li>
+        <li class="lxd_rank_item"><span class="lxd_rank_no">8</span><span class="lxd_rank_text">融资余额创年内新高，杠杆资金聚焦两大主线</span></li>
+        <li class="lxd_rank_item"><span class="lxd_rank_no">9</span><span class="lxd_rank_text">港股恒生指数五连阳，南向资金持续流入</span></li>
+        <li class="lxd_rank_item"><span class="lxd_rank_no">10</span><span class="lxd_rank_text">多只宽基ETF份额创新高，指数化投资渐成主流</span></li>
       </ul>
     </div>
 
     <!-- 面板三：理财 -->
-    <div class="Lxd_tab_panel" id="Lxd_panel_fund">
-      <ul class="Lxd_rank_list">
-        <li class="Lxd_rank_item"><span class="Lxd_rank_no Lxd_top3">1</span><span class="Lxd_rank_text">多家银行下调存款利率，大额存单额度紧俏</span></li>
-        <li class="Lxd_rank_item"><span class="Lxd_rank_no Lxd_top3">2</span><span class="Lxd_rank_text">债基收益回暖，近一月平均涨幅超0.6%</span></li>
-        <li class="Lxd_rank_item"><span class="Lxd_rank_no Lxd_top3">3</span><span class="Lxd_rank_text">黄金ETF持续吸金，年内收益率跑赢多数理财</span></li>
-        <li class="Lxd_rank_item"><span class="Lxd_rank_no">4</span><span class="Lxd_rank_text">银行理财子公司密集发文：费率优惠延续至年底</span></li>
-        <li class="Lxd_rank_item"><span class="Lxd_rank_no">5</span><span class="Lxd_rank_text">个人养老金账户开户数突破8000万，税优政策受关注</span></li>
-        <li class="Lxd_rank_item"><span class="Lxd_rank_no">6</span><span class="Lxd_rank_text">货币基金七日年化跌破1.5%，闲钱理财怎么放</span></li>
-        <li class="Lxd_rank_item"><span class="Lxd_rank_no">7</span><span class="Lxd_rank_text">指数基金发行提速，宽基产品成布局重点</span></li>
-        <li class="Lxd_rank_item"><span class="Lxd_rank_no">8</span><span class="Lxd_rank_text">理财净值化转型完成，波动成常态如何应对</span></li>
-        <li class="Lxd_rank_item"><span class="Lxd_rank_no">9</span><span class="Lxd_rank_text">国债逆回购节前走俏，一天期利率冲高</span></li>
-        <li class="Lxd_rank_item"><span class="Lxd_rank_no">10</span><span class="Lxd_rank_text">保险预定利率下调，储蓄型产品切换在即</span></li>
+    <div class="lxd_tab_panel" id="lxd_panel_fund">
+      <ul class="lxd_rank_list">
+        <li class="lxd_rank_item"><span class="lxd_rank_no lxd_top3">1</span><span class="lxd_rank_text">多家银行下调存款利率，大额存单额度紧俏</span></li>
+        <li class="lxd_rank_item"><span class="lxd_rank_no lxd_top3">2</span><span class="lxd_rank_text">债基收益回暖，近一月平均涨幅超0.6%</span></li>
+        <li class="lxd_rank_item"><span class="lxd_rank_no lxd_top3">3</span><span class="lxd_rank_text">黄金ETF持续吸金，年内收益率跑赢多数理财</span></li>
+        <li class="lxd_rank_item"><span class="lxd_rank_no">4</span><span class="lxd_rank_text">银行理财子公司密集发文：费率优惠延续至年底</span></li>
+        <li class="lxd_rank_item"><span class="lxd_rank_no">5</span><span class="lxd_rank_text">个人养老金账户开户数突破8000万，税优政策受关注</span></li>
+        <li class="lxd_rank_item"><span class="lxd_rank_no">6</span><span class="lxd_rank_text">货币基金七日年化跌破1.5%，闲钱理财怎么放</span></li>
+        <li class="lxd_rank_item"><span class="lxd_rank_no">7</span><span class="lxd_rank_text">指数基金发行提速，宽基产品成布局重点</span></li>
+        <li class="lxd_rank_item"><span class="lxd_rank_no">8</span><span class="lxd_rank_text">理财净值化转型完成，波动成常态如何应对</span></li>
+        <li class="lxd_rank_item"><span class="lxd_rank_no">9</span><span class="lxd_rank_text">国债逆回购节前走俏，一天期利率冲高</span></li>
+        <li class="lxd_rank_item"><span class="lxd_rank_no">10</span><span class="lxd_rank_text">保险预定利率下调，储蓄型产品切换在即</span></li>
       </ul>
     </div>
 
     <!-- 面板四：博客 -->
-    <div class="Lxd_tab_panel" id="Lxd_panel_blog">
-      <ul class="Lxd_rank_list">
-        <li class="Lxd_rank_item"><span class="Lxd_rank_no Lxd_top3">1</span><span class="Lxd_rank_text">前端开发者如何看懂这次浏览器内核大版本更新</span></li>
-        <li class="Lxd_rank_item"><span class="Lxd_rank_no Lxd_top3">2</span><span class="Lxd_rank_text">从零搭建个人博客：域名、托管与访问统计全流程</span></li>
-        <li class="Lxd_rank_item"><span class="Lxd_rank_no Lxd_top3">3</span><span class="Lxd_rank_text">写了三年技术博客，我总结的十条经验</span></li>
-        <li class="Lxd_rank_item"><span class="Lxd_rank_no">4</span><span class="Lxd_rank_text">CSS 新特性实测：容器查询真的能替代部分 JS</span></li>
-        <li class="Lxd_rank_item"><span class="Lxd_rank_no">5</span><span class="Lxd_rank_text">程序员如何做知识管理：我的笔记系统演进史</span></li>
-        <li class="Lxd_rank_item"><span class="Lxd_rank_no">6</span><span class="Lxd_rank_text">大模型时代，初级工程师的价值在哪里</span></li>
-        <li class="Lxd_rank_item"><span class="Lxd_rank_no">7</span><span class="Lxd_rank_text">一次线上事故复盘：缓存击穿引发的雪崩</span></li>
-        <li class="Lxd_rank_item"><span class="Lxd_rank_no">8</span><span class="Lxd_rank_text">独立开发者月入过万？聊聊小产品的真实数据</span></li>
-        <li class="Lxd_rank_item"><span class="Lxd_rank_no">9</span><span class="Lxd_rank_text">Git 提交规范实践：让历史记录可读可查</span></li>
-        <li class="Lxd_rank_item"><span class="Lxd_rank_no">10</span><span class="Lxd_rank_text">我的 2026 阅读清单：十本技术之外的好书</span></li>
+    <div class="lxd_tab_panel" id="lxd_panel_blog">
+      <ul class="lxd_rank_list">
+        <li class="lxd_rank_item"><span class="lxd_rank_no lxd_top3">1</span><span class="lxd_rank_text">前端开发者如何看懂这次浏览器内核大版本更新</span></li>
+        <li class="lxd_rank_item"><span class="lxd_rank_no lxd_top3">2</span><span class="lxd_rank_text">从零搭建个人博客：域名、托管与访问统计全流程</span></li>
+        <li class="lxd_rank_item"><span class="lxd_rank_no lxd_top3">3</span><span class="lxd_rank_text">写了三年技术博客，我总结的十条经验</span></li>
+        <li class="lxd_rank_item"><span class="lxd_rank_no">4</span><span class="lxd_rank_text">CSS 新特性实测：容器查询真的能替代部分 JS</span></li>
+        <li class="lxd_rank_item"><span class="lxd_rank_no">5</span><span class="lxd_rank_text">程序员如何做知识管理：我的笔记系统演进史</span></li>
+        <li class="lxd_rank_item"><span class="lxd_rank_no">6</span><span class="lxd_rank_text">大模型时代，初级工程师的价值在哪里</span></li>
+        <li class="lxd_rank_item"><span class="lxd_rank_no">7</span><span class="lxd_rank_text">一次线上事故复盘：缓存击穿引发的雪崩</span></li>
+        <li class="lxd_rank_item"><span class="lxd_rank_no">8</span><span class="lxd_rank_text">独立开发者月入过万？聊聊小产品的真实数据</span></li>
+        <li class="lxd_rank_item"><span class="lxd_rank_no">9</span><span class="lxd_rank_text">Git 提交规范实践：让历史记录可读可查</span></li>
+        <li class="lxd_rank_item"><span class="lxd_rank_no">10</span><span class="lxd_rank_text">我的 2026 阅读清单：十本技术之外的好书</span></li>
       </ul>
     </div>
   </div>
 
-  <a class="Lxd_home" href="index.html">返回首页 index.html</a>
+  <a class="lxd_home" href="index.html">返回首页 index.html</a>
 
   <!-- 外部引用 js 文件夹中的排行榜选项卡脚本 -->
-  <script src="js/Lxd_rank.js"></script>
+  <script src="js/lxd_rank.js"></script>
 </body>
 </html>
