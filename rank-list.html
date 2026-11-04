@@ -29,24 +29,31 @@
       background: #fff;
     }
 
-    /* 顶行：左标题 + 右选项卡 */
+    /* 顶行：左标题 + 右选项卡，标题与选项卡之间以竖直分隔线隔开 */
     .lxd_rank_header {
       display: flex;
-      align-items: flex-end;
+      align-items: stretch;
       justify-content: space-between;
-      padding: 0 16px 0 20px;
       border-bottom: 1px solid #e8e8e8;
     }
 
     .lxd_rank_title {
+      display: flex;
+      align-items: center;
+      margin-left: 20px;
+      padding-right: 18px;
+      border-right: 1px solid #e8e8e8;
       font-size: 22px;
       color: #222;
       letter-spacing: 1px;
-      padding: 14px 0 10px;
     }
 
-    /* 选项卡：底部蓝色指示条表示选中 */
-    .lxd_tabs { display: flex; }
+    /* 选项卡：底部蓝色指示条表示选中，紧贴头部底边框 */
+    .lxd_tabs {
+      display: flex;
+      align-items: flex-end;
+      padding-right: 12px;
+    }
 
     .lxd_tab_btn {
       border: none;
