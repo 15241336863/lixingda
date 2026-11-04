@@ -29,57 +29,59 @@
       background: #fff;
     }
 
-    /* 顶行：左标题 + 右选项卡，标题与选项卡之间以竖直分隔线隔开 */
+    /* 顶行：左标题（底部带贯穿线）+ 右侧格子式选项卡 */
     .lxd_rank_header {
       display: flex;
-      align-items: stretch;
       justify-content: space-between;
-      border-bottom: 1px solid #e8e8e8;
     }
 
     .lxd_rank_title {
-      display: flex;
-      align-items: center;
+      flex: 1;
+      font-size: 26px;
+      font-weight: bold;
+      color: #1e3c8f;
+      letter-spacing: 2px;
       margin-left: 20px;
-      padding-right: 18px;
-      border-right: 1px solid #e8e8e8;
-      font-size: 22px;
-      color: #222;
-      letter-spacing: 1px;
+      padding: 22px 0 13px;
+      border-bottom: 1px solid #d9e0ea; /* 标题区底线，延伸到选项卡左缘为止 */
     }
 
-    /* 选项卡：底部蓝色指示条表示选中，紧贴头部底边框 */
+    /* 选项卡：未选中为带边框浅灰格子，选中为无框 + 顶部深蓝粗条 */
     .lxd_tabs {
       display: flex;
       align-items: flex-end;
-      padding-right: 12px;
+      padding-right: 14px;
     }
 
     .lxd_tab_btn {
-      border: none;
-      background: none;
+      border: 1px solid #ccd6e8;
+      border-bottom-color: #d9e0ea;
+      background: #fbfcfe;
       cursor: pointer;
-      font-size: 16px;
-      color: #333;
-      padding: 16px 15px 11px;
+      font-size: 17px;
+      color: #1e3c8f;
+      padding: 9px 17px 12px;
+      margin-left: 3px;
       position: relative;
       transition: color 0.2s;
     }
 
-    .lxd_tab_btn:hover { color: #2e6bd8; }
+    .lxd_tab_btn:hover { color: #25409a; }
 
     .lxd_tab_btn.lxd_active {
-      color: #1a1a1a;
+      border: none;
+      background: none;
       font-weight: bold;
+      padding: 14px 17px 12px;
     }
     .lxd_tab_btn.lxd_active::after {
       content: "";
       position: absolute;
-      left: 10px;
-      right: 10px;
-      bottom: -1px;
-      height: 3px;
-      background: #2e6bd8;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 5px;
+      background: #25409a;
     }
 
     /* 内容面板：默认隐藏，带 lxd_active 才显示 */
