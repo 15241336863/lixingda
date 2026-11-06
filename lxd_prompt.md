@@ -210,3 +210,11 @@ Trae 打开文件夹，进入用户根目录
 2026胡后面的字不要（第9条标题删除"《2026胡"之后的"润百富榜》"，与截图截断处一致）
 
 ---
+
+**时间**: 2026-11-06
+**模型**: GLM-5.3-Flash
+**提示词**:
+
+https://spontaneous-valkyrie-4e4229.netlify.app/swiper-lesson 查看这个链接，帮我把任务四改成和这个任务四一样的效果（补全 swiper-task.html 任务 4 进阶按钮切换 effect，修复任务 2 prevEl 大小写 bug，变量加 lxd_ 前缀）
+
+---
