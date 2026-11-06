@@ -242,3 +242,11 @@ https://spontaneous-valkyrie-4e4229.netlify.app/swiper-lesson 查看这个链接
 任务三呢（综合创作 + 技术答辩）：① 为光影展添加第六件展品爱达·魔都号（首艘国产大型邮轮，2024 年 1 月首航），图片用 AI 生成（横版 16:9），slide 结构完整；② 挑一个课堂上没讲过的 Swiper 能力加上去：keyboard 键盘控制 / mousewheel 滚轮 / zoom 双击缩放 / parallax 视差，任选其一。提交物：能运行的页面 + 与 AI 的关键对话记录。
 
 ---
+
+**时间**: 2026-11-06
+**模型**: Kimi-K3
+**提示词**:
+
+这个是任务三的爱达魔都号照片帮我替换一下（用户提供展会现场邮轮照片，替换 swiper-imgs/adora_1.jpg）
+
+---
