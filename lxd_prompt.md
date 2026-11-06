@@ -234,3 +234,11 @@ https://spontaneous-valkyrie-4e4229.netlify.app/swiper-lesson 查看这个链接
 任务二：creative 仿写——为 swiper-task.html 演示四新增第 7 个按钮「creative 电影墙」，实现上一张缩小左移带角度、下一张放大右移进场的自定义变换效果，参数自定但要"像电影选片墙"。实现后需用自己的话写下 prev / next 的 transform 各控制什么。
 
 ---
+
+**时间**: 2026-11-06
+**模型**: Kimi-K3
+**提示词**:
+
+任务三呢（综合创作 + 技术答辩）：① 为光影展添加第六件展品爱达·魔都号（首艘国产大型邮轮，2024 年 1 月首航），图片用 AI 生成（横版 16:9），slide 结构完整；② 挑一个课堂上没讲过的 Swiper 能力加上去：keyboard 键盘控制 / mousewheel 滚轮 / zoom 双击缩放 / parallax 视差，任选其一。提交物：能运行的页面 + 与 AI 的关键对话记录。
+
+---
