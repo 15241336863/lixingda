@@ -210,6 +210,7 @@
       <button data-fx="coverflow">coverflow 画廊堆叠（沉浸）</button>
       <button data-fx="flip">flip 翻页（复古）</button>
       <button data-fx="cards">cards 卡片（俏皮）</button>
+      <button data-fx="creative">creative 电影墙（任务二）</button>
     </div>
     <div class="wy-demo">
       <span class="wy-demo-tag">🎛️ 演示四 · 效果实验台（点按钮切换 effect）</span>
@@ -269,9 +270,32 @@
     pagination: { el: '#wyPag3', clickable: true }
   });
 
+  // ── 任务二：creative 电影墙效果配置（上一张缩小左移带角度，下一张放大右移进场） ──
+  // creativeEffect 自定义变换：prev 幻灯片缩小左移带旋转、next 幻灯片放大右移进场
+  var lxd_creativeFx = {
+    prev: {
+      shadow: true,                  // 给离开的幻灯片加阴影
+      origin: "left center",         // 变换原点：左中
+      translate: ["-35%", 0, -300],  // 左移 35% + Z 轴后退 300px
+      rotate: [0, 0, -12],           // Z 轴顺时针旋转 12 度（向观众看是向右倒）
+      scale: 0.82,                   // 缩小到 82%
+      opacity: 0.55                  // 半透明
+    },
+    next: {
+      shadow: true,                  // 给进入的幻灯片加阴影
+      origin: "right center",        // 变换原点：右中
+      translate: ["35%", 0, -300],    // 右移 35% + Z 轴后退 300px
+      rotate: [0, 0, 12],            // Z 轴逆时针旋转 12 度（向观众看是向左倒）
+      scale: 1.08,                   // 放大到 108%
+      opacity: 1                     // 完全不透明
+    },
+    perspective: true,               // 开启 3D 透视（translateZ / rotate 生效需要）
+    limitProgress: 2                 // 前后各 2 张都应用变换，loop 模式下效果自然
+  };
+
   // ── 任务 4：初始化 #wySw4，循环 + 3.2 秒自动播放 + 圆点 + 初始 effect ──
-  // 效果实验台轮播，初始效果 cube（按任务一提示词工程师要求），可通过按钮动态切换 effect
-  var lxd_currentFx = 'cube';
+  // 效果实验台轮播，默认 slide，初始不带 creativeEffect（creativeEffect 只在 effect='creative' 时传入）
+  var lxd_currentFx = 'slide';
   var lxd_wySw4 = new Swiper('#wySw4', {
     loop: true,
     effect: lxd_currentFx,
@@ -280,8 +304,8 @@
     pagination: { el: '#wyPag4', clickable: true }
   });
 
-  // ── 任务 4 进阶：补全按钮点击事件，实现六种效果实时切换 ──
-  // 效果切换按钮点击处理：高亮当前按钮、销毁旧实例、用新 effect 重建
+  // ── 任务 4 进阶 + 任务二扩展：按钮点击事件，实现 7 种效果实时切换 ──
+  // 效果切换按钮点击处理：高亮当前按钮、销毁旧实例、根据 effect 类型重建（creative 额外带 creativeEffect）
   document.querySelectorAll('.wy-fx button').forEach(function(lxd_btn){
     lxd_btn.addEventListener('click', function(){
 
@@ -293,14 +317,19 @@
       lxd_currentFx = lxd_btn.dataset.fx;
       lxd_wySw4.destroy(true, true);
 
-      // TODO 3：用新 effect 重建实例（把其它配置原样保留）
-      lxd_wySw4 = new Swiper('#wySw4', {
+      // TODO 3：用新 effect 重建实例（creative 效果需额外传入 creativeEffect 配置对象）
+      var lxd_newConfig = {
         loop: true,
         effect: lxd_currentFx,
         speed: 800,
         autoplay: { delay: 3200, disableOnInteraction: false },
         pagination: { el: '#wyPag4', clickable: true }
-      });
+      };
+      // 任务二：如果切换到 creative，把 creativeEffect 配置对象也合进去
+      if (lxd_currentFx === 'creative') {
+        lxd_newConfig.creativeEffect = lxd_creativeFx;
+      }
+      lxd_wySw4 = new Swiper('#wySw4', lxd_newConfig);
 
     });
   });
