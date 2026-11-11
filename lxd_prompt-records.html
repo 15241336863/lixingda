@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <!--
+    作者：李兴达
+    建立时间：2026-11-11
+    使用大模型：Kimi-K3
+    功能名称：Swiper 三个任务的提示词与验证记录页面（任务一提示词迭代 / 任务二 creative 电影墙 / 任务三邮轮与键盘）
+  -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>提示词与验证记录 · Swiper 光影展</title>
+  <link rel="stylesheet" href="swiper/css/swiper-bundle.min.css">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+                   "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background: #f0f2f8;
+      color: #1a202c;
+      line-height: 1.75;
+      padding-bottom: 80px;
+    }
+
+    /* ── 返回链接 ── */
+    .lxd_home-link {
+      display: inline-block;
+      margin: 18px 24px 0;
+      color: #2b4c9e;
+      text-decoration: none;
+      font-size: 14px;
+    }
+    .lxd_home-link:hover { text-decoration: underline; }
+
+    /* ── Hero 横幅 ── */
+    .lxd_hero {
+      position: relative;
+      max-width: 1060px;
+      margin: 24px auto 0;
+      padding: 56px 52px 48px;
+      background: linear-gradient(135deg, #1a2e6b 0%, #2a4fb0 55%, #4a7fe0 100%);
+      border-radius: 22px;
+      color: #fff;
+      overflow: hidden;
+      box-shadow: 0 18px 48px rgba(26, 46, 107, 0.28);
+    }
+    .lxd_hero::before {
+      content: "";
+      position: absolute;
+      top: -80px; right: -60px;
+      width: 280px; height: 280px;
+      background: radial-gradient(circle, rgba(255,255,255,0.18) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    .lxd_hero::after {
+      content: "";
+      position: absolute;
+      bottom: -100px; left: 40%;
+      width: 220px; height: 220px;
+      background: radial-gradient(circle, rgba(200,220,255,0.15) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    .lxd_hero-label {
+      display: inline-block;
+      font-size: 13px;
+      letter-spacing: 1px;
+      padding: 5px 14px;
+      border: 1px solid rgba(255,255,255,0.35);
+      border-radius: 20px;
+      margin-bottom: 20px;
+      backdrop-filter: blur(4px);
+    }
+    .lxd_hero h1 {
+      font-size: 40px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      letter-spacing: 0.5px;
+    }
+    .lxd_hero p {
+      font-size: 16px;
+      opacity: 0.88;
+      margin-bottom: 26px;
+      max-width: 560px;
+    }
+    .lxd_hero-links { position: relative; z-index: 2; }
+    .lxd_hero-links a {
+      display: inline-block;
+      margin-right: 18px;
+      color: #ffd97a;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 15px;
+      transition: all .2s;
+    }
+    .lxd_hero-links a:hover { color: #fff; transform: translateX(3px); }
+
+    /* ── Tab 导航 ── */
+    .lxd_tabs {
+      max-width: 1060px;
+      margin: 28px auto 0;
+      display: flex;
+      gap: 0;
+      background: #fff;
+      border-radius: 14px;
+      padding: 6px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+      position: sticky;
+      top: 10px;
+      z-index: 10;
+    }
+    .lxd_tab {
+      flex: 1;
+      padding: 12px 20px;
+      text-align: center;
+      font-size: 15px;
+      font-weight: 500;
+      color: #5a6a8a;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all .25s;
+      border: none;
+      background: none;
+      font-family: inherit;
+    }
+    .lxd_tab:hover { color: #2b4c9e; background: #f4f6fb; }
+    .lxd_tab.lxd_active {
+      background: linear-gradient(135deg, #2a4fb0, #4a7fe0);
+      color: #fff;
+      box-shadow: 0 6px 18px rgba(42, 79, 176, 0.3);
+    }
+    .lxd_tab-num {
+      display: inline-block;
+      width: 24px; height: 24px;
+      line-height: 24px;
+      border-radius: 50%;
+      font-size: 12px;
+      margin-right: 6px;
+      background: rgba(0,0,0,0.08);
+    }
+    .lxd_tab.lxd_active .lxd_tab-num {
+      background: rgba(255,255,255,0.25);
+    }
+
+    /* ── 内容卡片 ── */
+    .lxd_section {
+      max-width: 1060px;
+      margin: 28px auto 0;
+      background: #fff;
+      border-radius: 18px;
+      padding: 42px 52px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.05);
+      display: none;
+      animation: fadeIn .35s ease;
+    }
+    .lxd_section.lxd_show { display: block; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .lxd_section-title {
+      font-size: 26px;
+      font-weight: 700;
+      color: #1a2e6b;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .lxd_section-title .lxd_badge {
+      font-size: 13px;
+      padding: 4px 12px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #2a4fb0, #4a7fe0);
+      color: #fff;
+      font-weight: 500;
+    }
+    .lxd_section-desc {
+      color: #6b7a99;
+      font-size: 15px;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #eef0f6;
+    }
+
+    /* ── 子标题 ── */
+    .lxd_h2 {
+      font-size: 19px;
+      font-weight: 700;
+      color: #2a4fb0;
+      margin: 32px 0 14px;
+      padding-left: 12px;
+      border-left: 4px solid #4a7fe0;
+    }
+    .lxd_h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: #3a4a6a;
+      margin: 22px 0 10px;
+    }
+
+    /* ── 提示词块 ── */
+    .lxd_prompt {
+      background: #eef3ff;
+      border-left: 4px solid #4a7fe0;
+      border-radius: 0 10px 10px 0;
+      padding: 16px 20px;
+      margin: 12px 0;
+      font-size: 14.5px;
+      color: #1a2e6b;
+      position: relative;
+    }
+    .lxd_prompt::before {
+      content: "💬 用户提示词";
+      position: absolute;
+      top: -12px; left: 14px;
+      background: #4a7fe0;
+      color: #fff;
+      font-size: 12px;
+      padding: 2px 10px;
+      border-radius: 10px;
+    }
+
+    /* ── AI 回答块 ── */
+    .lxd_answer {
+      background: #f0fff4;
+      border-left: 4px solid #22a06b;
+      border-radius: 0 10px 10px 0;
+      padding: 16px 20px;
+      margin: 12px 0;
+      font-size: 14.5px;
+      position: relative;
+    }
+    .lxd_answer::before {
+      content: "🤖 AI 回答";
+      position: absolute;
+      top: -12px; left: 14px;
+      background: #22a06b;
+      color: #fff;
+      font-size: 12px;
+      padding: 2px 10px;
+      border-radius: 10px;
+    }
+    .lxd_answer.lxd_wrong { border-left-color: #e04848; background: #fff0f0; }
+    .lxd_answer.lxd_wrong::before { content: "❌ AI 回答（有错误）"; background: #e04848; }
+
+    /* ── 代码块 ── */
+    .lxd_code-wrap {
+      position: relative;
+      margin: 12px 0 20px;
+    }
+    .lxd_code {
+      background: #1e2233;
+      color: #e0e8f8;
+      padding: 18px 22px;
+      border-radius: 12px;
+      font-family: "SF Mono", "Fira Code", Consolas, monospace;
+      font-size: 13.5px;
+      line-height: 1.65;
+      overflow-x: auto;
+    }
+    .lxd_code .lxd_cmt { color: #6c7699; }
+    .lxd_code .lxd_key { color: #c792ea; }
+    .lxd_code .lxd_str { color: #c3e88d; }
+    .lxd_code .lxd_num { color: #f78c6c; }
+    .lxd_copy-btn {
+      position: absolute;
+      top: 10px; right: 10px;
+      padding: 5px 12px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 8px;
+      color: #fff;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .lxd_copy-btn:hover { background: rgba(255,255,255,0.25); }
+
+    /* ── 验证表格 ── */
+    .lxd_verify-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: 14.5px;
+    }
+    .lxd_verify-table th, .lxd_verify-table td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid #eef0f6;
+    }
+    .lxd_verify-table th {
+      background: #f7f9fe;
+      color: #2a4fb0;
+      font-weight: 600;
+    }
+    .lxd_verify-table tr:last-child td { border-bottom: none; }
+    .lxd_pass {
+      display: inline-block;
+      padding: 2px 10px;
+      background: #e6ffed;
+      color: #197a4a;
+      border-radius: 12px;
+      font-size: 12.5px;
+      font-weight: 600;
+    }
+    .lxd_fail {
+      display: inline-block;
+      padding: 2px 10px;
+      background: #ffe6e6;
+      color: #b03030;
+      border-radius: 12px;
+      font-size: 12.5px;
+      font-weight: 600;
+    }
+
+    /* ── 对比卡片 ── */
+    .lxd_compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin: 14px 0;
+    }
+    .lxd_compare > div {
+      padding: 16px 20px;
+      border-radius: 12px;
+      border: 1px solid #eef0f6;
+    }
+    .lxd_compare .lxd_col-bad { background: #fff5f5; border-color: #ffc8c8; }
+    .lxd_compare .lxd_col-good { background: #f0fff4; border-color: #b8e4c8; }
+    .lxd_compare h4 {
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+    .lxd_compare .lxd_col-bad h4 { color: #b03030; }
+    .lxd_compare .lxd_col-good h4 { color: #197a4a; }
+    .lxd_compare p { font-size: 13.5px; color: #555; }
+
+    /* ── 答辩小抄（可折叠） ── */
+    .lxd_qa {
+      margin-top: 28px;
+      border: 1px solid #eef0f6;
+      border-radius: 14px;
+      overflow: hidden;
+    }
+    .lxd_qa-head {
+      padding: 14px 20px;
+      background: linear-gradient(135deg, #fff8e1, #ffecb3);
+      font-weight: 600;
+      color: #8a5a00;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      user-select: none;
+    }
+    .lxd_qa-head:hover { background: linear-gradient(135deg, #ffecb3, #ffe082); }
+    .lxd_qa-head span.arrow { transition: transform .25s; }
+    .lxd_qa.lxd_open .lxd_qa-head span.arrow { transform: rotate(180deg); }
+    .lxd_qa-body {
+      padding: 0 22px;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height .4s, padding .4s;
+    }
+    .lxd_qa.lxd_open .lxd_qa-body {
+      max-height: 1200px;
+      padding: 20px 22px;
+    }
+    .lxd_qa-item {
+      margin-bottom: 18px;
+      padding-bottom: 14px;
+      border-bottom: 1px dashed #e5e7ef;
+    }
+    .lxd_qa-item:last-child { border-bottom: none; margin-bottom: 0; }
+    .lxd_qa-q {
+      font-weight: 600;
+      color: #2a4fb0;
+      font-size: 14.5px;
+      margin-bottom: 6px;
+    }
+    .lxd_qa-q::before { content: "Q: "; color: #4a7fe0; }
+    .lxd_qa-a {
+      color: #3a4a6a;
+      font-size: 14px;
+      padding-left: 16px;
+    }
+    .lxd_qa-a::before { content: "A: "; color: #22a06b; font-weight: 600; }
+
+    /* ── transform 解析表 ── */
+    .lxd_transform-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 14px;
+      margin: 14px 0;
+    }
+    .lxd_transform-cell {
+      padding: 14px 18px;
+      background: linear-gradient(135deg, #f4f7ff, #e8efff);
+      border-radius: 12px;
+      border-left: 3px solid #4a7fe0;
+    }
+    .lxd_transform-cell .lxd_field {
+      font-family: "SF Mono", Consolas, monospace;
+      font-size: 13px;
+      color: #2a4fb0;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .lxd_transform-cell .lxd_desc {
+      font-size: 13.5px;
+      color: #4a5678;
+    }
+
+    /* ── 底部链接 ── */
+    .lxd_footer {
+      max-width: 1060px;
+      margin: 32px auto 0;
+      text-align: center;
+      font-size: 14px;
+      color: #8a96b0;
+    }
+    .lxd_footer a {
+      color: #2b4c9e;
+      text-decoration: none;
+      margin: 0 6px;
+    }
+    .lxd_footer a:hover { text-decoration: underline; }
+
+    /* ── 响应式 ── */
+    @media (max-width: 720px) {
+      .lxd_hero { padding: 36px 28px; margin: 16px; }
+      .lxd_hero h1 { font-size: 28px; }
+      .lxd_section { padding: 28px 22px; margin: 16px; }
+      .lxd_compare { grid-template-columns: 1fr; }
+      .lxd_tabs { margin: 16px; flex-wrap: wrap; }
+      .lxd_tab { padding: 10px 12px; font-size: 13px; }
+    }
+  </style>
+</head>
+<body>
+
+  <a href="index.html" class="lxd_home-link">← 返回首页</a>
+
+  <!-- ═══════════ Hero ═══════════ -->
+  <div class="lxd_hero">
+    <div class="lxd_hero-label">大国重器光影展 · Swiper 11</div>
+    <h1>提示词与验证记录</h1>
+    <p>两轮初始化提示词、creative 电影墙参数追问、第六件展品创作 + keyboard 键盘控制——完整还原「AI 协作→代码迭代→浏览器验证→答辩准备」全流程。</p>
+    <div class="lxd_hero-links">
+      <a href="swiper-task.html">🎬 打开演示四 →</a>
+      <a href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">↑ 返回顶部</a>
+    </div>
+  </div>
+
+  <!-- ═══════════ Tab 导航 ═══════════ -->
+  <div class="lxd_tabs">
+    <button class="lxd_tab lxd_active" data-tab="t1"><span class="lxd_tab-num">01</span>提示词迭代</button>
+    <button class="lxd_tab" data-tab="t2"><span class="lxd_tab-num">02</span>creative 电影墙</button>
+    <button class="lxd_tab" data-tab="t3"><span class="lxd_tab-num">03</span>邮轮与键盘</button>
+  </div>
+
+  <!-- ═══════════ 任务一：提示词迭代 ═══════════ -->
+  <div class="lxd_section lxd_show" id="t1">
+    <div class="lxd_section-title">01 · 用两轮提示词配置演示四 <span class="lxd_badge">任务一 ★★</span></div>
+    <div class="lxd_section-desc">原始需求：无缝循环 · 3.2 秒自动翻页且手动不停 · 圆点分页器可点击 · 初始效果 cube。第一轮 AI 漏了关键需求且写法有错，第二轮修正。</div>
+
+    <h3 class="lxd_h2">第一轮提示词 v1（AI 答得不全）</h3>
+    <div class="lxd_prompt">
+      帮我写一段 Swiper 初始化代码，选择器是 #wySw4。我想要循环播放、自动翻页 3.2 秒、有圆点分页器可以点、初始效果是 cube。把完整的 new Swiper('#wySw4', {...}) 配置给我。
+    </div>
+    <div class="lxd_code-wrap">
+      <button class="lxd_copy-btn" onclick="lxd_copy(this)">复制</button>
+      <pre class="lxd_code"><span class="lxd_cmt">// ❌ AI 第一轮回答（有错误）</span>
+<span class="lxd_key">var</span> swiper4 = <span class="lxd_key">new</span> <span class="lxd_str">Swiper</span>(<span class="lxd_str">'#wySw4'</span>, {
+  loop: <span class="lxd_key">true</span>,
+  autoplay: <span class="lxd_num">3200</span>,              <span class="lxd_cmt">// ❌ 应为对象 { delay: 3200, disableOnInteraction: false }</span>
+  pagination: <span class="lxd_str">'.wy-swiper'</span>,    <span class="lxd_cmt">// ❌ 应为 { el: '#wyPag4', clickable: true }</span>
+  effect: <span class="lxd_str">'cube'</span>
+});</pre>
+    </div>
+
+    <div class="lxd_compare">
+      <div class="lxd_col-bad">
+        <h4>❌ 第一轮漏掉 & 错的</h4>
+        <p>① 完全没提"手动操作后自动播放不停止"；② autoplay 写成数字而非对象（Swiper v11 报错）；③ pagination.el 写成类名而非 id；④ 没加 clickable</p>
+      </div>
+      <div class="lxd_col-good">
+        <h4>✅ 第二轮怎么改的</h4>
+        <p>① 明确点名 disableOnInteraction: false 并括号补"关键！默认是 true 会停"；② 强调 autoplay 必须是对象；③ 钉死 el: '#wyPag4'（是 id 不是 class）</p>
+      </div>
+    </div>
+
+    <h3 class="lxd_h2">第二轮提示词 v2（AI 答对了）</h3>
+    <div class="lxd_prompt">
+      请生成 new Swiper('#wySw4', {...}) 的完整配置对象，只返回配置。必须满足：① 无缝循环 loop:true ② 3.2 秒自动翻页且手动后不停——autoplay 必须是对象，含 delay:3200 和 disableOnInteraction:false（关键！默认是 true 会停）③ 圆点分页器可点击——pagination 是对象，写 el:'#wyPag4'（注意是 id 不是 class）+ clickable:true ④ 初始效果 cube。额外加 speed:800。
+    </div>
+    <div class="lxd_code-wrap">
+      <button class="lxd_copy-btn" onclick="lxd_copy(this)">复制</button>
+      <pre class="lxd_code"><span class="lxd_cmt">// ✅ AI 第二轮回答（全部正确）</span>
+<span class="lxd_key">var</span> lxd_wySw4 = <span class="lxd_key">new</span> <span class="lxd_str">Swiper</span>(<span class="lxd_str">'#wySw4'</span>, {
+  loop: <span class="lxd_key">true</span>,
+  effect: <span class="lxd_str">'cube'</span>,
+  speed: <span class="lxd_num">800</span>,
+  autoplay: {
+    delay: <span class="lxd_num">3200</span>,
+    disableOnInteraction: <span class="lxd_key">false</span>
+  },
+  pagination: {
+    el: <span class="lxd_str">'#wyPag4'</span>,
+    clickable: <span class="lxd_key">true</span>
+  }
+});</pre>
+    </div>
+
+    <h3 class="lxd_h2">浏览器验证</h3>
+    <table class="lxd_verify-table">
+      <thead><tr><th>需求</th><th>验证方法</th><th>结果</th></tr></thead>
+      <tbody>
+        <tr><td>① 无缝循环</td><td>eval loop===true + 手动拖到末张继续往后翻</td><td><span class="lxd_pass">PASS</span></td></tr>
+        <tr><td>② 3.2 秒 + 手动不停</td><td>eval autoplay.delay=3200、disableOnInteraction=false；拖动后等 3 秒仍 running</td><td><span class="lxd_pass">PASS</span></td></tr>
+        <tr><td>③ 圆点可点击</td><td>eval pagination.clickable=true；点第 3 圆点 activeIndex===2</td><td><span class="lxd_pass">PASS</span></td></tr>
+        <tr><td>④ 初始效果 cube</td><td>eval lxd_wySw4.effect==='cube' + 视觉 3D 立方体翻转</td><td><span class="lxd_pass">PASS</span></td></tr>
+      </tbody>
+    </table>
+
+    <!-- 答辩小抄 -->
+    <div class="lxd_qa">
+      <div class="lxd_qa-head" onclick="this.parentElement.classList.toggle('lxd_open')">
+        🗣️ 答辩抽问准备（点击展开）<span class="arrow">▼</span>
+      </div>
+      <div class="lxd_qa-body">
+        <div class="lxd_qa-item">
+          <div class="lxd_qa-q">第一版提示词漏掉了哪个需求？</div>
+          <div class="lxd_qa-a">漏掉了"手动操作后自动播放不停止"——我只说"自动翻页 3.2 秒"，没说手动后要不要继续，AI 自然按默认行为（手动后停止）生成了错误写法。</div>
+        </div>
+        <div class="lxd_qa-item">
+          <div class="lxd_qa-q">第二轮怎么"说清楚"的？</div>
+          <div class="lxd_qa-a">① 明确说 autoplay 是对象不是数字；② 点名 disableOnInteraction:false 并用括号补关键说明"默认是 true 会停"；③ 钉死选择器 '#wyPag4' 避免 AI 瞎猜。</div>
+        </div>
+        <div class="lxd_qa-item">
+          <div class="lxd_qa-q">AI 第一次给的代码错在哪？</div>
+          <div class="lxd_qa-a">三处：autoplay:3200（数字而非对象，Swiper v11 报类型错）；pagination:'.wy-swiper'（类名而非 id）；分页器没加 clickable:true。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ 任务二：creative 电影墙 ═══════════ -->
+  <div class="lxd_section" id="t2">
+    <div class="lxd_section-title">02 · creative 电影墙效果 <span class="lxd_badge">任务二 ★★★</span></div>
+    <div class="lxd_section-desc">课堂没讲过的 Swiper creative effect，配合 AI 读官方示例 + 追问 creativeEffect 的 transform 字段含义，为演示四新增第 7 个「creative 电影墙」按钮。</div>
+
+    <h3 class="lxd_h2">与 AI 的关键对话</h3>
+    <div class="lxd_prompt">
+      帮我用 Swiper 的 creative effect 做"电影选片墙"效果——上一张幻灯片缩小左移带旋转、下一张放大右移进场。效果配置对象叫 creativeEffect，里面有 prev / next / perspective / limitProgress 等字段。参数：prev.scale=0.82, rotate=[0,0,-12], translate=['-35%',0,-300]；next.scale=1.08, rotate=[0,0,12], translate=['35%',0,-300]；origin 分别 left center 和 right center。
+    </div>
+    <div class="lxd_code-wrap">
+      <button class="lxd_copy-btn" onclick="lxd_copy(this)">复制</button>
+      <pre class="lxd_code"><span class="lxd_cmt">// ✅ creativeEffect 配置对象</span>
+<span class="lxd_key">var</span> lxd_creativeFx = {
+  prev: {
+    shadow: <span class="lxd_key">true</span>,
+    origin: <span class="lxd_str">"left center"</span>,
+    translate: [<span class="lxd_str">"-35%"</span>, <span class="lxd_num">0</span>, <span class="lxd_num">-300</span>],
+    rotate: [<span class="lxd_num">0</span>, <span class="lxd_num">0</span>, <span class="lxd_num">-12</span>],
+    scale: <span class="lxd_num">0.82</span>,
+    opacity: <span class="lxd_num">0.55</span>
+  },
+  next: {
+    shadow: <span class="lxd_key">true</span>,
+    origin: <span class="lxd_str">"right center"</span>,
+    translate: [<span class="lxd_str">"35%"</span>, <span class="lxd_num">0</span>, <span class="lxd_num">-300</span>],
+    rotate: [<span class="lxd_num">0</span>, <span class="lxd_num">0</span>, <span class="lxd_num">12</span>],
+    scale: <span class="lxd_num">1.08</span>,
+    opacity: <span class="lxd_num">1</span>
+  },
+  perspective: <span class="lxd_key">true</span>,
+  limitProgress: <span class="lxd_num">2</span>
+};</pre>
+    </div>
+
+    <h3 class="lxd_h2">transform 逐字段解析（答辩必问）</h3>
+    <div class="lxd_transform-grid">
+      <div class="lxd_transform-cell">
+        <div class="lxd_field">translate: [x, y, z]</div>
+        <div class="lxd_desc">X 水平 / Y 垂直 / Z 景深（需 perspective:true）；数值可 px 或 % 字符串，"-35%" 相对容器宽度</div>
+      </div>
+      <div class="lxd_transform-cell">
+        <div class="lxd_field">rotate: [x, y, z]</div>
+        <div class="lxd_desc">X 水平翻 / Y 立体转 / Z 平面转（单位度）；prev 用 -12 顺时针右倒，next 用 +12 逆时针左倒</div>
+      </div>
+      <div class="lxd_transform-cell">
+        <div class="lxd_field">scale: 数字</div>
+        <div class="lxd_desc">缩放倍数，1=原大；prev 0.82 缩小退场、next 1.08 放大进场</div>
+      </div>
+      <div class="lxd_transform-cell">
+        <div class="lxd_field">opacity: 数字</div>
+        <div class="lxd_desc">透明度 0~1；prev 0.55 半透明若隐若现、next 1 完全清晰</div>
+      </div>
+      <div class="lxd_transform-cell">
+        <div class="lxd_field">origin: 字符串</div>
+        <div class="lxd_desc">变换原点（CSS transform-origin 格式）；prev 用 "left center" 左边钉住、next 用 "right center" 右边钉住</div>
+      </div>
+      <div class="lxd_transform-cell">
+        <div class="lxd_field">perspective: true</div>
+        <div class="lxd_desc">开启 3D 透视，translateZ 和 rotateX/Y 才会生效</div>
+      </div>
+    </div>
+
+    <div class="lxd_compare">
+      <div class="lxd_col-bad">
+        <h4>transform 里的百分号相对谁？</h4>
+        <p>相对 Swiper 容器本身的宽度，不是幻灯片本身。translate:["-35%",0,-300] 的 -35% ≈ -266px（容器 760px × 0.35），刚好推到容器左缘外。</p>
+      </div>
+      <div class="lxd_col-good">
+        <h4>改一个数值让卡片转 20 度？</h4>
+        <p>把 rotate:[0,0,-12] 改成 rotate:[0,0,-20]（prev），rotate:[0,0,12] 改成 rotate:[0,0,20]（next）。Z 轴数值越大角度越大，正负号决定顺/逆时针。</p>
+      </div>
+    </div>
+
+    <h3 class="lxd_h2">实现与验证</h3>
+    <table class="lxd_verify-table">
+      <thead><tr><th>检查项</th><th>结果</th></tr></thead>
+      <tbody>
+        <tr><td>7 个效果按钮存在，最后一个是「creative 电影墙」</td><td><span class="lxd_pass">PASS</span></td></tr>
+        <tr><td>点 creative 后 effect='creative'，creativeEffect.prev.scale=0.82、next.scale=1.08</td><td><span class="lxd_pass">PASS</span></td></tr>
+        <tr><td>视觉：上一张缩小左移带角度、下一张放大右移进场</td><td><span class="lxd_pass">PASS</span></td></tr>
+        <tr><td>切回 cube 正常工作，creativeEffect 不影响其他 6 种效果</td><td><span class="lxd_pass">PASS</span></td></tr>
+        <tr><td>无 console 错误</td><td><span class="lxd_pass">PASS</span></td></tr>
+      </tbody>
+    </table>
+
+    <div class="lxd_qa">
+      <div class="lxd_qa-head" onclick="this.parentElement.classList.toggle('lxd_open')">
+        🗣️ 答辩抽问准备（点击展开）<span class="arrow">▼</span>
+      </div>
+      <div class="lxd_qa-body">
+        <div class="lxd_qa-item">
+          <div class="lxd_qa-q">transform 里的百分号相对谁的？</div>
+          <div class="lxd_qa-a">相对 Swiper 容器（swiper 元素本身）的宽度，不是幻灯片。比如 translate:['-35%',0,-300] 的 -35% 就是容器宽度 × 0.35。</div>
+        </div>
+        <div class="lxd_qa-item">
+          <div class="lxd_qa-q">改一个数值让卡片转 20 度试试？</div>
+          <div class="lxd_qa-a">prev 的 rotate:[0,0,-12] → rotate:[0,0,-20]，next 的 rotate:[0,0,12] → rotate:[0,0,20]。Z 轴数值越大角度越大，正负号决定方向。</div>
+        </div>
+        <div class="lxd_qa-item">
+          <div class="lxd_qa-q">prev / next 的 transform 各控制什么？</div>
+          <div class="lxd_qa-a">prev 控制"正在离开"的幻灯片：缩小(scale:0.82)+左移(-35%)+顺时针倒(-12°)+后退(Z轴-300)+半透明；next 控制"即将进场"的：放大(1.08)+右移(35%)+逆时针倒(12°)+后退+完全不透明。两者对称，形成电影选片墙的立体堆叠感。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ 任务三：邮轮与键盘 ═══════════ -->
+  <div class="lxd_section" id="t3">
+    <div class="lxd_section-title">03 · 第六件展品 + keyboard 键盘控制 <span class="lxd_badge">任务三 ★★★</span></div>
+    <div class="lxd_section-desc">超纲加分项：① AI 生成爱达·魔都号 16:9 图 → 用户替换为展会实拍 → 4 个轮播各加第 6 张 slide；② 课堂没讲过的 keyboard 键盘控制，← → 方向键切幻灯片。</div>
+
+    <h3 class="lxd_h2">展品创作过程</h3>
+    <div class="lxd_prompt">
+      为光影展添加第六件展品：爱达·魔都号（首艘国产大型邮轮，2024 年 1 月首航）。请生成一张 16:9 横版图。prompt：Adora Magic City, China first domestically built large cruise ship, white ocean liner on blue sea at golden hour, cinematic wide shot。
+    </div>
+    <div class="lxd_compare">
+      <div class="lxd_col-bad">
+        <h4>阶段一：AI 生成图</h4>
+        <p>海上邮轮 AI 生成图（176KB JPG），4 个轮播各加第 6 张 slide，结构完整：img + .wy-cap 标题 + 描述。</p>
+      </div>
+      <div class="lxd_col-good">
+        <h4>阶段二：用户替换实拍</h4>
+        <p>用户提供展会现场照片（4.7MB PNG），用 System.Drawing 转码压缩为 735KB JPG 覆盖 adora_1.jpg，HTML 路径不变。</p>
+      </div>
+    </div>
+
+    <h3 class="lxd_h2">超纲能力：keyboard 键盘控制</h3>
+    <div class="lxd_prompt">
+      帮我在 #wySw4 上加 Swiper 的 keyboard 键盘控制能力，让方向键能切换。注意页面有 7 个效果按钮，点击会 destroy + new Swiper 重建实例——重建的新配置里也必须带上 keyboard，否则切一次效果键盘就失效了。用 { enabled: true } 对象形式。
+    </div>
+    <div class="lxd_code-wrap">
+      <button class="lxd_copy-btn" onclick="lxd_copy(this)">复制</button>
+      <pre class="lxd_code"><span class="lxd_cmt">// ✅ 初始配置 + 按钮重建配置 都要加 keyboard</span>
+<span class="lxd_key">var</span> lxd_wySw4 = <span class="lxd_key">new</span> <span class="lxd_str">Swiper</span>(<span class="lxd_str">'#wySw4'</span>, {
+  loop: <span class="lxd_key">true</span>,
+  effect: lxd_currentFx,
+  speed: <span class="lxd_num">800</span>,
+  autoplay: { delay: <span class="lxd_num">3200</span>, disableOnInteraction: <span class="lxd_key">false</span> },
+  pagination: { el: <span class="lxd_str">'#wyPag4'</span>, clickable: <span class="lxd_key">true</span> },
+  keyboard: { enabled: <span class="lxd_key">true</span> }    <span class="lxd_cmt">// ← 任务三超纲能力</span>
+});
+
+<span class="lxd_cmt">// 按钮重建时 lxd_newConfig 里也必须带 keyboard</span>
+<span class="lxd_key">var</span> lxd_newConfig = {
+  loop: <span class="lxd_key">true</span>,
+  effect: lxd_currentFx,
+  <span class="lxd_cmt">// ...</span>
+  keyboard: { enabled: <span class="lxd_key">true</span> }    <span class="lxd_cmt">// ← 两处都不能漏！</span>
+};</pre>
+    </div>
+
+    <h3 class="lxd_h2">浏览器验证</h3>
+    <table class="lxd_verify-table">
+      <thead><tr><th>检查项</th><th>结果</th></tr></thead>
+      <tbody>
+        <tr><td>adora_1.jpg 加载成功（complete=true，无 404）</td><td><span class="lxd_pass">PASS</span></td></tr>
+        <tr><td>4 个轮播均有第 6 张 slide，标题「爱达·魔都号」+ 描述完整</td><td><span class="lxd_pass">PASS</span></td></tr>
+        <tr><td>keyboard.enabled=true，ArrowRight 5→0 循环、ArrowLeft 0→5 回切</td><td><span class="lxd_pass">PASS</span></td></tr>
+        <tr><td>点 creative 后 effect='creative' 且 keyboard 仍 enabled（重建配置也带了）</td><td><span class="lxd_pass">PASS</span></td></tr>
+        <tr><td>无 console 错误</td><td><span class="lxd_pass">PASS</span></td></tr>
+      </tbody>
+    </table>
+
+    <div class="lxd_qa">
+      <div class="lxd_qa-head" onclick="this.parentElement.classList.toggle('lxd_open')">
+        🗣️ 答辩四连问准备（点击展开）<span class="arrow">▼</span>
+      </div>
+      <div class="lxd_qa-body">
+        <div class="lxd_qa-item">
+          <div class="lxd_qa-q">这段代码什么意思？</div>
+          <div class="lxd_qa-a">keyboard:{enabled:true} 是 Swiper 键盘控制模块配置。开启后 Swiper 会在 document 上监听 keydown：按 → (ArrowRight) 调 slideNext() 切下一张，按 ← (ArrowLeft) 调 slidePrev()。配了 loop:true 所以最后一张按 → 无缝回第一张。</div>
+        </div>
+        <div class="lxd_qa-item">
+          <div class="lxd_qa-q">AI 第一次给的哪里不对、你改了什么？</div>
+          <div class="lxd_qa-a">第一次只给了简写 keyboard:true 且只改初始化一处。问题：① 简写不规范，对象形式才能扩展（比如 onlyInViewport）；② 更关键的是按钮切换时会 destroy+new 重建实例，lxd_newConfig 里没带 keyboard，切一次效果键盘就失效。我把它补进了重建配置。</div>
+        </div>
+        <div class="lxd_qa-item">
+          <div class="lxd_qa-q">新参数的作用？</div>
+          <div class="lxd_qa-a">keyboard.enabled 控制键盘监听开关；Swiper 默认还有 onlyInViewport:true（轮播在视口内才响应，防止页面多个轮播互相抢键盘）。本页只有 wySw4 开了键盘，不影响其他 3 个轮播。</div>
+        </div>
+        <div class="lxd_qa-item">
+          <div class="lxd_qa-q">现场把 delay 改成指定值并解释预期变化？</div>
+          <div class="lxd_qa-a">把 autoplay:{delay:3200,...} 里的 3200 改成老师指定值（比如 1000），预期每张停留从 3.2s 变 1s 自动翻页明显变快；disableOnInteraction:false 不变所以手动后 1s 继续自动翻。两处（初始+重建）都要改，否则切效果后速度又变回 3.2s。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ 底部 ═══════════ -->
+  <div class="lxd_footer">
+    Swiper 课堂操作任务 · 大国重器光影展 · 高级网页设计 · 2026-2027-1
+    <br><a href="swiper-task.html">🎬 演示四</a> · <a href="rank-list.html">📊 排行榜</a> · <a href="index.html">🏠 首页</a>
+  </div>
+
+  <script>
+    // Tab 切换：清除旧 active、设置新 active，对应 section 淡入
+    document.querySelectorAll('.lxd_tab').forEach(function(lxd_btn) {
+      lxd_btn.addEventListener('click', function() {
+        document.querySelectorAll('.lxd_tab').forEach(function(b) { b.classList.remove('lxd_active'); });
+        lxd_btn.classList.add('lxd_active');
+        document.querySelectorAll('.lxd_section').forEach(function(s) { s.classList.remove('lxd_show'); });
+        var lxd_target = document.getElementById(lxd_btn.dataset.tab);
+        if (lxd_target) { lxd_target.classList.add('lxd_show'); }
+      });
+    });
+
+    // 代码块一键复制
+    function lxd_copy(lxd_btn) {
+      var lxd_pre = lxd_btn.parentElement.querySelector('.lxd_code');
+      var lxd_text = lxd_pre.innerText;
+      var lxd_ta = document.createElement('textarea');
+      lxd_ta.value = lxd_text;
+      document.body.appendChild(lxd_ta);
+      lxd_ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(lxd_ta);
+      lxd_btn.innerText = '已复制 ✓';
+      setTimeout(function() { lxd_btn.innerText = '复制'; }, 1500);
+    }
+  </script>
+</body>
+</html>
