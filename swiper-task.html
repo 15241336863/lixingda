@@ -431,6 +431,54 @@
   }
   .lxd_qa-a::before { content: "A: "; color: #22a06b; font-weight: 600; }
 
+  /* ── 完整提示词记录（可折叠） ── */
+  .lxd_plog {
+    margin-top: 24px;
+    border: 1px solid #e6edfb;
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .lxd_plog-head {
+    padding: 14px 20px;
+    background: linear-gradient(135deg, #e8f0ff, #d7e6ff);
+    font-weight: 600;
+    color: #1e3f8f;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+  }
+  .lxd_plog-head:hover { background: linear-gradient(135deg, #d7e6ff, #c6dbff); }
+  .lxd_plog-head span.arrow { transition: transform .25s; }
+  .lxd_plog.lxd_open .lxd_plog-head span.arrow { transform: rotate(180deg); }
+  .lxd_plog-body {
+    padding: 0 22px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height .4s, padding .4s;
+  }
+  .lxd_plog.lxd_open .lxd_plog-body {
+    max-height: 620px;
+    overflow-y: auto;
+    padding: 20px 22px;
+  }
+  .lxd_plog-item {
+    padding: 12px 16px;
+    margin-bottom: 12px;
+    background: #f7f9ff;
+    border-left: 3px solid #4a7fe0;
+    border-radius: 10px;
+  }
+  .lxd_plog-item:last-child { margin-bottom: 0; }
+  .lxd_plog-meta {
+    font-size: 12px;
+    color: #7a879f;
+    margin-bottom: 6px;
+  }
+  .lxd_plog-idx { color: #2a4fb0; font-weight: 700; margin-right: 8px; }
+  .lxd_plog-text { font-size: 13.5px; color: #3a4a6a; line-height: 1.7; }
+
   /* ── transform 解析表 ── */
   .lxd_transform-grid {
     display: grid;
@@ -702,6 +750,46 @@
         <div class="lxd_qa-item"><div class="lxd_qa-q">第一版提示词漏掉了哪个需求？</div><div class="lxd_qa-a">漏掉了"手动操作后自动播放不停止"——我只说"自动翻页 3.2 秒"，没说手动后要不要继续，AI 自然按默认行为（手动后停止）生成了错误写法。</div></div>
         <div class="lxd_qa-item"><div class="lxd_qa-q">第二轮怎么"说清楚"的？</div><div class="lxd_qa-a">① 明确说 autoplay 是对象不是数字；② 点名 disableOnInteraction:false 并用括号补关键说明"默认是 true 会停"；③ 钉死选择器 '#wyPag4' 避免 AI 瞎猜。</div></div>
         <div class="lxd_qa-item"><div class="lxd_qa-q">AI 第一次给的代码错在哪？</div><div class="lxd_qa-a">三处：autoplay:3200（数字而非对象，Swiper v11 报类型错）；pagination:'.wy-swiper'（类名而非 id）；分页器没加 clickable:true。</div></div>
+      </div>
+    </div>
+
+    <div class="lxd_plog">
+      <div class="lxd_plog-head" onclick="this.parentElement.classList.toggle('lxd_open')">📜 完整提示词记录 lxd_prompt.md（34 条 · 点击展开 / 收起）<span class="arrow">▼</span></div>
+      <div class="lxd_plog-body">
+        <div class="lxd_plog-item"><div class="lxd_plog-meta"><span class="lxd_plog-idx">#01</span>2026-10-23 · Trae 专有模型</div><div class="lxd_plog-text">设置规则：从现在开始，所有CSS类名，id名、js变量都以lxd_开始，所有的提示词都在执行之前写入文件lxd_prompt.md，以附加的方式写入，不覆盖之前的内容，写入的内容包括时间、使用的模型、提示词内容。</div></div>
+        <div class="lxd_plog-item"><div class="lxd_plog-meta"><span class="lxd_plog-idx">#02</span>2026-10-23 · Trae 专有模型</div><div class="lxd_plog-text">设置规则：所有新建的html文件加入超链接入口到首页index.html</div></div>
+        <div class="lxd_plog-item"><div class="lxd_plog-meta"><span class="lxd_plog-idx">#03</span>2026-10-23 · Trae 专有模型</div><div class="lxd_plog-text">使用当前目录下skills文件夹中的frontend-designskill做两个html网页iconfont-1.html,inconfont-2.html，使得页面具有艺术品牌的样式。分别显示font awesome图标和lucide图标，前者使用字体图标的方式，后者使用svg的方式，相关的cdn文件下载到本目录下的cdn目录。</div></div>
+        <div class="lxd_plog-item"><div class="lxd_plog-meta"><span class="lxd_plog-idx">#04</span>2026-10-23 · Trae 专有模型</div><div class="lxd_plog-text">根据font目录中的iconfont图标完成移动端的固定的自适应宽度的下导航，导航项目包括4个，完成html网页的设计，网页名称iconfont-3.html和iconfont-4.html分别使用字体图标和svg，包括右上角的数字徽章和红点。</div></div>
+        <div class="lxd_plog-item"><div class="lxd_plog-meta"><span class="lxd_plog-idx">#05</span>2026-10-23 · Trae 专有模型</div><div class="lxd_plog-text">创建skill:提交项目：使用git commit并push到gitee仓库，仓库地址:https://gitee.com/neusoft_wangyao_jsj/xiaoli.git</div></div>
+        <div class="lxd_plog-item"><div class="lxd_plog-meta"><span class="lxd_plog-idx">#06</span>2026-10-28 · GLM-5.3-Flash</div><div class="lxd_plog-text">根据要求帮我做一下 starter-level1.html（等级一·基础：补全 5 个函数——班级概览统计、学生卡片列表渲染、不及格预警、搜索、排序，聚焦核心 DOM 查找 + 基础数组方法）</div></div>
+        <div class="lxd_plog-item"><div class="lxd_plog-meta"><span class="lxd_plog-idx">#07</span>2026-10-28 · GLM-5.3-Flash</div><div class="lxd_plog-text">这个是人数要求 data.js（老师原版数据：18 名学生 2024001~2024018，科目为语文/数学/英语/网页设计/数据库，gender 为男/女，含 abbr 缩写字段）</div></div>
+        <div class="lxd_plog-item"><div class="lxd_plog-meta"><span class="lxd_plog-idx">#08</span>2026-10-28 · GLM-5.3-Flash</div><div class="lxd_plog-text">帮我逐一解释一下这个代码（starter-level1 0311 L .html）。你需要告诉我你用了什么模型</div></div>
+        <div class="lxd_plog-item"><div class="lxd_plog-meta"><span class="lxd_plog-idx">#09</span>2026-10-30 · GLM-5.3-Flash</div><div class="lxd_plog-text">帮我逐一解释一下这个代码（starter-level1 0311 L .html）。你需要告诉我你用了什么模型</div></div>
+        <div class="lxd_plog-item"><div class="lxd_plog-meta"><span class="lxd_plog-idx">#10</span>2026-10-30 · DeepSeek-V4.1-Flash</div><div class="lxd_plog-text">Trae 打开文件夹，进入用户根目录，获得 git 公钥，没有则先创建一个</div></div>
+        <div class="lxd_plog-item"><div class="lxd_plog-meta"><span class="lxd_plog-idx">#11</span>2026-10-30 · DeepSeek-V4.1-Flash</div><div class="lxd_plog-text">创建技能skill：提交到github，将本项目提交commit并push到 https://github.com/15241336863/lixingda 网址，使用已设置公钥。</div></div>
+        <div class="lxd_plog-item"><div class="lxd_plog-meta"><span class="lxd_plog-idx">#12</span>2026-11-04 · GLM-5.3-Flash</div><div class="lxd_plog-text">修改规则文件AGENTS.md，再新建html文件时加入注释，注释包括：李兴达，建立时间，使用大模型，功能名称。在js部分函数加上函数主要实现功能的注释。</div></div>
+        <div class="lxd_plog-item"><div class="lxd_plog-meta"><span class="lxd_plog-idx">#13</span>2026-11-04 · GLM-5.3-Flash</div><div class="lxd_plog-text">请给我新建一个html文件，显示tab选项卡，选项卡分别为：国内新闻，省内新闻，国际新闻，最热新闻，国内新闻设定为默认选项。js文件单独放在js文件夹中，外部引用。要求js中的tab选项卡可复用，实现代码中的包含监听事件，先清除所有选项卡的选中状态，然后在设置当前元素的选中状态。</div></div>
+        <div class="lxd_plog-item"><div class="lxd_plog-meta"><span class="lxd_plog-idx">#14</span>2026-11-04 · GLM-5.3-Flash</div><div class="lxd_plog-text">要求项目一比一还原（新闻排行榜截图：排行榜标题 + 新闻/证券/理财/博客四个选项卡 + 1~10 排行榜列表，前三名红色序号），使用trae，代码按照之前上课设定的规则，所有 CSS 类名、id、JS 变量必须以 Lxd_ 开头，注释也要有你的姓名。github仓库名称要包含自己姓名全拼，＋学号后三位311</div></div>
+        <div class="lxd_plog-item"><div class="lxd_plog-meta"><span class="lxd_plog-idx">#15</span>2026-11-04 · GLM-5.3-Flash</div><div class="lxd_plog-text">小写lxd（把排行榜页面的 Lxd_ 前缀统一改为小写 lxd_）</div></div>
+        <div class="lxd_plog-item"><div class="lxd_plog-meta"><span class="lxd_plog-idx">#16</span>2026-11-04 · GLM-5.3-Flash</div><div class="lxd_plog-text">我需要1：1还原包括边框格式（排行榜截图：组件外边框、「排行榜」与选项卡之间的竖直分隔线、头部底边框、选中 tab 蓝色下划线紧贴底边框等边框细节）</div></div>
+        <div class="lxd_plog-item"><div class="lxd_plog-meta"><span class="lxd_plog-idx">#17</span>2026-11-04 · GLM-5.3-Flash</div><div class="lxd_plog-text">主要是这里面的格线不对（未选中的证券/理财/博客为带浅蓝边框的浅灰格子、彼此有细缝；选中的新闻无边框且顶部有深蓝粗条；标题区底线延伸到选项卡左缘为止；标题与 tab 文字均为深蓝色）</div></div>
+        <div class="lxd_plog-item"><div class="lxd_plog-meta"><span class="lxd_plog-idx">#18</span>2026-11-04 · GLM-5.3-Flash</div><div class="lxd_plog-text">每个字中间没有间隔（补上截图中的字间距：排行榜标题与新闻/证券/理财/博客等 tab 文字字与字之间的间隔）</div></div>
+        <div class="lxd_plog-item"><div class="lxd_plog-meta"><span class="lxd_plog-idx">#19</span>2026-11-04 · GLM-5.3-Flash</div><div class="lxd_plog-text">我说图片上新闻，证券，理财，博客中间没有间隔（澄清：指的是四个选项卡之间的间隔，放大截图中新闻/证券/理财/博客每两项之间有明显空隙，需要加大 tab 之间的间距）</div></div>
+        <div class="lxd_plog-item"><div class="lxd_plog-meta"><span class="lxd_plog-idx">#20</span>2026-11-04 · GLM-5.3-Flash</div><div class="lxd_plog-text">取消间隔（把排行榜四个选项卡之间的 10px 间隔取消，格子相连）</div></div>
+        <div class="lxd_plog-item"><div class="lxd_plog-meta"><span class="lxd_plog-idx">#21</span>2026-11-04 · GLM-5.3-Flash</div><div class="lxd_plog-text">提交到 GitHub 上</div></div>
+        <div class="lxd_plog-item"><div class="lxd_plog-meta"><span class="lxd_plog-idx">#22</span>2026-11-04 · GLM-5.3-Flash</div><div class="lxd_plog-text">你帮我发布了吗，我需要发布后的网址（需要 GitHub Pages 部署后的可访问网址）</div></div>
+        <div class="lxd_plog-item"><div class="lxd_plog-meta"><span class="lxd_plog-idx">#23</span>2026-11-04 · GLM-5.3-Flash</div><div class="lxd_plog-text">帮我把返回首页去掉（删除排行榜页面底部的"返回首页 index.html"链接及对应样式）</div></div>
+        <div class="lxd_plog-item"><div class="lxd_plog-meta"><span class="lxd_plog-idx">#24</span>2026-11-04 · GLM-5.3-Flash</div><div class="lxd_plog-text">这个要1：1还原（排行榜第9条"《2026胡"文字局部：列表标题文字颜色应为深蓝色，与头部标题/选项卡同色系，而非黑色 #333）</div></div>
+        <div class="lxd_plog-item"><div class="lxd_plog-meta"><span class="lxd_plog-idx">#25</span>2026-11-04 · GLM-5.3-Flash</div><div class="lxd_plog-text">我需要这四个界面可以随时切换（反馈线上排行榜四个选项卡无法切换，排查 GitHub Pages 上 js 文件大小写 404 问题）</div></div>
+        <div class="lxd_plog-item"><div class="lxd_plog-meta"><span class="lxd_plog-idx">#26</span>2026-11-04 · GLM-5.3-Flash</div><div class="lxd_plog-text">2026胡后面的字不要（第9条标题删除"《2026胡"之后的"润百富榜》"，与截图截断处一致）</div></div>
+        <div class="lxd_plog-item"><div class="lxd_plog-meta"><span class="lxd_plog-idx">#27</span>2026-11-06 · GLM-5.3-Flash</div><div class="lxd_plog-text">查看 https://spontaneous-valkyrie-4e4229.netlify.app/swiper-lesson 链接，帮我把任务四改成和这个任务四一样的效果（补全 swiper-task.html 任务 4 进阶按钮切换 effect，修复任务 2 prevEl 大小写 bug，变量加 lxd_ 前缀）</div></div>
+        <div class="lxd_plog-item"><div class="lxd_plog-meta"><span class="lxd_plog-idx">#28</span>2026-11-06 · GLM-5.3-Flash</div><div class="lxd_plog-text">本任务不写代码，写提示词。把下面需求"翻译"给 AI，让它生成 new Swiper('#wySw4', {...}) 配置：① 无缝循环 ② 3.2 秒自动翻页且手动操作后不停止 ③ 圆点分页器可点击 ④ 初始效果为 cube。硬性要求：至少迭代 2 轮提示词，保留每轮提示词与 AI 回答；亲自粘进页面验证每项需求，用截图 + 一句话结论说明验证结果。</div></div>
+        <div class="lxd_plog-item"><div class="lxd_plog-meta"><span class="lxd_plog-idx">#29</span>2026-11-06 · GLM-5.3-Flash</div><div class="lxd_plog-text">任务二：creative 仿写——为 swiper-task.html 演示四新增第 7 个按钮「creative 电影墙」，实现上一张缩小左移带角度、下一张放大右移进场的自定义变换效果，参数自定但要"像电影选片墙"。实现后需用自己的话写下 prev / next 的 transform 各控制什么。</div></div>
+        <div class="lxd_plog-item"><div class="lxd_plog-meta"><span class="lxd_plog-idx">#30</span>2026-11-06 · Kimi-K3</div><div class="lxd_plog-text">任务三呢（综合创作 + 技术答辩）：① 为光影展添加第六件展品爱达·魔都号（首艘国产大型邮轮，2024 年 1 月首航），图片用 AI 生成（横版 16:9），slide 结构完整；② 挑一个课堂上没讲过的 Swiper 能力加上去：keyboard 键盘控制 / mousewheel 滚轮 / zoom 双击缩放 / parallax 视差，任选其一。提交物：能运行的页面 + 与 AI 的关键对话记录。</div></div>
+        <div class="lxd_plog-item"><div class="lxd_plog-meta"><span class="lxd_plog-idx">#31</span>2026-11-06 · Kimi-K3</div><div class="lxd_plog-text">这个是任务三的爱达魔都号照片帮我替换一下（用户提供展会现场邮轮照片，替换 swiper-imgs/adora_1.jpg）</div></div>
+        <div class="lxd_plog-item"><div class="lxd_plog-meta"><span class="lxd_plog-idx">#32</span>2026-11-11 · Kimi-K3</div><div class="lxd_plog-text">帮我把三个任务的步骤，参照截图样式加点创新重新做一下（新建提示词与验证记录页面，含 hero 横幅、三 Tab 导航、任务一/二/三完整交付物）</div></div>
+        <div class="lxd_plog-item"><div class="lxd_plog-meta"><span class="lxd_plog-idx">#33</span>2026-11-11 · Kimi-K3</div><div class="lxd_plog-text">把 lxd_prompt-records.html 的内容合并到 swiper-task.html 最下面（样式+HTML+脚本），原来的独立记录页不再需要。</div></div>
+        <div class="lxd_plog-item"><div class="lxd_plog-meta"><span class="lxd_plog-idx">#34</span>2026-11-11 · DeepSeek-V4.1-Flash</div><div class="lxd_plog-text">把这个提示词放到任务一上，我点开可以切换到里面。</div></div>
       </div>
     </div>
   </div>
