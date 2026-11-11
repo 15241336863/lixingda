@@ -479,6 +479,27 @@
   .lxd_plog-idx { color: #2a4fb0; font-weight: 700; margin-right: 8px; }
   .lxd_plog-text { font-size: 13.5px; color: #3a4a6a; line-height: 1.7; }
 
+  /* ── 任务配图 ── */
+  .lxd_figure {
+    margin: 18px 0 4px;
+    border-radius: 14px;
+    overflow: hidden;
+    background: #0d1424;
+    box-shadow: 0 10px 24px rgba(15, 43, 91, .14);
+  }
+  .lxd_figure img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .lxd_figure figcaption {
+    padding: 10px 16px;
+    font-size: 13px;
+    color: #c9d6f2;
+    line-height: 1.6;
+    background: linear-gradient(135deg, #16213d, #1d2c52);
+  }
+
   /* ── transform 解析表 ── */
   .lxd_transform-grid {
     display: grid;
@@ -705,6 +726,10 @@
   <div class="lxd_section lxd_show" id="t1">
     <div class="lxd_section-title">01 · 用两轮提示词配置演示四 <span class="lxd_badge">任务一 ★★</span></div>
     <div class="lxd_section-desc">原始需求：无缝循环 · 3.2 秒自动翻页且手动不停 · 圆点分页器可点击 · 初始效果 cube。第一轮 AI 漏了关键需求且写法有错，第二轮修正。</div>
+    <figure class="lxd_figure">
+      <img src="swiper-imgs/tiangong_1.jpg" alt="天宫空间站">
+      <figcaption>任务一配图 · 天宫空间站 —— 演示四用这一组展品照片，通过提示词配置出循环、自动翻页与 cube 效果</figcaption>
+    </figure>
     <h3 class="lxd_h2">第一轮提示词 v1（AI 答得不全）</h3>
     <div class="lxd_prompt">帮我写一段 Swiper 初始化代码，选择器是 #wySw4。我想要循环播放、自动翻页 3.2 秒、有圆点分页器可以点、初始效果是 cube。把完整的 new Swiper('#wySw4', {...}) 配置给我。</div>
     <div class="lxd_code-wrap">
@@ -754,7 +779,7 @@
     </div>
 
     <div class="lxd_plog">
-      <div class="lxd_plog-head" onclick="this.parentElement.classList.toggle('lxd_open')">📜 完整提示词记录 lxd_prompt.md（34 条 · 点击展开 / 收起）<span class="arrow">▼</span></div>
+      <div class="lxd_plog-head" onclick="this.parentElement.classList.toggle('lxd_open')">📜 完整提示词记录 lxd_prompt.md（35 条 · 点击展开 / 收起）<span class="arrow">▼</span></div>
       <div class="lxd_plog-body">
         <div class="lxd_plog-item"><div class="lxd_plog-meta"><span class="lxd_plog-idx">#01</span>2026-10-23 · Trae 专有模型</div><div class="lxd_plog-text">设置规则：从现在开始，所有CSS类名，id名、js变量都以lxd_开始，所有的提示词都在执行之前写入文件lxd_prompt.md，以附加的方式写入，不覆盖之前的内容，写入的内容包括时间、使用的模型、提示词内容。</div></div>
         <div class="lxd_plog-item"><div class="lxd_plog-meta"><span class="lxd_plog-idx">#02</span>2026-10-23 · Trae 专有模型</div><div class="lxd_plog-text">设置规则：所有新建的html文件加入超链接入口到首页index.html</div></div>
@@ -790,6 +815,7 @@
         <div class="lxd_plog-item"><div class="lxd_plog-meta"><span class="lxd_plog-idx">#32</span>2026-11-11 · Kimi-K3</div><div class="lxd_plog-text">帮我把三个任务的步骤，参照截图样式加点创新重新做一下（新建提示词与验证记录页面，含 hero 横幅、三 Tab 导航、任务一/二/三完整交付物）</div></div>
         <div class="lxd_plog-item"><div class="lxd_plog-meta"><span class="lxd_plog-idx">#33</span>2026-11-11 · Kimi-K3</div><div class="lxd_plog-text">把 lxd_prompt-records.html 的内容合并到 swiper-task.html 最下面（样式+HTML+脚本），原来的独立记录页不再需要。</div></div>
         <div class="lxd_plog-item"><div class="lxd_plog-meta"><span class="lxd_plog-idx">#34</span>2026-11-11 · DeepSeek-V4.1-Flash</div><div class="lxd_plog-text">把这个提示词放到任务一上，我点开可以切换到里面。</div></div>
+        <div class="lxd_plog-item"><div class="lxd_plog-meta"><span class="lxd_plog-idx">#35</span>2026-11-11 · DeepSeek-V4.1-Flash</div><div class="lxd_plog-text">我的每个任务都需要有照片，魔都号照片 光影展展品添加.png 在这。</div></div>
       </div>
     </div>
   </div>
@@ -798,6 +824,10 @@
   <div class="lxd_section" id="t2">
     <div class="lxd_section-title">02 · creative 电影墙效果 <span class="lxd_badge">任务二 ★★★</span></div>
     <div class="lxd_section-desc">课堂没讲过的 Swiper creative effect，配合 AI 读官方示例 + 追问 creativeEffect 的 transform 字段含义，为演示四新增第 7 个「creative 电影墙」按钮。</div>
+    <figure class="lxd_figure">
+      <img src="swiper-imgs/c919_1.jpg" alt="C919 大飞机">
+      <figcaption>任务二配图 · C919 大飞机 —— creative 电影墙效果下，上一张缩小左移带角度、下一张放大右移进场</figcaption>
+    </figure>
     <h3 class="lxd_h2">与 AI 的关键对话</h3>
     <div class="lxd_prompt">帮我用 Swiper 的 creative effect 做"电影选片墙"效果——上一张幻灯片缩小左移带旋转、下一张放大右移进场。效果配置对象叫 creativeEffect，参数：prev.scale=0.82, rotate=[0,0,-12], translate=['-35%',0,-300]；next.scale=1.08, rotate=[0,0,12], translate=['35%',0,-300]；origin 分别 left center 和 right center。</div>
     <div class="lxd_code-wrap">
@@ -847,6 +877,10 @@
   <div class="lxd_section" id="t3">
     <div class="lxd_section-title">03 · 第六件展品 + keyboard 键盘控制 <span class="lxd_badge">任务三 ★★★</span></div>
     <div class="lxd_section-desc">超纲加分项：① AI 生成爱达·魔都号 16:9 图 → 用户替换为展会实拍 → 4 个轮播各加第 6 张 slide；② 课堂没讲过的 keyboard 键盘控制，← → 方向键切幻灯片。</div>
+    <figure class="lxd_figure">
+      <img src="swiper-imgs/adora_1.jpg" alt="爱达·魔都号">
+      <figcaption>任务三配图 · 爱达·魔都号 —— 展会现场实拍，替换 AI 生成图后作为第六件展品加入 4 个轮播</figcaption>
+    </figure>
     <h3 class="lxd_h2">展品创作过程</h3>
     <div class="lxd_prompt">为光影展添加第六件展品：爱达·魔都号（首艘国产大型邮轮，2024 年 1 月首航）。请生成一张 16:9 横版图。prompt：Adora Magic City, China first domestically built large cruise ship, white ocean liner on blue sea at golden hour, cinematic wide shot。</div>
     <div class="lxd_compare">
