@@ -290,3 +290,11 @@ https://spontaneous-valkyrie-4e4229.netlify.app/swiper-lesson 查看这个链接
 **提示词**:
 
 `/d:/HuaweiMoveData/Users/HW/Desktop/高级网页设计/xiaoli/24002120311/flex_css005.css/index.html`将我新做的所有内容增加到index中
+
+---
+
+**时间**: 2026-11-11
+**模型**: DeepSeek-V4.1-Flash
+**提示词**:
+
+帮我用另外一种方式展示这几张照片，在这个下面显示出来，比如换成竖屏的照片，或者其他样式的

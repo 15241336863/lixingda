@@ -500,6 +500,39 @@
     background: linear-gradient(135deg, #16213d, #1d2c52);
   }
 
+  /* ── 竖屏写真版：同一组照片的竖向滑动展示 ── */
+  .lxd_vdemo { margin: 26px 0 6px; }
+  .lxd_vsw-wrap { max-width: 400px; margin: 0 auto; }
+  .lxd_vsw {
+    height: 540px;
+    border-radius: 16px;
+    background: #0d1424;
+    box-shadow: 0 10px 26px rgba(15, 43, 91, .18);
+    overflow: hidden;
+  }
+  .lxd_vsw .lxd_vslide {
+    position: relative;
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .lxd_vsw .lxd_vslide img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .lxd_vsw .lxd_vcap {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    padding: 18px 18px 20px;
+    background: linear-gradient(to top, rgba(5, 10, 20, .88), rgba(5, 10, 20, 0));
+    color: #fff;
+  }
+  .lxd_vsw .lxd_vcap h3 { font-size: 18px; letter-spacing: 1px; }
+  .lxd_vsw .lxd_vcap p { font-size: 12.5px; color: #dbe6f8; margin-top: 4px; }
+  .lxd_vsw .swiper-pagination-bullet { background: #fff; opacity: .45; }
+  .lxd_vsw .swiper-pagination-bullet-active { background: #e8890c; opacity: 1; }
+
   /* ── transform 解析表 ── */
   .lxd_transform-grid {
     display: grid;
@@ -699,6 +732,23 @@
         </div>
       </div>
     </div>
+
+    <div class="lxd_vdemo">
+      <span class="wy-demo-tag">🖼️ 同一组照片 · 竖屏写真版（竖向滑动，上下拖动或点右侧圆点）</span>
+      <div class="lxd_vsw-wrap">
+        <div class="swiper lxd_vsw" id="lxd_wySwVertical">
+          <div class="swiper-wrapper">
+            <div class="swiper-slide lxd_vslide"><img src="swiper-imgs/tiangong_1.jpg" alt="天宫空间站"><div class="lxd_vcap"><h3>天宫空间站</h3><p>竖幅取景 · 向上滑动</p></div></div>
+            <div class="swiper-slide lxd_vslide"><img src="swiper-imgs/fuxing_1.jpg" alt="复兴号动车组"><div class="lxd_vcap"><h3>复兴号动车组</h3><p>与横向版形成对比</p></div></div>
+            <div class="swiper-slide lxd_vslide"><img src="swiper-imgs/c919_1.jpg" alt="C919大飞机"><div class="lxd_vcap"><h3>C919 大飞机</h3><p>object-fit: cover 裁成竖构图</p></div></div>
+            <div class="swiper-slide lxd_vslide"><img src="swiper-imgs/fendouzhe_1.jpg" alt="奋斗者号"><div class="lxd_vcap"><h3>奋斗者号</h3><p>图片文件本身不用改</p></div></div>
+            <div class="swiper-slide lxd_vslide"><img src="swiper-imgs/fast_1.jpg" alt="中国天眼"><div class="lxd_vcap"><h3>中国天眼 FAST</h3><p>只改容器的比例</p></div></div>
+            <div class="swiper-slide lxd_vslide"><img src="swiper-imgs/adora_1.jpg" alt="爱达·魔都号"><div class="lxd_vcap"><h3>爱达·魔都号</h3><p>竖向滑动 · 圆点可点</p></div></div>
+          </div>
+          <div class="swiper-pagination" id="lxd_pagVertical"></div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- ══════════════════════════════════════════════════════════
@@ -779,7 +829,7 @@
     </div>
 
     <div class="lxd_plog">
-      <div class="lxd_plog-head" onclick="this.parentElement.classList.toggle('lxd_open')">📜 完整提示词记录 lxd_prompt.md（35 条 · 点击展开 / 收起）<span class="arrow">▼</span></div>
+      <div class="lxd_plog-head" onclick="this.parentElement.classList.toggle('lxd_open')">📜 完整提示词记录 lxd_prompt.md（36 条 · 点击展开 / 收起）<span class="arrow">▼</span></div>
       <div class="lxd_plog-body">
         <div class="lxd_plog-item"><div class="lxd_plog-meta"><span class="lxd_plog-idx">#01</span>2026-10-23 · Trae 专有模型</div><div class="lxd_plog-text">设置规则：从现在开始，所有CSS类名，id名、js变量都以lxd_开始，所有的提示词都在执行之前写入文件lxd_prompt.md，以附加的方式写入，不覆盖之前的内容，写入的内容包括时间、使用的模型、提示词内容。</div></div>
         <div class="lxd_plog-item"><div class="lxd_plog-meta"><span class="lxd_plog-idx">#02</span>2026-10-23 · Trae 专有模型</div><div class="lxd_plog-text">设置规则：所有新建的html文件加入超链接入口到首页index.html</div></div>
@@ -816,6 +866,7 @@
         <div class="lxd_plog-item"><div class="lxd_plog-meta"><span class="lxd_plog-idx">#33</span>2026-11-11 · Kimi-K3</div><div class="lxd_plog-text">把 lxd_prompt-records.html 的内容合并到 swiper-task.html 最下面（样式+HTML+脚本），原来的独立记录页不再需要。</div></div>
         <div class="lxd_plog-item"><div class="lxd_plog-meta"><span class="lxd_plog-idx">#34</span>2026-11-11 · DeepSeek-V4.1-Flash</div><div class="lxd_plog-text">把这个提示词放到任务一上，我点开可以切换到里面。</div></div>
         <div class="lxd_plog-item"><div class="lxd_plog-meta"><span class="lxd_plog-idx">#35</span>2026-11-11 · DeepSeek-V4.1-Flash</div><div class="lxd_plog-text">我的每个任务都需要有照片，魔都号照片 光影展展品添加.png 在这。</div></div>
+        <div class="lxd_plog-item"><div class="lxd_plog-meta"><span class="lxd_plog-idx">#36</span>2026-11-11 · DeepSeek-V4.1-Flash</div><div class="lxd_plog-text">帮我用另外一种方式展示这几张照片，在这个下面显示出来，比如换成竖屏的照片，或者其他样式的。</div></div>
       </div>
     </div>
   </div>
@@ -1062,6 +1113,17 @@
     lxd_btn.innerText = '已复制 ✓';
     setTimeout(function() { lxd_btn.innerText = '复制'; }, 1500);
   }
+
+  // 初始化竖屏写真版轮播：竖向滑动、每 3 秒自动翻页、右侧圆点可点击
+  var lxd_wySwVertical = new Swiper('#lxd_wySwVertical', {
+    direction: 'vertical',
+    loop: true,
+    slidesPerView: 1.15,
+    spaceBetween: 18,
+    speed: 700,
+    autoplay: { delay: 3000, disableOnInteraction: false },
+    pagination: { el: '#lxd_pagVertical', clickable: true }
+  });
 </script>
 </body>
 </html>
