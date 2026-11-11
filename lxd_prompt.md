@@ -258,3 +258,11 @@ https://spontaneous-valkyrie-4e4229.netlify.app/swiper-lesson 查看这个链接
 **提示词**:
 
 帮我把三个任务的步骤，参照截图样式加点创新重新做一下（新建提示词与验证记录页面，含 hero 横幅、三 Tab 导航、任务一/二/三完整交付物）
+
+---
+
+**时间**: 2026-11-11
+**模型**: Kimi-K3
+**提示词**:
+
+把 lxd_prompt-records.html 的内容合并到 swiper-task.html 最下面（样式+HTML+脚本），原来的独立记录页不再需要。
