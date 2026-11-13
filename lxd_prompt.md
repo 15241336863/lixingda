@@ -298,3 +298,19 @@ https://spontaneous-valkyrie-4e4229.netlify.app/swiper-lesson 查看这个链接
 **提示词**:
 
 帮我用另外一种方式展示这几张照片，在这个下面显示出来，比如换成竖屏的照片，或者其他样式的
+
+---
+
+**时间**: 2026-11-13
+**模型**: DeepSeek-V4.1-Flash
+**提示词**:
+
+给我新建一个html文件，显示上图下文的结构，图片和文字通过本地启动服务器获取当前文件夹下面的db里面db.json的poems里面的图片，title和content。并给我生成server.js数据服务器文件，server.js放在db文件夹中。其中端口号为3004。
+
+---
+
+**时间**: 2026-11-13
+**模型**: DeepSeek-V4.1-Flash
+**提示词**:
+
+帮我完成三档进阶任务：① 任务二：db.json 新增 2 条诗词 + authors 数组，server.js 加 /api/authors 接口；poems.html 用 Promise.all 同时取 poems 和 authors 两份数据展示。② 任务三：顶部搜索框（匹配标题或内容）+ 按标题长度排序按钮。

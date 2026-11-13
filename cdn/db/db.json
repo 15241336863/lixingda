@@ -1,0 +1,42 @@
+{
+  "poems": [
+    {
+      "content": "你看是不是变了！",
+      "pic": "https://gitee.com/wangyao_jsj/project2024_01/raw/master/img/6.jpg",
+      "title": "短歌行"
+    },
+    {
+      "content": "雨前初见花间蕊，雨后全无叶底花。",
+      "pic": "https://gitee.com/wangyao_jsj/project2024_01/raw/master/img/2.jpg",
+      "title": "雨晴"
+    },
+    {
+      "content": "花近高楼伤客心，万方多难此登临。",
+      "pic": "https://gitee.com/wangyao_jsj/project2024_01/raw/master/img/3.jpg",
+      "title": "脊楼"
+    },
+    {
+      "content": "纤云弄巧，飞星传恨，银汉迢迢暗度。",
+      "pic": "https://gitee.com/wangyao_jsj/project2024_01/raw/master/img/4.jpg",
+      "title": "鹊桥仙·纤云弄巧"
+    },
+    {
+      "content": "床前明月光，疑是地上霜。举头望明月，低头思故乡。",
+      "pic": "https://gitee.com/wangyao_jsj/project2024_01/raw/master/img/5.jpg",
+      "title": "静夜思"
+    },
+    {
+      "content": "白日依山尽，黄河入海流。欲穷千里目，更上一层楼。",
+      "pic": "https://gitee.com/wangyao_jsj/project2024_01/raw/master/img/1.jpg",
+      "title": "登鹳雀楼"
+    }
+  ],
+  "authors": [
+    { "id": 1, "name": "曹操",   "dynasty": "东汉末年",  "works": ["短歌行", "观沧海", "龟虽寿"] },
+    { "id": 2, "name": "王驾",   "dynasty": "唐代",      "works": ["雨晴"] },
+    { "id": 3, "name": "杜甫",   "dynasty": "唐代",      "works": ["脊楼", "春望", "登高"] },
+    { "id": 4, "name": "秦观",   "dynasty": "北宋",      "works": ["鹊桥仙·纤云弄巧", "浣溪沙"] },
+    { "id": 5, "name": "李白",   "dynasty": "唐代",      "works": ["静夜思", "将进酒", "蜀道难"] },
+    { "id": 6, "name": "王之涣", "dynasty": "唐代",      "works": ["登鹳雀楼", "凉州词"] }
+  ]
+}

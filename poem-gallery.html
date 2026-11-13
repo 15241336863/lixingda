@@ -1,0 +1,374 @@
+<!--
+  作者：李兴达
+  建立时间：2026-11-13
+  使用大模型：DeepSeek-V4.1-Flash
+  功能名称：诗词图文卡片页（Promise.all 并发取 poems 和 authors，含搜索 + 排序交互）
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>诗词图文卡片 · 上图下文</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    .lxd_body {
+      font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+      background: #f5f1e8;
+      color: #23211d;
+      min-height: 100vh;
+      padding: 40px 20px 60px;
+    }
+
+    .lxd_wrap { max-width: 1120px; margin: 0 auto; }
+
+    .lxd_head { text-align: center; margin-bottom: 28px; }
+    .lxd_head h1 {
+      font-size: clamp(24px, 3.4vw, 36px);
+      letter-spacing: 4px;
+      color: #1f3d36;
+    }
+    .lxd_head p {
+      margin-top: 12px;
+      font-size: 14px;
+      color: #6b6659;
+      letter-spacing: 1px;
+    }
+    .lxd_head .lxd_api {
+      display: inline-block;
+      margin-top: 14px;
+      font-size: 12.5px;
+      color: #1f3d36;
+      background: #e6efe9;
+      border: 1px solid #c9dcd1;
+      border-radius: 999px;
+      padding: 5px 14px;
+      margin-right: 6px;
+    }
+
+    /* ── 任务三：搜索框 + 排序按钮 ── */
+    .lxd_toolbar {
+      display: flex;
+      gap: 14px;
+      margin-bottom: 24px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .lxd_search {
+      flex: 1;
+      min-width: 200px;
+      padding: 10px 16px;
+      font-size: 14px;
+      border: 1px solid #c9dcd1;
+      border-radius: 10px;
+      background: #fffdf8;
+      color: #23211d;
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .lxd_search:focus {
+      border-color: #1f3d36;
+      box-shadow: 0 0 0 3px rgba(31, 61, 54, .12);
+    }
+    .lxd_sort-btn {
+      padding: 10px 18px;
+      font-size: 14px;
+      font-weight: 600;
+      border: 1px solid #1f3d36;
+      background: #fffdf8;
+      color: #1f3d36;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all .2s;
+      white-space: nowrap;
+    }
+    .lxd_sort-btn:hover {
+      background: #1f3d36;
+      color: #fff;
+    }
+    .lxd_sort-btn.lxd_active {
+      background: #c58b3f;
+      border-color: #c58b3f;
+      color: #fff;
+    }
+    .lxd_count {
+      font-size: 13px;
+      color: #6b6659;
+      margin-left: auto;
+    }
+
+    .lxd_section-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #1f3d36;
+      letter-spacing: 2px;
+      margin: 30px 0 14px;
+      padding-bottom: 6px;
+      border-bottom: 2px solid #c58b3f;
+      display: inline-block;
+    }
+
+    .lxd_grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 24px;
+    }
+
+    .lxd_card {
+      background: #fffdf8;
+      border: 1px solid rgba(31, 61, 54, .1);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 8px 22px rgba(31, 61, 54, .07);
+      transition: transform .25s ease, box-shadow .25s ease;
+    }
+    .lxd_card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 16px 30px rgba(31, 61, 54, .13);
+    }
+
+    .lxd_card-img {
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      object-fit: cover;
+      display: block;
+      background: #e9e4d8;
+    }
+
+    .lxd_card-body { padding: 18px 20px 22px; }
+    .lxd_card-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #1f3d36;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+    }
+    .lxd_card-title::after {
+      content: "";
+      display: block;
+      width: 34px;
+      height: 2px;
+      margin-top: 10px;
+      background: #c58b3f;
+    }
+    .lxd_card-content {
+      font-size: 14px;
+      line-height: 1.9;
+      color: #5c574c;
+      letter-spacing: .5px;
+    }
+
+    /* ── 任务二：作者卡片 ── */
+    .lxd_author-card {
+      background: #fffdf8;
+      border: 1px solid rgba(31, 61, 54, .1);
+      border-radius: 16px;
+      padding: 18px 20px;
+      box-shadow: 0 6px 16px rgba(31, 61, 54, .05);
+      transition: transform .25s ease, box-shadow .25s ease;
+    }
+    .lxd_author-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 22px rgba(31, 61, 54, .1);
+    }
+    .lxd_author-name {
+      font-size: 17px;
+      font-weight: 700;
+      color: #1f3d36;
+      margin-bottom: 4px;
+    }
+    .lxd_author-dynasty {
+      font-size: 12px;
+      color: #c58b3f;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+    }
+    .lxd_author-works {
+      font-size: 13px;
+      line-height: 1.8;
+      color: #5c574c;
+    }
+
+    .lxd_state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #6b6659;
+      font-size: 15px;
+      line-height: 2;
+      grid-column: 1 / -1;
+    }
+    .lxd_state code {
+      background: #e6efe9;
+      color: #1f3d36;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 13px;
+    }
+
+    .lxd_back {
+      display: block;
+      text-align: center;
+      margin-top: 40px;
+      font-size: 14px;
+      color: #1f3d36;
+      text-decoration: none;
+      letter-spacing: 1px;
+    }
+    .lxd_back:hover { text-decoration: underline; }
+
+    @media (max-width: 600px) {
+      .lxd_body { padding: 26px 14px 44px; }
+      .lxd_grid { gap: 18px; }
+      .lxd_toolbar { gap: 10px; }
+    }
+  </style>
+</head>
+<body class="lxd_body">
+  <div class="lxd_wrap">
+    <header class="lxd_head">
+      <h1>诗 词 图 文</h1>
+      <p>上图下文 · Promise.all 并发取 poems + authors · 搜索 + 排序</p>
+      <span class="lxd_api">接口 1：/api/poems</span>
+      <span class="lxd_api">接口 2：/api/authors</span>
+    </header>
+
+    <!-- 任务三：搜索框 + 排序按钮 -->
+    <div class="lxd_toolbar">
+      <input type="text" class="lxd_search" id="lxd_searchInput" placeholder="🔍 输入关键词，匹配标题或内容…">
+      <button class="lxd_sort-btn" id="lxd_sortBtn" data-sort="default">⬆️ 按标题长度排序</button>
+      <span class="lxd_count" id="lxd_countLabel"></span>
+    </div>
+
+    <!-- 诗词卡片区 -->
+    <div class="lxd_section-title">📜 诗词</div>
+    <div class="lxd_grid" id="lxd_poemGrid">
+      <div class="lxd_state">正在从服务器读取数据…</div>
+    </div>
+
+    <!-- 任务二：作者卡片区 -->
+    <div class="lxd_section-title">✍️ 作者</div>
+    <div class="lxd_grid" id="lxd_authorGrid">
+      <div class="lxd_state">正在读取作者数据…</div>
+    </div>
+
+    <a class="lxd_back" href="index.html">← 返回首页</a>
+  </div>
+
+  <script>
+    // 全局缓存两份数据，供搜索和排序时直接使用（不再重新请求）
+    var lxd_poemsData = [];
+    var lxd_authorsData = [];
+
+    // Promise.all 同时并发取两个接口的数据，全部成功才继续，任一失败进 catch
+    async function lxd_loadAll() {
+      const lxd_poemGrid = document.getElementById('lxd_poemGrid');
+      const lxd_authorGrid = document.getElementById('lxd_authorGrid');
+      try {
+        var lxd_results = await Promise.all([
+          fetch('/api/poems').then(function (r) { return r.json(); }),
+          fetch('/api/authors').then(function (r) { return r.json(); })
+        ]);
+        lxd_poemsData = lxd_results[0] || [];
+        lxd_authorsData = lxd_results[1] || [];
+        lxd_renderPoems(lxd_poemsData);
+        lxd_renderAuthors(lxd_authorsData);
+      } catch (lxd_err) {
+        lxd_poemGrid.innerHTML = '<div class="lxd_state">数据加载失败：' + lxd_err.message +
+          '<br>请先在项目根目录运行 <code>node cdn/db/server.js</code>，再访问 http://localhost:3004/poem-gallery.html</div>';
+        lxd_authorGrid.innerHTML = '';
+      }
+    }
+
+    // 任务三：根据搜索词和排序状态，加工一份当前要展示的诗词数组
+    function lxd_getDisplayPoems() {
+      var lxd_kw = (document.getElementById('lxd_searchInput').value || '').trim().toLowerCase();
+      var lxd_sortState = document.getElementById('lxd_sortBtn').dataset.sort;
+      var lxd_list = lxd_poemsData.slice(); // 复制一份，避免污染原始数据
+
+      // 搜索过滤：标题或正文包含关键词（大小写不敏感）
+      if (lxd_kw) {
+        lxd_list = lxd_list.filter(function (p) {
+          var t = (p.title || '').toLowerCase();
+          var c = (p.content || '').toLowerCase();
+          return t.indexOf(lxd_kw) !== -1 || c.indexOf(lxd_kw) !== -1;
+        });
+      }
+
+      // 排序：按标题字符数升序
+      if (lxd_sortState === 'asc') {
+        lxd_list.sort(function (a, b) { return a.title.length - b.title.length; });
+      }
+
+      return lxd_list;
+    }
+
+    // 渲染诗词卡片（上图下文），同时更新"当前显示 X / 共 Y"计数
+    function lxd_renderPoems(lxd_list) {
+      var lxd_grid = document.getElementById('lxd_poemGrid');
+      var lxd_count = document.getElementById('lxd_countLabel');
+      if (!lxd_list || lxd_list.length === 0) {
+        lxd_grid.innerHTML = '<div class="lxd_state">没有匹配的诗词，换个关键词试试～</div>';
+        lxd_count.textContent = '';
+        return;
+      }
+      lxd_grid.innerHTML = lxd_list.map(lxd_createPoemCard).join('');
+      lxd_count.textContent = '当前显示 ' + lxd_list.length + ' / 共 ' + lxd_poemsData.length + ' 首';
+    }
+
+    // 把单条诗词数据拼成卡片 HTML
+    function lxd_createPoemCard(lxd_item) {
+      var lxd_title = lxd_item.title || '未命名';
+      var lxd_content = lxd_item.content || '';
+      var lxd_pic = lxd_item.pic || '';
+      return '<article class="lxd_card">' +
+        '<img class="lxd_card-img" src="' + lxd_pic + '" alt="' + lxd_title + '" loading="lazy" referrerpolicy="no-referrer">' +
+        '<div class="lxd_card-body">' +
+          '<h2 class="lxd_card-title">' + lxd_title + '</h2>' +
+          '<p class="lxd_card-content">' + lxd_content + '</p>' +
+        '</div>' +
+      '</article>';
+    }
+
+    // 渲染作者卡片（任务二新增：把 authors 数据也展示出来证明接口通了）
+    function lxd_renderAuthors(lxd_list) {
+      var lxd_grid = document.getElementById('lxd_authorGrid');
+      if (!lxd_list || lxd_list.length === 0) {
+        lxd_grid.innerHTML = '<div class="lxd_state">没有作者数据。</div>';
+        return;
+      }
+      lxd_grid.innerHTML = lxd_list.map(function (a) {
+        var lxd_works = (a.works || []).join('、');
+        return '<article class="lxd_author-card">' +
+          '<div class="lxd_author-name">' + a.name + '</div>' +
+          '<div class="lxd_author-dynasty">' + a.dynasty + '</div>' +
+          '<div class="lxd_author-works">代表作：' + lxd_works + '</div>' +
+        '</article>';
+      }).join('');
+    }
+
+    // 绑定搜索输入事件：每次敲键盘都重新过滤并渲染
+    document.getElementById('lxd_searchInput').addEventListener('input', function () {
+      lxd_renderPoems(lxd_getDisplayPoems());
+    });
+
+    // 绑定排序按钮点击：三态切换 → 默认排序 → 按标题长度升序 → 默认
+    document.getElementById('lxd_sortBtn').addEventListener('click', function () {
+      var lxd_btn = this;
+      if (lxd_btn.dataset.sort === 'default') {
+        lxd_btn.dataset.sort = 'asc';
+        lxd_btn.textContent = '⬇️ 标题最短优先';
+        lxd_btn.classList.add('lxd_active');
+      } else {
+        lxd_btn.dataset.sort = 'default';
+        lxd_btn.textContent = '⬆️ 按标题长度排序';
+        lxd_btn.classList.remove('lxd_active');
+      }
+      lxd_renderPoems(lxd_getDisplayPoems());
+    });
+
+    // 页面打开后立即并发请求两份数据
+    lxd_loadAll();
+  </script>
+</body>
+</html>
