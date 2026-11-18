@@ -223,6 +223,27 @@
     }
     .lxd_z-img.lxd_anim { transition: transform .25s ease; }
 
+    /* 缩放按钮条 */
+    .lxd_z-tools {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .lxd_z-tools button {
+      min-width: 46px;
+      height: 38px;
+      padding: 0 12px;
+      font-family: inherit;
+      font-size: 15px;
+      color: #d7cfc0;
+      background: rgba(255, 255, 255, .06);
+      border: 1px solid rgba(255, 255, 255, .16);
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    .lxd_z-tools button:active { transform: scale(.95); }
+
     /* 鼠标可拖动时给个手势光标，拖拽中变成抓紧 */
     .lxd_z-viewer { cursor: grab; }
     .lxd_z-viewer.lxd_grabbing { cursor: grabbing; }
@@ -493,6 +514,12 @@
     <div class="lxd_z-viewer" id="lxd_z_viewer">
       <img class="lxd_z-img" id="lxd_z_img" src="swiper-imgs/fast_1.jpg" alt="中国天眼 FAST 全景">
       <div class="lxd_z-badge" id="lxd_z_badge">× 1.00</div>
+    </div>
+
+    <div class="lxd_z-tools">
+      <button id="lxd_z_out" aria-label="缩小">－</button>
+      <button id="lxd_z_reset" aria-label="还原">1x</button>
+      <button id="lxd_z_in" aria-label="放大">＋</button>
     </div>
     <p class="lxd_foot">
       <b>手机</b>：双指缩放 1x~4x、双击 1x/2x、放大后单指拖动。<br>
@@ -876,10 +903,11 @@
       lxd_z_zoomTo(lxd_target, e.clientX - lxd_rect.left, e.clientY - lxd_rect.top, false);
     }, { passive: false });
 
-    // 鼠标按下：已放大时开始拖动
-    lxd_z_viewer.addEventListener('mousedown', function (e) {
+    // 鼠标/触控笔按下：已放大时开始拖动（Pointer Events 对鼠标、笔、触摸都有效）
+    lxd_z_viewer.addEventListener('pointerdown', function (e) {
+      if (e.pointerType === 'touch') { return; }        // 触摸走上面的 touch* 逻辑
       if (Date.now() - lxd_z_usedTouch < 800) { return; }
-      if (lxd_z_scale <= 1) { return; }
+      if (lxd_z_scale <= 1) { return; }                 // 1x 时没有可拖动的内容
       lxd_z_mouseDown = true;
       lxd_z_mouseStartX = e.clientX;
       lxd_z_mouseStartY = e.clientY;
@@ -887,25 +915,33 @@
       lxd_z_originY = lxd_z_ty;
       lxd_z_viewer.classList.add('lxd_grabbing');
       lxd_z_img.classList.remove('lxd_anim');
+      if (lxd_z_viewer.setPointerCapture) {
+        try { lxd_z_viewer.setPointerCapture(e.pointerId); } catch (lxd_e) {}
+      }
+      e.preventDefault();
     });
 
     // 鼠标移动：按位移平移图片，实时收敛边界
-    lxd_z_viewer.addEventListener('mousemove', function (e) {
-      if (!lxd_z_mouseDown) { return; }
+    lxd_z_viewer.addEventListener('pointermove', function (e) {
+      if (!lxd_z_mouseDown || e.pointerType === 'touch') { return; }
       lxd_z_tx = lxd_z_originX + (e.clientX - lxd_z_mouseStartX);
       lxd_z_ty = lxd_z_originY + (e.clientY - lxd_z_mouseStartY);
       lxd_z_clamp();
       lxd_z_apply(false);
+      e.preventDefault();
     });
 
-    // 鼠标抬起：结束拖动并做一次收敛动画
-    window.addEventListener('mouseup', function () {
+    // 结束拖动：松开指针或指针被取消时都收敛一次边界
+    function lxd_z_endDrag() {
       if (!lxd_z_mouseDown) { return; }
       lxd_z_mouseDown = false;
       lxd_z_viewer.classList.remove('lxd_grabbing');
       lxd_z_clamp();
       lxd_z_apply(true);
-    });
+    }
+    lxd_z_viewer.addEventListener('pointerup', lxd_z_endDrag);
+    lxd_z_viewer.addEventListener('pointercancel', lxd_z_endDrag);
+    window.addEventListener('blur', lxd_z_endDrag);
 
     // 鼠标双击：在 1x 与 2x 之间切换，以双击位置为基准
     lxd_z_viewer.addEventListener('dblclick', function (e) {
@@ -916,6 +952,21 @@
       } else {
         lxd_z_zoomTo(2, e.clientX - lxd_rect.left, e.clientY - lxd_rect.top, true);
       }
+    });
+
+    // 放大按钮：以画面中心为锚点放大一档
+    document.getElementById('lxd_z_in').addEventListener('click', function () {
+      lxd_z_zoomTo(lxd_z_scale * 1.4, lxd_z_viewer.clientWidth / 2, lxd_z_viewer.clientHeight / 2, true);
+    });
+
+    // 缩小按钮：以画面中心为锚点缩小一档
+    document.getElementById('lxd_z_out').addEventListener('click', function () {
+      lxd_z_zoomTo(lxd_z_scale / 1.4, lxd_z_viewer.clientWidth / 2, lxd_z_viewer.clientHeight / 2, true);
+    });
+
+    // 还原按钮：回到 1x 并居中
+    document.getElementById('lxd_z_reset').addEventListener('click', function () {
+      lxd_z_zoomTo(1, lxd_z_viewer.clientWidth / 2, lxd_z_viewer.clientHeight / 2, true);
     });
 
     /* ══════════════ 任务四：摇一摇 ══════════════ */
