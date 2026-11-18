@@ -314,3 +314,19 @@ https://spontaneous-valkyrie-4e4229.netlify.app/swiper-lesson 查看这个链接
 **提示词**:
 
 帮我完成三档进阶任务：① 任务二：db.json 新增 2 条诗词 + authors 数组，server.js 加 /api/authors 接口；poems.html 用 Promise.all 同时取 poems 和 authors 两份数据展示。② 任务三：顶部搜索框（匹配标题或内容）+ 按标题长度排序按钮。
+
+---
+
+**时间**: 2026-11-18
+**模型**: DeepSeek-V4.1-Flash
+**提示词**:
+
+`https://spontaneous-valkyrie-4e4229.netlify.app/mobile-events-lesson`了解一下其中内容，帮我完成1234个任务
+
+---
+
+**时间**: 2026-11-18
+**模型**: DeepSeek-V4.1-Flash
+**提示词**:
+
+四个任务弄成一个网页

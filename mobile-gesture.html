@@ -1,0 +1,267 @@
+<!--
+  作者：李兴达（学号 24002120311）
+  建立时间：2026-11-18
+  使用大模型：DeepSeek-V4.1-Flash
+  功能名称：手势卡片页——中华美食 4 道菜，左右滑动切换（阈值 40px + 300ms 冷却 + 边界提示）
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <!-- 手机页面必备三件套之一：视口，不写会整体缩小 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>手势卡片 · 中华美食</title>
+  <style>
+    /* 手机页面必备三件套之二：去掉点击时的灰色高亮块 */
+    * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+      background: #14100f;
+      color: #f5efe6;
+      min-height: 100vh;
+      padding: 24px 18px 40px;
+    }
+
+    .lxd_head { text-align: center; margin-bottom: 18px; }
+    .lxd_head h1 { font-size: 21px; letter-spacing: 3px; margin: 0 0 8px; }
+    .lxd_head p { font-size: 12.5px; color: #a89c8d; margin: 0; letter-spacing: 1px; }
+
+    /* 手机页面必备三件套之三：只给"要接管手势"的容器加 touch-action */
+    .lxd_stage {
+      position: relative;
+      overflow: hidden;
+      border-radius: 20px;
+      touch-action: pan-y;   /* 只接管横向，纵向仍交给浏览器滚动 */
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .lxd_track {
+      display: flex;
+      width: 100%;
+      transition: transform .3s ease;   /* 0.3s 过渡动画 */
+      will-change: transform;
+    }
+
+    .lxd_card {
+      flex: 0 0 100%;
+      min-width: 100%;
+      min-height: 340px;
+      padding: 30px 26px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      border-radius: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    /* 4 道菜各自的渐变背景 + 大号装饰字符 */
+    .lxd_card::before {
+      content: attr(data-emoji);
+      position: absolute;
+      top: 18px; right: 20px;
+      font-size: 74px;
+      opacity: .22;
+    }
+    .lxd_card-1 { background: linear-gradient(145deg, #8c2f1c, #d4562a 60%, #f0a35c); }
+    .lxd_card-2 { background: linear-gradient(145deg, #6b1f2e, #b8344a 60%, #e77b7b); }
+    .lxd_card-3 { background: linear-gradient(145deg, #7a4a10, #c98a1f 60%, #f2cd6b); }
+    .lxd_card-4 { background: linear-gradient(145deg, #17503f, #2c8a68 60%, #86d8b0); }
+
+    .lxd_tag {
+      display: inline-block;
+      align-self: flex-start;
+      font-size: 11.5px;
+      letter-spacing: 2px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(0, 0, 0, .28);
+      margin-bottom: 14px;
+    }
+    .lxd_name { font-size: 30px; font-weight: 800; letter-spacing: 3px; margin: 0 0 10px; }
+    .lxd_desc { font-size: 13.5px; line-height: 1.9; margin: 0; color: rgba(255, 255, 255, .9); }
+
+    .lxd_bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      margin-top: 16px;
+      font-size: 13px;
+      letter-spacing: 1px;
+      color: #b9ab99;
+    }
+    .lxd_bar b { color: #f0a35c; font-size: 15px; }
+
+    .lxd_dots { display: flex; gap: 7px; }
+    .lxd_dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: rgba(255, 255, 255, .25);
+      transition: background .25s, transform .25s;
+    }
+    .lxd_dot.lxd_on { background: #f0a35c; transform: scale(1.5); }
+
+    .lxd_hint {
+      text-align: center;
+      font-size: 12px;
+      color: #7d7365;
+      margin-top: 12px;
+      letter-spacing: 1px;
+    }
+
+    /* 边界提示条：淡入淡出 */
+    .lxd_toast {
+      position: fixed;
+      left: 50%;
+      bottom: 74px;
+      transform: translate(-50%, 12px);
+      background: rgba(0, 0, 0, .82);
+      color: #fff;
+      font-size: 13px;
+      padding: 9px 18px;
+      border-radius: 999px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .25s, transform .25s;
+      white-space: nowrap;
+    }
+    .lxd_toast.lxd_show { opacity: 1; transform: translate(-50%, 0); }
+
+    .lxd_back {
+      display: block;
+      text-align: center;
+      margin-top: 26px;
+      font-size: 13px;
+      color: #c9b9a3;
+      text-decoration: none;
+    }
+    .lxd_back:hover { text-decoration: underline; }
+
+    @media (min-width: 640px) {
+      .lxd_stage { max-width: 420px; margin: 0 auto; }
+    }
+  </style>
+</head>
+<body>
+  <div class="lxd_head">
+    <h1>中 华 美 食</h1>
+    <p>左右滑动切换 · 阈值 40px · 冷却 300ms</p>
+  </div>
+
+  <!-- touch-action: pan-y 的容器：横向手势归我，纵向滚动还给浏览器 -->
+  <div class="lxd_stage" id="lxd_stage">
+    <div class="lxd_track" id="lxd_track">
+      <section class="lxd_card lxd_card-1" data-emoji="🍜">
+        <span class="lxd_tag">川 · 麻辣</span>
+        <h2 class="lxd_name">担担面</h2>
+        <p class="lxd_desc">面条细薄，卤汁酥香，咸鲜微辣。芝麻酱与红油在碗底铺开，拌开的瞬间香气直冲鼻腔。</p>
+      </section>
+      <section class="lxd_card lxd_card-2" data-emoji="🥟">
+        <span class="lxd_tag">粤 · 鲜甜</span>
+        <h2 class="lxd_name">虾饺皇</h2>
+        <p class="lxd_desc">澄面皮薄得能透出虾仁的粉红，一口咬下弹牙多汁，是广式早茶里最考验功夫的一笼。</p>
+      </section>
+      <section class="lxd_card lxd_card-3" data-emoji="🍢">
+        <span class="lxd_tag">陕 · 醇厚</span>
+        <h2 class="lxd_name">肉夹馍</h2>
+        <p class="lxd_desc">白吉馍外酥里软，腊汁肉肥瘦相间剁得细碎，浇一勺卤汁夹进去，咬开时油香四溢。</p>
+      </section>
+      <section class="lxd_card lxd_card-4" data-emoji="🍲">
+        <span class="lxd_tag">苏 · 清鲜</span>
+        <h2 class="lxd_name">松鼠鳜鱼</h2>
+        <p class="lxd_desc">鱼肉改花刀炸成松鼠状，浇上滚烫的番茄糖醋汁，"吱吱"作响，酸甜鲜美、外脆里嫩。</p>
+      </section>
+    </div>
+  </div>
+
+  <div class="lxd_bar">
+    <span>第 <b id="lxd_num">1</b> / 4 张</span>
+    <div class="lxd_dots" id="lxd_dots">
+      <span class="lxd_dot lxd_on"></span>
+      <span class="lxd_dot"></span>
+      <span class="lxd_dot"></span>
+      <span class="lxd_dot"></span>
+    </div>
+  </div>
+
+  <div class="lxd_hint">← 左滑下一道 · 右滑上一道 →</div>
+  <div class="lxd_toast" id="lxd_toast">已经是第一张</div>
+
+  <a class="lxd_back" href="index.html">← 返回首页</a>
+
+  <script>
+    var lxd_stage = document.getElementById('lxd_stage');
+    var lxd_track = document.getElementById('lxd_track');
+    var lxd_num = document.getElementById('lxd_num');
+    var lxd_dots = document.querySelectorAll('.lxd_dot');
+    var lxd_toast = document.getElementById('lxd_toast');
+
+    var lxd_total = 4;          // 卡片总数
+    var lxd_index = 0;          // 当前第几张（从 0 开始）
+    var lxd_startX = 0;         // 手指按下时的横坐标
+    var lxd_startY = 0;         // 手指按下时的纵坐标
+    var lxd_cooling = false;    // 是否处于 300ms 冷却中，防止连滑跳两张
+    var lxd_toastTimer = null;  // 提示条自动隐藏的定时器
+
+    // 切换到指定索引：移动轨道 + 更新文字和圆点
+    function lxd_goTo(lxd_target) {
+      lxd_index = lxd_target;
+      lxd_track.style.transform = 'translateX(' + (-lxd_index * 100) + '%)';
+      lxd_num.textContent = lxd_index + 1;
+      lxd_dots.forEach(function (lxd_dot, lxd_i) {
+        lxd_dot.classList.toggle('lxd_on', lxd_i === lxd_index);
+      });
+    }
+
+    // 显示一行顶部提示文字，1.4 秒后自动淡出
+    function lxd_showToast(lxd_text) {
+      lxd_toast.textContent = lxd_text;
+      lxd_toast.classList.add('lxd_show');
+      clearTimeout(lxd_toastTimer);
+      lxd_toastTimer = setTimeout(function () {
+        lxd_toast.classList.remove('lxd_show');
+      }, 1400);
+    }
+
+    // 手指按下：记录起点，供抬手时算位移
+    lxd_stage.addEventListener('touchstart', function (e) {
+      var lxd_t = e.touches[0];
+      lxd_startX = lxd_t.clientX;
+      lxd_startY = lxd_t.clientY;
+    }, { passive: true });
+
+    // 手指抬起：算横向位移，超过 40px 且横向大于纵向才判定为滑动
+    lxd_stage.addEventListener('touchend', function (e) {
+      if (lxd_cooling) { return; }                       // 冷却期内直接忽略
+      var lxd_t = e.changedTouches[0];                    // 抬手必须用 changedTouches
+      var lxd_dx = lxd_t.clientX - lxd_startX;
+      var lxd_dy = lxd_t.clientY - lxd_startY;
+      var lxd_line = 40;                                  // 阈值 40px，防误触
+
+      if (Math.abs(lxd_dx) < lxd_line) { return; }        // 太短，算点击不算滑动
+      if (Math.abs(lxd_dx) < Math.abs(lxd_dy)) { return; } // 纵向更大，是页面滚动
+
+      if (lxd_dx < 0) {
+        // 左滑 → 下一张
+        if (lxd_index >= lxd_total - 1) { lxd_showToast('已经是最后一张了'); return; }
+        lxd_goTo(lxd_index + 1);
+      } else {
+        // 右滑 → 上一张
+        if (lxd_index <= 0) { lxd_showToast('已经是第一张了'); return; }
+        lxd_goTo(lxd_index - 1);
+      }
+
+      // 进入 300ms 冷却，快速连滑不会一次跳两张
+      lxd_cooling = true;
+      setTimeout(function () { lxd_cooling = false; }, 300);
+    });
+
+    // 被系统打断（来电、手势返回）时把状态清理掉，避免卡在冷却里
+    lxd_stage.addEventListener('touchcancel', function () {
+      lxd_cooling = false;
+    });
+  </script>
+</body>
+</html>

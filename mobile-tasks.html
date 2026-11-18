@@ -1,0 +1,1039 @@
+<!--
+  作者：李兴达（学号 24002120311）
+  建立时间：2026-11-18
+  使用大模型：DeepSeek-V4.1-Flash
+  功能名称：移动端触摸交互四关合辑——事件记录、手势卡片、图片查看器、摇一摇（单文件自包含）
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <!-- 手机页面必备三件套之一：视口 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>移动端触摸交互 · 四关合辑</title>
+  <style>
+    /* 手机页面必备三件套之二：去掉点击灰块 */
+    * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+      background: #121016;
+      color: #ece7f2;
+      min-height: 100vh;
+      padding: 22px 16px 44px;
+    }
+
+    /* ── 页头 ── */
+    .lxd_top { text-align: center; margin-bottom: 18px; }
+    .lxd_top h1 { font-size: 21px; letter-spacing: 3px; margin: 0 0 8px; }
+    .lxd_top p { margin: 0; font-size: 12.5px; color: #928aa1; letter-spacing: 1px; }
+
+    /* ── 任务切换 ── */
+    .lxd_tabs {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      margin-bottom: 18px;
+      scrollbar-width: none;
+    }
+    .lxd_tabs::-webkit-scrollbar { display: none; }
+    .lxd_tab {
+      flex: 0 0 auto;
+      padding: 9px 15px;
+      font-size: 13px;
+      font-family: inherit;
+      letter-spacing: 1px;
+      color: #a99fc0;
+      background: rgba(255, 255, 255, .05);
+      border: 1px solid rgba(255, 255, 255, .1);
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all .2s;
+      white-space: nowrap;
+    }
+    .lxd_tab.lxd_on {
+      color: #1a1424;
+      background: linear-gradient(135deg, #ffd79a, #ffb35c);
+      border-color: transparent;
+      font-weight: 700;
+    }
+
+    .lxd_panel { display: none; }
+    .lxd_panel.lxd_show { display: block; animation: lxd_fade .28s ease; }
+    @keyframes lxd_fade {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ══════════ 任务一：事件记录 ══════════ */
+    .lxd_note {
+      font-size: 13px;
+      line-height: 1.95;
+      color: #a79dba;
+      margin: 0 0 14px;
+    }
+    .lxd_note b { color: #ffd79a; }
+    .lxd_table-wrap { overflow-x: auto; border-radius: 12px; border: 1px solid rgba(255,255,255,.1); }
+    .lxd_table { width: 100%; border-collapse: collapse; font-size: 12.5px; min-width: 520px; }
+    .lxd_table th, .lxd_table td { padding: 10px 12px; text-align: left; border-bottom: 1px solid rgba(255,255,255,.07); }
+    .lxd_table th { background: rgba(255,255,255,.06); color: #cfc3e0; font-weight: 600; letter-spacing: 1px; }
+    .lxd_table td { color: #a79dba; }
+    .lxd_table tr:last-child td { border-bottom: none; }
+    .lxd_table code {
+      background: rgba(255, 215, 154, .12);
+      color: #ffd79a;
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+    .lxd_qa { margin: 18px 0 0; padding: 0; list-style: none; }
+    .lxd_qa li {
+      background: rgba(255,255,255,.045);
+      border-left: 3px solid #ffb35c;
+      border-radius: 8px;
+      padding: 12px 14px;
+      margin-bottom: 10px;
+      font-size: 13px;
+      line-height: 1.95;
+      color: #b6acc9;
+    }
+    .lxd_qa li strong { display: block; color: #ece7f2; margin-bottom: 4px; font-size: 13.5px; }
+    .lxd_sub { font-size: 14px; color: #cfc3e0; letter-spacing: 1px; margin: 24px 0 10px; }
+
+    /* ══════════ 任务二：手势卡片 ══════════ */
+    .lxd_g-stage {
+      position: relative;
+      overflow: hidden;
+      border-radius: 20px;
+      touch-action: pan-y;   /* 只接管横向，纵向仍交给浏览器 */
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    .lxd_g-track { display: flex; width: 100%; transition: transform .3s ease; will-change: transform; }
+    .lxd_g-card {
+      flex: 0 0 100%;
+      min-width: 100%;
+      min-height: 320px;
+      padding: 28px 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      border-radius: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    .lxd_g-card::before {
+      content: attr(data-emoji);
+      position: absolute;
+      top: 16px; right: 18px;
+      font-size: 70px;
+      opacity: .22;
+    }
+    .lxd_g-c1 { background: linear-gradient(145deg, #8c2f1c, #d4562a 60%, #f0a35c); }
+    .lxd_g-c2 { background: linear-gradient(145deg, #6b1f2e, #b8344a 60%, #e77b7b); }
+    .lxd_g-c3 { background: linear-gradient(145deg, #7a4a10, #c98a1f 60%, #f2cd6b); }
+    .lxd_g-c4 { background: linear-gradient(145deg, #17503f, #2c8a68 60%, #86d8b0); }
+    .lxd_g-tag {
+      align-self: flex-start;
+      font-size: 11.5px;
+      letter-spacing: 2px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(0, 0, 0, .28);
+      margin-bottom: 12px;
+    }
+    .lxd_g-name { font-size: 28px; font-weight: 800; letter-spacing: 3px; margin: 0 0 10px; }
+    .lxd_g-desc { font-size: 13.5px; line-height: 1.9; margin: 0; color: rgba(255, 255, 255, .9); }
+
+    .lxd_g-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      margin-top: 14px;
+      font-size: 13px;
+      color: #b9ab99;
+    }
+    .lxd_g-bar b { color: #f0a35c; font-size: 15px; }
+    .lxd_g-dots { display: flex; gap: 7px; }
+    .lxd_g-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: rgba(255, 255, 255, .25);
+      transition: background .25s, transform .25s;
+    }
+    .lxd_g-dot.lxd_on { background: #f0a35c; transform: scale(1.5); }
+    .lxd_g-hint { text-align: center; font-size: 12px; color: #7d7365; margin-top: 10px; letter-spacing: 1px; }
+
+    /* 左右箭头：电脑上不方便滑也能切换 */
+    .lxd_g-nav { display: flex; justify-content: center; gap: 14px; margin-top: 12px; }
+    .lxd_g-nav button {
+      width: 42px; height: 42px;
+      border-radius: 50%;
+      font-size: 19px;
+      line-height: 1;
+      font-family: inherit;
+      color: #ffd79a;
+      background: rgba(255, 255, 255, .06);
+      border: 1px solid rgba(255, 255, 255, .16);
+      cursor: pointer;
+    }
+    .lxd_g-nav button:active { transform: scale(.94); }
+
+    .lxd_g-toast {
+      position: fixed;
+      left: 50%;
+      bottom: 70px;
+      transform: translate(-50%, 12px);
+      background: rgba(0, 0, 0, .85);
+      color: #fff;
+      font-size: 13px;
+      padding: 9px 18px;
+      border-radius: 999px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .25s, transform .25s;
+      z-index: 20;
+      white-space: nowrap;
+    }
+    .lxd_g-toast.lxd_show { opacity: 1; transform: translate(-50%, 0); }
+
+    /* ══════════ 任务三：图片查看器 ══════════ */
+    .lxd_z-viewer {
+      position: relative;
+      overflow: hidden;
+      width: 100%;
+      height: min(52vh, 420px);
+      background: #05070a;
+      border-radius: 16px;
+      touch-action: none;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
+    }
+    .lxd_z-img {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      display: block;
+      transform-origin: 0 0;
+      will-change: transform;
+      pointer-events: none;
+    }
+    .lxd_z-img.lxd_anim { transition: transform .25s ease; }
+
+    /* 鼠标可拖动时给个手势光标，拖拽中变成抓紧 */
+    .lxd_z-viewer { cursor: grab; }
+    .lxd_z-viewer.lxd_grabbing { cursor: grabbing; }
+    .lxd_z-badge {
+      position: absolute;
+      right: 12px; top: 12px;
+      background: rgba(0, 0, 0, .55);
+      border-radius: 999px;
+      padding: 5px 12px;
+      font-size: 12px;
+      color: #d7cfc0;
+      pointer-events: none;
+    }
+
+    /* ══════════ 任务四：摇一摇 ══════════ */
+    .lxd_s-phone {
+      width: 88px;
+      height: 156px;
+      margin: 8px auto 0;
+      border: 3px solid #6b5c85;
+      border-radius: 16px;
+      position: relative;
+      background: rgba(255, 255, 255, .03);
+    }
+    .lxd_s-phone::after {
+      content: "";
+      position: absolute;
+      left: 50%; bottom: 8px;
+      width: 28px; height: 4px;
+      border-radius: 2px;
+      background: #6b5c85;
+      transform: translateX(-50%);
+    }
+    .lxd_s-phone.lxd_shaking { animation: lxd_shake .38s ease; }
+    @keyframes lxd_shake {
+      0%, 100% { transform: translateX(0) rotate(0); }
+      20% { transform: translateX(-11px) rotate(-7deg); }
+      45% { transform: translateX(9px) rotate(6deg); }
+      70% { transform: translateX(-5px) rotate(-3deg); }
+    }
+    .lxd_s-result {
+      margin: 18px auto 0;
+      max-width: 400px;
+      min-height: 126px;
+      border-radius: 18px;
+      background: linear-gradient(150deg, rgba(255,255,255,.09), rgba(255,255,255,.03));
+      border: 1px solid rgba(255, 255, 255, .12);
+      padding: 20px 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      text-align: center;
+    }
+    .lxd_s-result.lxd_pop { animation: lxd_pop .45s cubic-bezier(.2, 1.5, .4, 1); }
+    @keyframes lxd_pop {
+      0% { transform: scale(.7); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .lxd_s-emoji { font-size: 38px; line-height: 1; }
+    .lxd_s-dish { font-size: 21px; font-weight: 800; letter-spacing: 3px; color: #ffd79a; }
+    .lxd_s-meta { font-size: 12.5px; color: #b9aecb; line-height: 1.8; }
+
+    .lxd_s-status {
+      margin: 16px auto 0;
+      max-width: 400px;
+      font-size: 12.5px;
+      line-height: 1.9;
+      color: #9c90b0;
+      background: rgba(255, 255, 255, .04);
+      border: 1px dashed rgba(255, 255, 255, .14);
+      border-radius: 12px;
+      padding: 11px 13px;
+      text-align: center;
+    }
+    .lxd_s-status.lxd_warn { color: #ffbd7a; border-color: rgba(255, 189, 122, .45); }
+
+    .lxd_btn {
+      display: inline-block;
+      margin: 16px 8px 0;
+      padding: 12px 26px;
+      font-size: 14px;
+      font-family: inherit;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: #1a1424;
+      background: linear-gradient(135deg, #ffd79a, #ffb35c);
+      border: none;
+      border-radius: 999px;
+      cursor: pointer;
+      box-shadow: 0 10px 24px rgba(255, 179, 92, .22);
+    }
+    .lxd_btn:active { transform: scale(.97); }
+    .lxd_btn.lxd_ghost {
+      background: transparent;
+      color: #cfc3e0;
+      border: 1px solid rgba(255, 255, 255, .28);
+      box-shadow: none;
+    }
+    .lxd_s-readout {
+      margin-top: 16px;
+      font-size: 12px;
+      color: #7f7592;
+      letter-spacing: 1px;
+      text-align: center;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* ── 公共说明 / 返回 ── */
+    .lxd_foot {
+      margin: 22px auto 0;
+      max-width: 520px;
+      font-size: 12.5px;
+      line-height: 2;
+      color: #8d829f;
+      text-align: left;
+    }
+    .lxd_foot h3 { font-size: 14px; color: #cfc3e0; letter-spacing: 1px; margin: 0 0 8px; }
+    .lxd_foot code { background: rgba(255,255,255,.07); padding: 1px 5px; border-radius: 4px; }
+
+    .lxd_back {
+      display: block;
+      text-align: center;
+      margin-top: 26px;
+      font-size: 13px;
+      color: #b3a7c6;
+      text-decoration: none;
+    }
+    .lxd_back:hover { text-decoration: underline; }
+
+    @media (min-width: 720px) {
+      .lxd_g-stage, .lxd_z-viewer { max-width: 440px; margin: 0 auto; }
+      .lxd_g-bar, .lxd_g-hint { max-width: 440px; margin-left: auto; margin-right: auto; }
+      .lxd_g-hint { margin-top: 10px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="lxd_top">
+    <h1>移 动 端 触 摸 交 互</h1>
+    <p>四个任务合一 · 事件记录 / 手势卡片 / 图片查看器 / 摇一摇</p>
+  </div>
+
+  <!-- 四个任务的切换按钮 -->
+  <div class="lxd_tabs">
+    <button class="lxd_tab lxd_on" data-panel="lxd_p1">任务一 · 事件侦探</button>
+    <button class="lxd_tab" data-panel="lxd_p2">任务二 · 手势卡片</button>
+    <button class="lxd_tab" data-panel="lxd_p3">任务三 · 图片查看器</button>
+    <button class="lxd_tab" data-panel="lxd_p4">任务四 · 摇一摇</button>
+  </div>
+
+  <!-- ══════════ 任务一 ══════════ -->
+  <section class="lxd_panel lxd_show" id="lxd_p1">
+    <p class="lxd_note">
+      在课程页第 3 节探针区依次做 5 种操作，记录事件触发顺序。<b>触屏操作请用手机或浏览器设备模式</b>。
+    </p>
+
+    <div class="lxd_table-wrap">
+      <table class="lxd_table">
+        <thead>
+          <tr><th>操作</th><th>实际触发顺序</th><th>备注</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>单击</td>
+            <td><code>touchstart</code> → <code>touchend</code> → <code>click</code></td>
+            <td>位置几乎没动，系统补发 click</td>
+          </tr>
+          <tr>
+            <td>向上拖动</td>
+            <td><code>touchstart</code> → <code>touchmove</code> × N → <code>touchend</code></td>
+            <td>位移超过阈值后浏览器不再补发 click</td>
+          </tr>
+          <tr>
+            <td>向左快速滑</td>
+            <td><code>touchstart</code> → <code>touchmove</code> × N → <code>touchend</code></td>
+            <td>move 次数少但每次位移大，速度可算</td>
+          </tr>
+          <tr>
+            <td>双指触摸</td>
+            <td><code>touchstart</code>（touches.length = 2）→ <code>touchmove</code> × N → <code>touchend</code></td>
+            <td>两指先后落下会触发两次 touchstart</td>
+          </tr>
+          <tr>
+            <td>长按后抬起</td>
+            <td><code>touchstart</code> →（600ms 无 move）→ <code>touchend</code> → <code>click</code></td>
+            <td>iOS 会先弹系统菜单，需 touch-callout:none</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="lxd_sub">三个验收问题</h3>
+    <ul class="lxd_qa">
+      <li>
+        <strong>① 一次拖动的 touchmove 大约多少次？和距离什么关系？</strong>
+        屏幕每刷新一帧报一次，60Hz 下约每 16ms 一次，拖 1 秒约 50~60 次。距离越大、速度越慢，次数越多——每次 move 都重绘位置，这就是"跟手"。
+      </li>
+      <li>
+        <strong>② click 出现在 touchend 之前还是之后？</strong>
+        之后。click 是系统判定"这是一次点击"后补发的，历史上有 300ms 延迟（在等双击），所以移动端常加 <code>touch-action: manipulation</code>。
+      </li>
+      <li>
+        <strong>③ 把 touchend 换成 touchcancel 会发生什么？</strong>
+        touchcancel 只在被系统打断（来电、消息横幅、手势返回）时触发，手指正常抬起时不会触发，清理逻辑永远跑不到：长按定时器残留、冷却标记卡死、拖动状态不复位，页面就"卡住"。
+      </li>
+    </ul>
+
+    <h3 class="lxd_sub">本次踩到的一个坑</h3>
+    <p class="lxd_note">
+      手势卡片的 300ms 冷却标记只在 <code>touchend</code> 里置位，结果被通知横幅打断后 <code>lxd_g_cooling</code> 永远停在 true，卡片再也不响应滑动。<br>
+      <b>解决：</b>在 <code>touchcancel</code> 里同样重置冷却与拖动状态。
+    </p>
+
+    <p class="lxd_note">
+      <b>AI 提示词记录：</b>已写入项目根目录 <code>lxd_prompt.md</code>（2026-11-18，模型 DeepSeek-V4.1-Flash）。
+    </p>
+  </section>
+
+  <!-- ══════════ 任务二 ══════════ -->
+  <section class="lxd_panel" id="lxd_p2">
+    <div class="lxd_g-stage" id="lxd_g_stage">
+      <div class="lxd_g-track" id="lxd_g_track">
+        <section class="lxd_g-card lxd_g-c1" data-emoji="🍜">
+          <span class="lxd_g-tag">川 · 麻辣</span>
+          <h2 class="lxd_g-name">担担面</h2>
+          <p class="lxd_g-desc">面条细薄，卤汁酥香，咸鲜微辣。芝麻酱与红油在碗底铺开，拌开的瞬间香气直冲鼻腔。</p>
+        </section>
+        <section class="lxd_g-card lxd_g-c2" data-emoji="🥟">
+          <span class="lxd_g-tag">粤 · 鲜甜</span>
+          <h2 class="lxd_g-name">虾饺皇</h2>
+          <p class="lxd_g-desc">澄面皮薄得能透出虾仁的粉红，一口咬下弹牙多汁，是广式早茶里最考验功夫的一笼。</p>
+        </section>
+        <section class="lxd_g-card lxd_g-c3" data-emoji="🍢">
+          <span class="lxd_g-tag">陕 · 醇厚</span>
+          <h2 class="lxd_g-name">肉夹馍</h2>
+          <p class="lxd_g-desc">白吉馍外酥里软，腊汁肉肥瘦相间剁得细碎，浇一勺卤汁夹进去，咬开时油香四溢。</p>
+        </section>
+        <section class="lxd_g-card lxd_g-c4" data-emoji="🍲">
+          <span class="lxd_g-tag">苏 · 清鲜</span>
+          <h2 class="lxd_g-name">松鼠鳜鱼</h2>
+          <p class="lxd_g-desc">鱼肉改花刀炸成松鼠状，浇上滚烫的番茄糖醋汁，"吱吱"作响，酸甜鲜美、外脆里嫩。</p>
+        </section>
+      </div>
+    </div>
+
+    <div class="lxd_g-bar">
+      <span>第 <b id="lxd_g_num">1</b> / 4 张</span>
+      <div class="lxd_g-dots" id="lxd_g_dots">
+        <span class="lxd_g-dot lxd_on"></span>
+        <span class="lxd_g-dot"></span>
+        <span class="lxd_g-dot"></span>
+        <span class="lxd_g-dot"></span>
+      </div>
+    </div>
+    <div class="lxd_g-hint">← 左滑下一道 · 右滑上一道（阈值 40px · 冷却 300ms）→</div>
+
+    <div class="lxd_g-nav">
+      <button id="lxd_g_prev" aria-label="上一道">‹</button>
+      <button id="lxd_g_next" aria-label="下一道">›</button>
+    </div>
+    <div class="lxd_g-toast" id="lxd_g_toast">已经是第一张了</div>
+  </section>
+
+  <!-- ══════════ 任务三 ══════════ -->
+  <section class="lxd_panel" id="lxd_p3">
+    <div class="lxd_z-viewer" id="lxd_z_viewer">
+      <img class="lxd_z-img" id="lxd_z_img" src="swiper-imgs/fast_1.jpg" alt="中国天眼 FAST 全景">
+      <div class="lxd_z-badge" id="lxd_z_badge">× 1.00</div>
+    </div>
+    <p class="lxd_foot">
+      <b>手机</b>：双指缩放 1x~4x、双击 1x/2x、放大后单指拖动。<br>
+      <b>电脑</b>：鼠标滚轮缩放、按住图片拖动、双击切换 1x/2x。缩回 1x 自动居中。
+    </p>
+  </section>
+
+  <!-- ══════════ 任务四 ══════════ -->
+  <section class="lxd_panel" id="lxd_p4">
+    <div class="lxd_s-phone" id="lxd_s_phone"></div>
+    <div class="lxd_s-status" id="lxd_s_status">正在等待传感器数据…</div>
+
+    <div class="lxd_s-result" id="lxd_s_result">
+      <div class="lxd_s-emoji">🍽️</div>
+      <div class="lxd_s-dish">还没有菜谱</div>
+      <div class="lxd_s-meta">摇一摇手机，或者点下面的按钮</div>
+    </div>
+
+    <div style="text-align:center">
+      <button class="lxd_btn" id="lxd_s_draw">点我抽一次</button>
+      <button class="lxd_btn lxd_ghost" id="lxd_s_auth" style="display:none">授权使用传感器</button>
+    </div>
+
+    <div class="lxd_s-readout" id="lxd_s_readout">合成加速度：—</div>
+
+    <div class="lxd_foot">
+      <h3>为什么必须做降级？</h3>
+      <p>
+        ① 电脑浏览器与部分安卓机没有加速度传感器，<code>devicemotion</code> 根本不触发，页面会空白；<br>
+        ② iOS 13+ 必须由用户点击后调用 <code>DeviceMotionEvent.requestPermission()</code>，否则拿不到数据；<br>
+        ③ 用户可能关掉"运动与健身"权限。所以要有一个不依赖传感器的按钮入口，保证功能永远可用。
+      </p>
+    </div>
+  </section>
+
+  <a class="lxd_back" href="index.html">← 返回首页</a>
+
+  <script>
+    /* ══════════════ Tab 切换 ══════════════ */
+    var lxd_tabs = document.querySelectorAll('.lxd_tab');
+    var lxd_panels = document.querySelectorAll('.lxd_panel');
+
+    // 切到指定任务面板：先清掉所有选中态，再给当前项加上
+    function lxd_showPanel(lxd_id) {
+      lxd_tabs.forEach(function (lxd_b) {
+        lxd_b.classList.toggle('lxd_on', lxd_b.dataset.panel === lxd_id);
+      });
+      lxd_panels.forEach(function (lxd_p) {
+        lxd_p.classList.toggle('lxd_show', lxd_p.id === lxd_id);
+      });
+      // 图片查看器在隐藏状态下量不到宽度，显示后必须重新测量
+      if (lxd_id === 'lxd_p3') { lxd_z_measure(); lxd_z_clamp(); lxd_z_apply(false); }
+    }
+
+    // 给四个 Tab 绑定点击事件
+    lxd_tabs.forEach(function (lxd_b) {
+      lxd_b.addEventListener('click', function () { lxd_showPanel(lxd_b.dataset.panel); });
+    });
+
+    /* ══════════════ 任务二：手势卡片 ══════════════ */
+    var lxd_g_stage = document.getElementById('lxd_g_stage');
+    var lxd_g_track = document.getElementById('lxd_g_track');
+    var lxd_g_num = document.getElementById('lxd_g_num');
+    var lxd_g_dots = document.querySelectorAll('.lxd_g-dot');
+    var lxd_g_toast = document.getElementById('lxd_g_toast');
+
+    var lxd_g_total = 4;
+    var lxd_g_index = 0;
+    var lxd_g_startX = 0;
+    var lxd_g_startY = 0;
+    var lxd_g_cooling = false;
+    var lxd_g_toastTimer = null;
+    var lxd_g_usedTouch = 0;      // 最近一次触摸的时间，用来屏蔽浏览器模拟出的鼠标事件
+    var lxd_g_mouseDown = false;  // 鼠标是否处于按下状态
+
+    // 切换到指定索引：移动轨道并更新页码与圆点
+    function lxd_g_goTo(lxd_target) {
+      lxd_g_index = lxd_target;
+      lxd_g_track.style.transform = 'translateX(' + (-lxd_g_index * 100) + '%)';
+      lxd_g_num.textContent = lxd_g_index + 1;
+      lxd_g_dots.forEach(function (lxd_dot, lxd_i) {
+        lxd_dot.classList.toggle('lxd_on', lxd_i === lxd_g_index);
+      });
+    }
+
+    // 显示边界提示，1.4 秒后自动隐藏
+    function lxd_g_showToast(lxd_text) {
+      lxd_g_toast.textContent = lxd_text;
+      lxd_g_toast.classList.add('lxd_show');
+      clearTimeout(lxd_g_toastTimer);
+      lxd_g_toastTimer = setTimeout(function () {
+        lxd_g_toast.classList.remove('lxd_show');
+      }, 1400);
+    }
+
+    // 手指按下：记录起点坐标
+    lxd_g_stage.addEventListener('touchstart', function (e) {
+      lxd_g_usedTouch = Date.now();
+      var lxd_t = e.touches[0];
+      lxd_g_startX = lxd_t.clientX;
+      lxd_g_startY = lxd_t.clientY;
+    }, { passive: true });
+
+    // 滑动结束的统一处理：超过 40px 且横向大于纵向才切换
+    function lxd_g_finish(lxd_endX, lxd_endY) {
+      if (lxd_g_cooling) { return; }
+      var lxd_dx = lxd_endX - lxd_g_startX;
+      var lxd_dy = lxd_endY - lxd_g_startY;
+
+      if (Math.abs(lxd_dx) < 40) { return; }                 // 太短，算点击
+      if (Math.abs(lxd_dx) < Math.abs(lxd_dy)) { return; }   // 纵向更大，是滚动
+
+      if (lxd_dx < 0) {
+        if (lxd_g_index >= lxd_g_total - 1) { lxd_g_showToast('已经是最后一张了'); return; }
+        lxd_g_goTo(lxd_g_index + 1);
+      } else {
+        if (lxd_g_index <= 0) { lxd_g_showToast('已经是第一张了'); return; }
+        lxd_g_goTo(lxd_g_index - 1);
+      }
+
+      lxd_g_cooling = true;
+      setTimeout(function () { lxd_g_cooling = false; }, 300);
+    }
+
+    // 手指抬起：用 changedTouches 拿最后一根手指的位置
+    lxd_g_stage.addEventListener('touchend', function (e) {
+      lxd_g_usedTouch = Date.now();
+      var lxd_t = e.changedTouches[0];
+      lxd_g_finish(lxd_t.clientX, lxd_t.clientY);
+    });
+
+    // 鼠标按下：电脑上也能拖（触摸后 800ms 内忽略模拟鼠标，避免一次滑动算两次）
+    lxd_g_stage.addEventListener('mousedown', function (e) {
+      if (Date.now() - lxd_g_usedTouch < 800) { return; }
+      lxd_g_mouseDown = true;
+      lxd_g_startX = e.clientX;
+      lxd_g_startY = e.clientY;
+    });
+
+    // 鼠标抬起：满足阈值同样切换
+    lxd_g_stage.addEventListener('mouseup', function (e) {
+      if (!lxd_g_mouseDown) { return; }
+      lxd_g_mouseDown = false;
+      if (Date.now() - lxd_g_usedTouch < 800) { return; }
+      lxd_g_finish(e.clientX, e.clientY);
+    });
+
+    // 被系统打断时清理冷却与拖动状态，避免永久卡住
+    lxd_g_stage.addEventListener('touchcancel', function () {
+      lxd_g_cooling = false;
+      lxd_g_mouseDown = false;
+    });
+
+    // 左箭头：上一道（桌面端不滑也能用）
+    document.getElementById('lxd_g_prev').addEventListener('click', function () {
+      if (lxd_g_index <= 0) { lxd_g_showToast('已经是第一张了'); return; }
+      lxd_g_goTo(lxd_g_index - 1);
+    });
+
+    // 右箭头：下一道
+    document.getElementById('lxd_g_next').addEventListener('click', function () {
+      if (lxd_g_index >= lxd_g_total - 1) { lxd_g_showToast('已经是最后一张了'); return; }
+      lxd_g_goTo(lxd_g_index + 1);
+    });
+
+    /* ══════════════ 任务三：图片查看器 ══════════════ */
+    var lxd_z_viewer = document.getElementById('lxd_z_viewer');
+    var lxd_z_img = document.getElementById('lxd_z_img');
+    var lxd_z_badge = document.getElementById('lxd_z_badge');
+
+    var lxd_z_scale = 1;
+    var lxd_z_tx = 0;
+    var lxd_z_ty = 0;
+    var lxd_z_baseW = 0;
+    var lxd_z_baseH = 0;
+
+    var lxd_z_lastDist = 0;
+    var lxd_z_lastMidX = 0;
+    var lxd_z_lastMidY = 0;
+    var lxd_z_dragging = false;
+    var lxd_z_dragStartX = 0;
+    var lxd_z_dragStartY = 0;
+    var lxd_z_originX = 0;
+    var lxd_z_originY = 0;
+    var lxd_z_lastTap = 0;
+    var lxd_z_tapStart = null;
+
+    var lxd_z_usedTouch = 0;      // 最近一次触摸时间，屏蔽手机模拟出的鼠标事件
+    var lxd_z_mouseDown = false;  // 鼠标是否按住
+    var lxd_z_mouseStartX = 0;
+    var lxd_z_mouseStartY = 0;
+
+    // 计算两根手指之间的直线距离
+    function lxd_z_dist(t1, t2) {
+      return Math.hypot(t2.clientX - t1.clientX, t2.clientY - t1.clientY);
+    }
+
+    // 计算两指中点相对查看器左上角的坐标
+    function lxd_z_mid(t1, t2) {
+      var lxd_rect = lxd_z_viewer.getBoundingClientRect();
+      return {
+        x: (t1.clientX + t2.clientX) / 2 - lxd_rect.left,
+        y: (t1.clientY + t2.clientY) / 2 - lxd_rect.top
+      };
+    }
+
+    // 把当前 scale / tx / ty 写入 transform
+    function lxd_z_apply(lxd_animate) {
+      lxd_z_img.classList.toggle('lxd_anim', !!lxd_animate);
+      lxd_z_img.style.transform =
+        'translate(' + lxd_z_tx + 'px,' + lxd_z_ty + 'px) scale(' + lxd_z_scale + ')';
+      lxd_z_badge.textContent = '× ' + lxd_z_scale.toFixed(2);
+    }
+
+    // 边界收敛：图小于容器时居中，大于容器时不允许露白
+    function lxd_z_clamp() {
+      var lxd_cw = lxd_z_viewer.clientWidth;
+      var lxd_ch = lxd_z_viewer.clientHeight;
+      var lxd_sw = lxd_z_baseW * lxd_z_scale;
+      var lxd_sh = lxd_z_baseH * lxd_z_scale;
+      if (!lxd_cw) { return; }
+
+      if (lxd_sw <= lxd_cw) { lxd_z_tx = (lxd_cw - lxd_sw) / 2; }
+      else { lxd_z_tx = Math.min(0, Math.max(lxd_cw - lxd_sw, lxd_z_tx)); }
+
+      if (lxd_sh <= lxd_ch) { lxd_z_ty = (lxd_ch - lxd_sh) / 2; }
+      else { lxd_z_ty = Math.min(0, Math.max(lxd_ch - lxd_sh, lxd_z_ty)); }
+    }
+
+    // 量出 1x 时图片的显示尺寸
+    function lxd_z_measure() {
+      var lxd_cw = lxd_z_viewer.clientWidth;
+      if (!lxd_cw || !lxd_z_img.naturalWidth) { return; }
+      lxd_z_baseW = lxd_cw;
+      lxd_z_baseH = lxd_cw * lxd_z_img.naturalHeight / lxd_z_img.naturalWidth;
+    }
+
+    // 缩放到目标倍数，并让 (mx,my) 这个点在屏幕上保持不动
+    function lxd_z_zoomTo(lxd_target, lxd_mx, lxd_my, lxd_animate) {
+      var lxd_new = Math.min(4, Math.max(1, lxd_target));
+      var lxd_ratio = lxd_new / lxd_z_scale;
+      lxd_z_tx = lxd_mx - (lxd_mx - lxd_z_tx) * lxd_ratio;
+      lxd_z_ty = lxd_my - (lxd_my - lxd_z_ty) * lxd_ratio;
+      lxd_z_scale = lxd_new;
+      if (lxd_z_scale === 1) { lxd_z_tx = 0; lxd_z_ty = 0; }
+      lxd_z_clamp();
+      lxd_z_apply(lxd_animate);
+    }
+
+    // 图片加载完成后测量并居中
+    lxd_z_img.addEventListener('load', function () {
+      lxd_z_measure();
+      lxd_z_clamp();
+      lxd_z_apply(false);
+    });
+
+    // 转屏或尺寸变化时重新测量，保留当前倍数
+    window.addEventListener('resize', function () {
+      var lxd_old = lxd_z_scale;
+      lxd_z_measure();
+      lxd_z_scale = lxd_old;
+      lxd_z_clamp();
+      lxd_z_apply(false);
+    });
+
+    // 手指按下：双指记录初始距离与中点，单指记录拖动起点
+    lxd_z_viewer.addEventListener('touchstart', function (e) {
+      lxd_z_usedTouch = Date.now();
+      if (e.touches.length >= 2) {
+        lxd_z_dragging = false;
+        lxd_z_lastDist = lxd_z_dist(e.touches[0], e.touches[1]);
+        var lxd_m = lxd_z_mid(e.touches[0], e.touches[1]);
+        lxd_z_lastMidX = lxd_m.x;
+        lxd_z_lastMidY = lxd_m.y;
+        lxd_z_img.classList.remove('lxd_anim');
+      } else {
+        var lxd_t = e.touches[0];
+        lxd_z_dragging = lxd_z_scale > 1;
+        lxd_z_dragStartX = lxd_t.clientX;
+        lxd_z_dragStartY = lxd_t.clientY;
+        lxd_z_originX = lxd_z_tx;
+        lxd_z_originY = lxd_z_ty;
+        lxd_z_tapStart = { x: lxd_t.clientX, y: lxd_t.clientY, time: Date.now() };
+        lxd_z_img.classList.remove('lxd_anim');
+      }
+    }, { passive: true });
+
+    // 手指移动：双指缩放，单指在放大后拖动
+    lxd_z_viewer.addEventListener('touchmove', function (e) {
+      if (e.touches.length >= 2) {
+        e.preventDefault();
+        var lxd_d = lxd_z_dist(e.touches[0], e.touches[1]);
+        if (!lxd_z_lastDist) { lxd_z_lastDist = lxd_d; return; }
+
+        var lxd_target = Math.min(4, Math.max(1, lxd_z_scale * (lxd_d / lxd_z_lastDist)));
+        var lxd_ratio = lxd_target / lxd_z_scale;
+        var lxd_rect = lxd_z_viewer.getBoundingClientRect();
+        var lxd_mx = (e.touches[0].clientX + e.touches[1].clientX) / 2 - lxd_rect.left;
+        var lxd_my = (e.touches[0].clientY + e.touches[1].clientY) / 2 - lxd_rect.top;
+
+        // 以中点为锚缩放，同时跟随中点平移
+        lxd_z_tx = lxd_mx - (lxd_mx - lxd_z_tx) * lxd_ratio + (lxd_mx - lxd_z_lastMidX);
+        lxd_z_ty = lxd_my - (lxd_my - lxd_z_ty) * lxd_ratio + (lxd_my - lxd_z_lastMidY);
+        lxd_z_scale = lxd_target;
+        lxd_z_lastDist = lxd_d;
+        lxd_z_lastMidX = lxd_mx;
+        lxd_z_lastMidY = lxd_my;
+
+        lxd_z_clamp();
+        lxd_z_apply(false);
+        return;
+      }
+
+      if (e.touches.length === 1 && lxd_z_dragging && lxd_z_scale > 1) {
+        e.preventDefault();
+        var lxd_t = e.touches[0];
+        lxd_z_tx = lxd_z_originX + (lxd_t.clientX - lxd_z_dragStartX);
+        lxd_z_ty = lxd_z_originY + (lxd_t.clientY - lxd_z_dragStartY);
+        lxd_z_clamp();
+        lxd_z_apply(false);
+      }
+    }, { passive: false });
+
+    // 手指抬起：处理双击判定和松手后的边界收敛
+    lxd_z_viewer.addEventListener('touchend', function (e) {
+      if (e.touches.length >= 2) { return; }
+
+      if (e.touches.length === 1) {
+        lxd_z_lastDist = 0;
+        var lxd_left = e.touches[0];
+        lxd_z_dragging = lxd_z_scale > 1;
+        lxd_z_dragStartX = lxd_left.clientX;
+        lxd_z_dragStartY = lxd_left.clientY;
+        lxd_z_originX = lxd_z_tx;
+        lxd_z_originY = lxd_z_ty;
+        return;
+      }
+
+      lxd_z_lastDist = 0;
+      lxd_z_dragging = false;
+
+      if (lxd_z_tapStart) {
+        var lxd_moved = Math.hypot(e.changedTouches[0].clientX - lxd_z_tapStart.x,
+                                   e.changedTouches[0].clientY - lxd_z_tapStart.y);
+        var lxd_short = Date.now() - lxd_z_tapStart.time < 250;
+        if (lxd_moved < 12 && lxd_short) {
+          var lxd_now = Date.now();
+          if (lxd_now - lxd_z_lastTap < 300) {
+            var lxd_rect = lxd_z_viewer.getBoundingClientRect();
+            if (lxd_z_scale > 1) {
+              lxd_z_zoomTo(1, lxd_z_viewer.clientWidth / 2, lxd_z_viewer.clientHeight / 2, true);
+            } else {
+              lxd_z_zoomTo(2, lxd_z_tapStart.x - lxd_rect.left, lxd_z_tapStart.y - lxd_rect.top, true);
+            }
+            lxd_z_lastTap = 0;
+          } else {
+            lxd_z_lastTap = lxd_now;
+          }
+        }
+        lxd_z_tapStart = null;
+      }
+
+      if (lxd_z_scale <= 1.02) { lxd_z_scale = 1; lxd_z_tx = 0; lxd_z_ty = 0; }
+      lxd_z_clamp();
+      lxd_z_apply(true);
+    });
+
+    // 手势被系统打断时清理状态
+    lxd_z_viewer.addEventListener('touchcancel', function () {
+      lxd_z_dragging = false;
+      lxd_z_lastDist = 0;
+      lxd_z_clamp();
+      lxd_z_apply(true);
+    });
+
+    // 鼠标滚轮缩放：以光标位置为锚点，向上滚放大、向下滚缩小
+    lxd_z_viewer.addEventListener('wheel', function (e) {
+      e.preventDefault();
+      var lxd_rect = lxd_z_viewer.getBoundingClientRect();
+      var lxd_target = lxd_z_scale * (e.deltaY < 0 ? 1.15 : 1 / 1.15);
+      lxd_z_zoomTo(lxd_target, e.clientX - lxd_rect.left, e.clientY - lxd_rect.top, false);
+    }, { passive: false });
+
+    // 鼠标按下：已放大时开始拖动
+    lxd_z_viewer.addEventListener('mousedown', function (e) {
+      if (Date.now() - lxd_z_usedTouch < 800) { return; }
+      if (lxd_z_scale <= 1) { return; }
+      lxd_z_mouseDown = true;
+      lxd_z_mouseStartX = e.clientX;
+      lxd_z_mouseStartY = e.clientY;
+      lxd_z_originX = lxd_z_tx;
+      lxd_z_originY = lxd_z_ty;
+      lxd_z_viewer.classList.add('lxd_grabbing');
+      lxd_z_img.classList.remove('lxd_anim');
+    });
+
+    // 鼠标移动：按位移平移图片，实时收敛边界
+    lxd_z_viewer.addEventListener('mousemove', function (e) {
+      if (!lxd_z_mouseDown) { return; }
+      lxd_z_tx = lxd_z_originX + (e.clientX - lxd_z_mouseStartX);
+      lxd_z_ty = lxd_z_originY + (e.clientY - lxd_z_mouseStartY);
+      lxd_z_clamp();
+      lxd_z_apply(false);
+    });
+
+    // 鼠标抬起：结束拖动并做一次收敛动画
+    window.addEventListener('mouseup', function () {
+      if (!lxd_z_mouseDown) { return; }
+      lxd_z_mouseDown = false;
+      lxd_z_viewer.classList.remove('lxd_grabbing');
+      lxd_z_clamp();
+      lxd_z_apply(true);
+    });
+
+    // 鼠标双击：在 1x 与 2x 之间切换，以双击位置为基准
+    lxd_z_viewer.addEventListener('dblclick', function (e) {
+      if (Date.now() - lxd_z_usedTouch < 800) { return; }
+      var lxd_rect = lxd_z_viewer.getBoundingClientRect();
+      if (lxd_z_scale > 1) {
+        lxd_z_zoomTo(1, lxd_z_viewer.clientWidth / 2, lxd_z_viewer.clientHeight / 2, true);
+      } else {
+        lxd_z_zoomTo(2, e.clientX - lxd_rect.left, e.clientY - lxd_rect.top, true);
+      }
+    });
+
+    /* ══════════════ 任务四：摇一摇 ══════════════ */
+    var lxd_s_phone = document.getElementById('lxd_s_phone');
+    var lxd_s_status = document.getElementById('lxd_s_status');
+    var lxd_s_result = document.getElementById('lxd_s_result');
+    var lxd_s_readout = document.getElementById('lxd_s_readout');
+    var lxd_s_draw = document.getElementById('lxd_s_draw');
+    var lxd_s_auth = document.getElementById('lxd_s_auth');
+
+    var lxd_s_dishes = [
+      { emoji: '🍜', name: '兰州牛肉面', meta: '一清二白三红四绿五黄 · 汤头最见功夫' },
+      { emoji: '🥟', name: '韭菜猪肉饺', meta: '皮薄馅大 · 蘸醋加蒜，冬天最幸福' },
+      { emoji: '🍲', name: '番茄牛腩煲', meta: '炖足两小时 · 汤汁拌饭能吃两碗' },
+      { emoji: '🍚', name: '扬州炒饭', meta: '粒粒分明 · 虾仁火腿青豆一样不少' },
+      { emoji: '🍗', name: '可乐鸡翅', meta: '零失败家常菜 · 收汁到发亮最好吃' },
+      { emoji: '🥘', name: '麻婆豆腐', meta: '麻辣鲜香酥 · 一勺盖在米饭上' },
+      { emoji: '🍤', name: '蒜蓉粉丝虾', meta: '蒸 8 分钟 · 蒜香全被粉丝吸走' },
+      { emoji: '🍥', name: '三鲜馄饨', meta: '皮滑汤鲜 · 撒一把紫菜和虾皮' }
+    ];
+
+    var lxd_s_lastShake = 0;
+    var lxd_s_gotMotion = false;
+    var lxd_s_permAsked = false;
+
+    // 随机抽一道菜，更新卡片并播放弹出与摇晃动画
+    function lxd_s_drawDish() {
+      var lxd_d = lxd_s_dishes[Math.floor(Math.random() * lxd_s_dishes.length)];
+      lxd_s_result.innerHTML =
+        '<div class="lxd_s-emoji">' + lxd_d.emoji + '</div>' +
+        '<div class="lxd_s-dish">' + lxd_d.name + '</div>' +
+        '<div class="lxd_s-meta">' + lxd_d.meta + '</div>';
+
+      lxd_s_result.classList.remove('lxd_pop');
+      void lxd_s_result.offsetWidth;
+      lxd_s_result.classList.add('lxd_pop');
+
+      lxd_s_phone.classList.remove('lxd_shaking');
+      void lxd_s_phone.offsetWidth;
+      lxd_s_phone.classList.add('lxd_shaking');
+    }
+
+    // 摇动触发入口：1.5 秒冷却，防止一次摇动连抽多次
+    function lxd_s_trigger() {
+      var lxd_now = Date.now();
+      if (lxd_now - lxd_s_lastShake < 1500) { return; }
+      lxd_s_lastShake = lxd_now;
+      lxd_s_drawDish();
+    }
+
+    // 传感器回调：合成三轴加速度，超过 18 判定为摇动
+    function lxd_s_onMotion(e) {
+      var lxd_a = e.accelerationIncludingGravity;
+      if (!lxd_a || lxd_a.x === null) { return; }
+      if (!lxd_s_gotMotion) {
+        lxd_s_gotMotion = true;
+        lxd_s_status.classList.remove('lxd_warn');
+        lxd_s_status.textContent = '传感器已就绪 · 摇一摇手机即可抽取';
+      }
+      var lxd_g = Math.sqrt(
+        (lxd_a.x || 0) * (lxd_a.x || 0) +
+        (lxd_a.y || 0) * (lxd_a.y || 0) +
+        (lxd_a.z || 0) * (lxd_a.z || 0)
+      );
+      lxd_s_readout.textContent = '合成加速度：' + lxd_g.toFixed(1);
+      if (lxd_g > 18) { lxd_s_trigger(); }
+    }
+
+    // 开始监听传感器：iOS 需要先申请权限
+    function lxd_s_start() {
+      if (!window.DeviceMotionEvent) { lxd_s_fallback('当前设备不支持，请用手机打开'); return; }
+      if (typeof DeviceMotionEvent.requestPermission === 'function' && !lxd_s_permAsked) {
+        lxd_s_auth.style.display = 'inline-block';
+        lxd_s_status.textContent = 'iOS 设备需要先授权才能使用摇一摇';
+        return;
+      }
+      window.addEventListener('devicemotion', lxd_s_onMotion, { passive: true });
+      setTimeout(function () {
+        if (!lxd_s_gotMotion) { lxd_s_fallback('当前设备不支持，请用手机打开'); }
+      }, 3000);
+    }
+
+    // 降级提示：按钮始终可用，不报错不白屏
+    function lxd_s_fallback(lxd_msg) {
+      lxd_s_status.classList.add('lxd_warn');
+      lxd_s_status.textContent = lxd_msg + ' —— 可以直接点下方「点我抽一次」';
+      lxd_s_readout.textContent = '合成加速度：不可用';
+    }
+
+    // 授权按钮：iOS 走 requestPermission，其他平台直接监听
+    lxd_s_auth.addEventListener('click', function () {
+      lxd_s_permAsked = true;
+      if (typeof DeviceMotionEvent.requestPermission === 'function') {
+        DeviceMotionEvent.requestPermission().then(function (lxd_state) {
+          if (lxd_state === 'granted') {
+            lxd_s_auth.style.display = 'none';
+            lxd_s_status.textContent = '已授权 · 摇一摇手机即可抽取';
+            window.addEventListener('devicemotion', lxd_s_onMotion, { passive: true });
+          } else {
+            lxd_s_fallback('权限被拒绝，传感器不可用');
+          }
+        }).catch(function () {
+          lxd_s_fallback('权限申请失败');
+        });
+      } else {
+        lxd_s_auth.style.display = 'none';
+        lxd_s_start();
+      }
+    });
+
+    // 降级按钮：不依赖传感器，直接抽一道菜
+    lxd_s_draw.addEventListener('click', function () {
+      lxd_s_lastShake = 0;
+      lxd_s_drawDish();
+    });
+
+    // 启动传感器监听
+    lxd_s_start();
+  </script>
+</body>
+</html>

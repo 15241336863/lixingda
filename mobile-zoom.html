@@ -1,0 +1,340 @@
+<!--
+  作者：李兴达（学号 24002120311）
+  建立时间：2026-11-18
+  使用大模型：DeepSeek-V4.1-Flash
+  功能名称：移动端图片查看器——双指缩放 1x~4x、双击 1x/2x 切换、放大后单指拖动、边界收敛
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <!-- 手机页面必备三件套之一：视口 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>图片查看器 · 双指缩放</title>
+  <style>
+    /* 手机页面必备三件套之二：去掉点击灰块 */
+    * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+      background: #0d0f14;
+      color: #e8e6e3;
+      min-height: 100vh;
+      padding: 20px 16px 36px;
+    }
+
+    .lxd_head { text-align: center; margin-bottom: 14px; }
+    .lxd_head h1 { font-size: 20px; letter-spacing: 3px; margin: 0 0 8px; }
+    .lxd_head p { font-size: 12.5px; color: #8f8a80; margin: 0; letter-spacing: 1px; }
+
+    /* 查看器：overflow:hidden 负责裁切，touch-action:none 表示手势全归我 */
+    .lxd_viewer {
+      position: relative;
+      overflow: hidden;
+      width: 100%;
+      height: min(66vh, 520px);
+      background: #05070a;
+      border-radius: 16px;
+      touch-action: none;          /* 必须：否则浏览器先接管缩放和滚动 */
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none; /* iOS 长按不弹菜单 */
+      cursor: grab;
+    }
+
+    .lxd_img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      display: block;
+      transform-origin: 0 0;       /* 用 translate 自己补偿，origin 固定更可控 */
+      will-change: transform;
+      pointer-events: none;        /* 手指事件统一交给容器处理 */
+    }
+
+    /* 只有需要动画时才加这个类，双指缩放过程中绝不能有过渡，否则会"拖影" */
+    .lxd_img.lxd_anim { transition: transform .25s ease; }
+
+    .lxd_scale-badge {
+      position: absolute;
+      right: 12px;
+      top: 12px;
+      background: rgba(0, 0, 0, .55);
+      border-radius: 999px;
+      padding: 5px 12px;
+      font-size: 12px;
+      letter-spacing: 1px;
+      color: #d7cfc0;
+      pointer-events: none;
+    }
+
+    .lxd_tips {
+      margin: 16px 2px 0;
+      font-size: 12.5px;
+      line-height: 2;
+      color: #9a9488;
+    }
+    .lxd_tips b { color: #e0b070; font-weight: 600; }
+
+    .lxd_back {
+      display: block;
+      text-align: center;
+      margin-top: 24px;
+      font-size: 13px;
+      color: #c0b6a5;
+      text-decoration: none;
+    }
+    .lxd_back:hover { text-decoration: underline; }
+
+    @media (min-width: 720px) {
+      .lxd_viewer { max-width: 520px; margin: 0 auto; }
+      .lxd_tips { max-width: 520px; margin: 16px auto 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="lxd_head">
+    <h1>图 片 查 看 器</h1>
+    <p>双指缩放 1x ~ 4x · 双击 1x↔2x · 放大后单指拖动</p>
+  </div>
+
+  <div class="lxd_viewer" id="lxd_viewer">
+    <img class="lxd_img" id="lxd_img" src="swiper-imgs/fast_1.jpg" alt="中国天眼 FAST 全景">
+    <div class="lxd_scale-badge" id="lxd_badge">× 1.00</div>
+  </div>
+
+  <p class="lxd_tips">
+    <b>双指缩放请用手机打开</b>；没有手机可用浏览器设备模式单指拖动体验。<br>
+    双击图片在 1x 与 2x 之间切换；缩放到 1x 会自动居中。
+  </p>
+
+  <a class="lxd_back" href="index.html">← 返回首页</a>
+
+  <script>
+    var lxd_viewer = document.getElementById('lxd_viewer');
+    var lxd_img = document.getElementById('lxd_img');
+    var lxd_badge = document.getElementById('lxd_badge');
+
+    var lxd_scale = 1;        // 当前缩放倍数
+    var lxd_tx = 0;           // 当前横向位移
+    var lxd_ty = 0;           // 当前纵向位移
+    var lxd_baseW = 0;        // 图片在 1x 时的显示宽度
+    var lxd_baseH = 0;        // 图片在 1x 时的显示高度
+
+    var lxd_pinching = false; // 是否处于双指状态
+    var lxd_lastDist = 0;     // 上一帧两指距离
+    var lxd_lastMidX = 0;     // 上一帧两指中点
+    var lxd_lastMidY = 0;
+
+    var lxd_dragStartX = 0;   // 单指拖动起点
+    var lxd_dragStartY = 0;
+    var lxd_dragOriginX = 0;  // 拖动开始时的位移，避免累加错乱
+    var lxd_dragOriginY = 0;
+    var lxd_dragging = false;
+
+    var lxd_lastTap = 0;      // 上次单击的时间戳，用于判断双击
+    var lxd_tapStart = null;  // 本次按下时的坐标与时间
+
+    // 计算两根手指之间的直线距离（勾股定理）
+    function lxd_dist(t1, t2) {
+      return Math.hypot(t2.clientX - t1.clientX, t2.clientY - t1.clientY);
+    }
+
+    // 计算两指中点相对查看器左上角的坐标
+    function lxd_mid(t1, t2) {
+      var lxd_rect = lxd_viewer.getBoundingClientRect();
+      return {
+        x: (t1.clientX + t2.clientX) / 2 - lxd_rect.left,
+        y: (t1.clientY + t2.clientY) / 2 - lxd_rect.top
+      };
+    }
+
+    // 把 scale / tx / ty 写进 transform，并可选地开启 0.25s 过渡
+    function lxd_apply(lxd_animate) {
+      lxd_img.classList.toggle('lxd_anim', !!lxd_animate);
+      lxd_img.style.transform = 'translate(' + lxd_tx + 'px,' + lxd_ty + 'px) scale(' + lxd_scale + ')';
+      lxd_badge.textContent = '× ' + lxd_scale.toFixed(2);
+    }
+
+    // 边界收敛：图比容器小时居中，比容器大时不允许露出空白
+    function lxd_clamp() {
+      var lxd_cw = lxd_viewer.clientWidth;
+      var lxd_ch = lxd_viewer.clientHeight;
+      var lxd_sw = lxd_baseW * lxd_scale;
+      var lxd_sh = lxd_baseH * lxd_scale;
+
+      if (lxd_sw <= lxd_cw) {
+        lxd_tx = (lxd_cw - lxd_sw) / 2;
+      } else {
+        lxd_tx = Math.min(0, Math.max(lxd_cw - lxd_sw, lxd_tx));
+      }
+
+      if (lxd_sh <= lxd_ch) {
+        lxd_ty = (lxd_ch - lxd_sh) / 2;
+      } else {
+        lxd_ty = Math.min(0, Math.max(lxd_ch - lxd_sh, lxd_ty));
+      }
+    }
+
+    // 量出 1x 时图片的显示尺寸（图片宽度撑满容器，高度按原比例）
+    function lxd_measure() {
+      var lxd_cw = lxd_viewer.clientWidth;
+      if (!lxd_img.naturalWidth) { return; }
+      lxd_baseW = lxd_cw;
+      lxd_baseH = lxd_cw * lxd_img.naturalHeight / lxd_img.naturalWidth;
+    }
+
+    // 缩放到目标倍数，并以 (mx,my) 这个点为基准保持不动
+    function lxd_zoomTo(lxd_target, lxd_mx, lxd_my, lxd_animate) {
+      var lxd_new = Math.min(4, Math.max(1, lxd_target));
+      var lxd_ratio = lxd_new / lxd_scale;
+      // 关键：让 mx,my 处的像素在缩放前后仍落在同一个屏幕位置，所以不跳
+      lxd_tx = lxd_mx - (lxd_mx - lxd_tx) * lxd_ratio;
+      lxd_ty = lxd_my - (lxd_my - lxd_ty) * lxd_ratio;
+      lxd_scale = lxd_new;
+      if (lxd_scale === 1) { lxd_tx = 0; lxd_ty = 0; }
+      lxd_clamp();
+      lxd_apply(lxd_animate);
+    }
+
+    // 图片加载完成后量尺寸并居中显示
+    lxd_img.addEventListener('load', function () {
+      lxd_measure();
+      lxd_clamp();
+      lxd_apply(false);
+    });
+
+    // 转屏 / 窗口尺寸变化时重新测量，保持当前倍数不丢失
+    window.addEventListener('resize', function () {
+      var lxd_oldScale = lxd_scale;
+      lxd_measure();
+      lxd_scale = lxd_oldScale;
+      lxd_clamp();
+      lxd_apply(false);
+    });
+
+    // 手指按下：区分单指与双指，双指时记录初始距离和中点
+    lxd_viewer.addEventListener('touchstart', function (e) {
+      if (e.touches.length >= 2) {
+        lxd_pinching = true;
+        lxd_dragging = false;
+        lxd_lastDist = lxd_dist(e.touches[0], e.touches[1]);
+        var lxd_m = lxd_mid(e.touches[0], e.touches[1]);
+        lxd_lastMidX = lxd_m.x;
+        lxd_lastMidY = lxd_m.y;
+        lxd_img.classList.remove('lxd_anim');   // 捏合过程不要过渡
+      } else {
+        var lxd_t = e.touches[0];
+        lxd_dragging = lxd_scale > 1;
+        lxd_dragStartX = lxd_t.clientX;
+        lxd_dragStartY = lxd_t.clientY;
+        lxd_dragOriginX = lxd_tx;
+        lxd_dragOriginY = lxd_ty;
+        lxd_tapStart = { x: lxd_t.clientX, y: lxd_t.clientY, time: Date.now() };
+        lxd_img.classList.remove('lxd_anim');
+      }
+    }, { passive: true });
+
+    // 手指移动：双指算缩放比例，单指且已放大时算拖动
+    lxd_viewer.addEventListener('touchmove', function (e) {
+      if (e.touches.length >= 2) {
+        e.preventDefault();                      // 阻止整页缩放
+        var lxd_d = lxd_dist(e.touches[0], e.touches[1]);
+        if (!lxd_lastDist) { lxd_lastDist = lxd_d; return; }
+
+        var lxd_target = Math.min(4, Math.max(1, lxd_scale * (lxd_d / lxd_lastDist)));
+        var lxd_ratio = lxd_target / lxd_scale;
+        var lxd_rect = lxd_viewer.getBoundingClientRect();
+        var lxd_mx = (e.touches[0].clientX + e.touches[1].clientX) / 2 - lxd_rect.left;
+        var lxd_my = (e.touches[0].clientY + e.touches[1].clientY) / 2 - lxd_rect.top;
+
+        // 以当前中点为锚点缩放，同时跟随中点平移（双指移动也能带动图片）
+        lxd_tx = lxd_mx - (lxd_mx - lxd_tx) * lxd_ratio + (lxd_mx - lxd_lastMidX);
+        lxd_ty = lxd_my - (lxd_my - lxd_ty) * lxd_ratio + (lxd_my - lxd_lastMidY);
+        lxd_scale = lxd_target;
+        lxd_lastDist = lxd_d;
+        lxd_lastMidX = lxd_mx;
+        lxd_lastMidY = lxd_my;
+
+        lxd_clamp();                             // 实时收敛，边界处不会拉出空白
+        lxd_apply(false);
+        return;
+      }
+
+      if (e.touches.length === 1 && lxd_dragging && lxd_scale > 1) {
+        e.preventDefault();
+        var lxd_t = e.touches[0];
+        lxd_tx = lxd_dragOriginX + (lxd_t.clientX - lxd_dragStartX);
+        lxd_ty = lxd_dragOriginY + (lxd_t.clientY - lxd_dragStartY);
+        lxd_clamp();                             // 拖动过程中就卡住边界
+        lxd_apply(false);
+      }
+    }, { passive: false });
+
+    // 手指抬起：收尾、判断双击、缩回 1x 时自动居中
+    lxd_viewer.addEventListener('touchend', function (e) {
+      if (e.touches.length >= 2) { return; }
+
+      if (e.touches.length === 1) {
+        // 松开一根，剩一根：切换为单指拖动，重置基准，避免图片"跳一下"
+        lxd_pinching = false;
+        lxd_lastDist = 0;
+        var lxd_left = e.touches[0];
+        lxd_dragging = lxd_scale > 1;
+        lxd_dragStartX = lxd_left.clientX;
+        lxd_dragStartY = lxd_left.clientY;
+        lxd_dragOriginX = lxd_tx;
+        lxd_dragOriginY = lxd_ty;
+        return;
+      }
+
+      // 全部抬起
+      lxd_pinching = false;
+      lxd_lastDist = 0;
+      lxd_dragging = false;
+
+      // 双击判定：两次按下间隔 < 300ms，且手指几乎没动
+      if (lxd_tapStart) {
+        var lxd_moved = Math.hypot(e.changedTouches[0].clientX - lxd_tapStart.x,
+                                   e.changedTouches[0].clientY - lxd_tapStart.y);
+        var lxd_short = Date.now() - lxd_tapStart.time < 250;
+        if (lxd_moved < 12 && lxd_short) {
+          var lxd_now = Date.now();
+          if (lxd_now - lxd_lastTap < 300) {
+            var lxd_rect = lxd_viewer.getBoundingClientRect();
+            if (lxd_scale > 1) {
+              lxd_zoomTo(1, lxd_viewer.clientWidth / 2, lxd_viewer.clientHeight / 2, true);
+            } else {
+              lxd_zoomTo(2, lxd_tapStart.x - lxd_rect.left, lxd_tapStart.y - lxd_rect.top, true);
+            }
+            lxd_lastTap = 0;                     // 重置，避免三击被当成两次双击
+          } else {
+            lxd_lastTap = lxd_now;
+          }
+        }
+        lxd_tapStart = null;
+      }
+
+      // 松手后统一收敛一次：1x 自动居中，2x/4x 卡在边界内
+      if (lxd_scale <= 1.02) {
+        lxd_scale = 1;
+        lxd_tx = 0;
+        lxd_ty = 0;
+      }
+      lxd_clamp();
+      lxd_apply(true);
+    });
+
+    // 被来电、通知打断：清理手势状态，缩回合理范围
+    lxd_viewer.addEventListener('touchcancel', function () {
+      lxd_pinching = false;
+      lxd_dragging = false;
+      lxd_lastDist = 0;
+      lxd_clamp();
+      lxd_apply(true);
+    });
+  </script>
+</body>
+</html>

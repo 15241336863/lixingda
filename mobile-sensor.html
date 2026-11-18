@@ -1,0 +1,308 @@
+<!--
+  作者：李兴达（学号 24002120311）
+  建立时间：2026-11-18
+  使用大模型：DeepSeek-V4.1-Flash
+  功能名称：摇一摇抽菜谱——devicemotion 加速度阈值 18、1.5 秒冷却、无传感器时降级为按钮抽取
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <!-- 手机页面必备三件套之一：视口 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>摇一摇 · 今日菜谱</title>
+  <style>
+    /* 手机页面必备三件套之二：去掉点击灰块 */
+    * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+      background: radial-gradient(120% 80% at 50% 0%, #221a2e 0%, #0f0d16 62%);
+      color: #ece7f2;
+      min-height: 100vh;
+      padding: 26px 18px 40px;
+      text-align: center;
+    }
+
+    .lxd_head h1 { font-size: 22px; letter-spacing: 4px; margin: 0 0 10px; }
+    .lxd_head p { font-size: 13px; color: #a094b4; margin: 0; line-height: 1.9; letter-spacing: 1px; }
+
+    /* 手机示意图：摇动时会跟着晃，给一个"正在摇"的反馈 */
+    .lxd_phone {
+      width: 96px;
+      height: 168px;
+      margin: 26px auto 0;
+      border: 3px solid #6b5c85;
+      border-radius: 16px;
+      position: relative;
+      background: rgba(255, 255, 255, .03);
+    }
+    .lxd_phone::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: 8px;
+      width: 30px;
+      height: 4px;
+      border-radius: 2px;
+      background: #6b5c85;
+      transform: translateX(-50%);
+    }
+    .lxd_phone.lxd_shaking { animation: lxd_shake .38s ease; }
+    @keyframes lxd_shake {
+      0%, 100% { transform: translateX(0) rotate(0); }
+      20% { transform: translateX(-11px) rotate(-7deg); }
+      45% { transform: translateX(9px) rotate(6deg); }
+      70% { transform: translateX(-5px) rotate(-3deg); }
+    }
+
+    /* 结果卡片 */
+    .lxd_result {
+      margin: 24px auto 0;
+      max-width: 400px;
+      min-height: 132px;
+      border-radius: 18px;
+      background: linear-gradient(150deg, rgba(255,255,255,.09), rgba(255,255,255,.03));
+      border: 1px solid rgba(255, 255, 255, .12);
+      padding: 22px 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 8px;
+    }
+    .lxd_result.lxd_pop { animation: lxd_pop .45s cubic-bezier(.2, 1.5, .4, 1); }
+    @keyframes lxd_pop {
+      0% { transform: scale(.7); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .lxd_emoji { font-size: 40px; line-height: 1; }
+    .lxd_dish { font-size: 22px; font-weight: 800; letter-spacing: 3px; color: #ffd79a; }
+    .lxd_meta { font-size: 13px; color: #b9aecb; letter-spacing: 1px; line-height: 1.8; }
+
+    /* 状态条：提示用手机打开 / 不支持 */
+    .lxd_status {
+      margin: 18px auto 0;
+      max-width: 400px;
+      font-size: 12.5px;
+      line-height: 1.9;
+      color: #9c90b0;
+      background: rgba(255, 255, 255, .04);
+      border: 1px dashed rgba(255, 255, 255, .14);
+      border-radius: 12px;
+      padding: 12px 14px;
+    }
+    .lxd_status.lxd_warn { color: #ffbd7a; border-color: rgba(255, 189, 122, .45); }
+
+    .lxd_btn {
+      display: inline-block;
+      margin: 18px 8px 0;
+      padding: 12px 26px;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: #1a1424;
+      background: linear-gradient(135deg, #ffd79a, #ffb35c);
+      border: none;
+      border-radius: 999px;
+      cursor: pointer;
+      box-shadow: 0 10px 24px rgba(255, 179, 92, .25);
+    }
+    .lxd_btn:active { transform: scale(.97); }
+    .lxd_btn.lxd_ghost {
+      background: transparent;
+      color: #cfc3e0;
+      border: 1px solid rgba(255, 255, 255, .28);
+      box-shadow: none;
+    }
+
+    .lxd_readout {
+      margin-top: 20px;
+      font-size: 12px;
+      color: #7f7592;
+      letter-spacing: 1px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .lxd_foot {
+      margin: 30px auto 0;
+      max-width: 460px;
+      text-align: left;
+      font-size: 12.5px;
+      line-height: 2;
+      color: #8d829f;
+    }
+    .lxd_foot h3 { font-size: 14px; color: #cfc3e0; letter-spacing: 1px; margin: 0 0 8px; }
+    .lxd_foot code { background: rgba(255,255,255,.07); padding: 1px 5px; border-radius: 4px; }
+
+    .lxd_back {
+      display: block;
+      text-align: center;
+      margin-top: 26px;
+      font-size: 13px;
+      color: #b3a7c6;
+      text-decoration: none;
+    }
+    .lxd_back:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="lxd_head">
+    <h1>摇 一 摇 菜 谱</h1>
+    <p>摇一摇手机，抽今日菜谱 · 阈值 18 · 冷却 1.5 秒</p>
+  </div>
+
+  <div class="lxd_phone" id="lxd_phone"></div>
+
+  <div class="lxd_status" id="lxd_status">正在等待传感器数据…</div>
+
+  <div class="lxd_result" id="lxd_result">
+    <div class="lxd_emoji">🍽️</div>
+    <div class="lxd_dish">还没有菜谱</div>
+    <div class="lxd_meta">摇一摇手机，或者点下面的按钮</div>
+  </div>
+
+  <!-- 降级方案：按钮永远可用，不依赖传感器 -->
+  <button class="lxd_btn" id="lxd_drawBtn">点我抽一次</button>
+  <button class="lxd_btn lxd_ghost" id="lxd_authBtn" style="display:none">授权使用传感器</button>
+
+  <div class="lxd_readout" id="lxd_readout">合成加速度：—</div>
+
+  <div class="lxd_foot">
+    <h3>为什么必须做降级？</h3>
+    <p>
+      ① 电脑浏览器、部分安卓机、以及 iOS 未授权时，<code>devicemotion</code> 根本不会触发，页面会一片空白；<br>
+      ② iOS 13+ 必须由用户点击后调用 <code>DeviceMotionEvent.requestPermission()</code>，否则拿不到数据；<br>
+      ③ 用户可能关掉了"运动与健身"权限。所以必须有一个不依赖传感器的入口（按钮抽签），保证功能永远可用。
+    </p>
+  </div>
+
+  <a class="lxd_back" href="index.html">← 返回首页</a>
+
+  <script>
+    var lxd_phone = document.getElementById('lxd_phone');
+    var lxd_status = document.getElementById('lxd_status');
+    var lxd_result = document.getElementById('lxd_result');
+    var lxd_readout = document.getElementById('lxd_readout');
+    var lxd_drawBtn = document.getElementById('lxd_drawBtn');
+    var lxd_authBtn = document.getElementById('lxd_authBtn');
+
+    // 菜谱库：抽签时随机取一条
+    var lxd_dishes = [
+      { emoji: '🍜', name: '兰州牛肉面', meta: '一清二白三红四绿五黄 · 汤头最见功夫' },
+      { emoji: '🥟', name: '韭菜猪肉饺', meta: '皮薄馅大 · 蘸醋加蒜，冬天最幸福' },
+      { emoji: '🍲', name: '番茄牛腩煲', meta: '炖足两小时 · 汤汁拌饭能吃两碗' },
+      { emoji: '🍚', name: '扬州炒饭', meta: '粒粒分明 · 虾仁火腿青豆一样不少' },
+      { emoji: '🍗', name: '可乐鸡翅', meta: '零失败家常菜 · 收汁到发亮最好吃' },
+      { emoji: '🥘', name: '麻婆豆腐', meta: '麻辣鲜香酥 · 一勺盖在米饭上' },
+      { emoji: '🍤', name: '蒜蓉粉丝虾', meta: '蒸 8 分钟 · 蒜香全被粉丝吸走' },
+      { emoji: '🍥', name: '三鲜馄饨', meta: '皮滑汤鲜 · 撒一把紫菜和虾皮' }
+    ];
+
+    var lxd_lastShake = 0;       // 上次触发时间戳，用于 1.5 秒冷却
+    var lxd_gotMotion = false;   // 是否真的收到过传感器数据
+    var lxd_permAsked = false;   // 是否已发起过 iOS 权限申请
+
+    // 随机抽一道菜，更新卡片并播放弹出动画
+    function lxd_drawDish() {
+      var lxd_d = lxd_dishes[Math.floor(Math.random() * lxd_dishes.length)];
+      lxd_result.innerHTML =
+        '<div class="lxd_emoji">' + lxd_d.emoji + '</div>' +
+        '<div class="lxd_dish">' + lxd_d.name + '</div>' +
+        '<div class="lxd_meta">' + lxd_d.meta + '</div>';
+      // 先移除再加回，保证连续抽取时动画能重播
+      lxd_result.classList.remove('lxd_pop');
+      void lxd_result.offsetWidth;
+      lxd_result.classList.add('lxd_pop');
+
+      // 手机示意图晃一下，给"摇"一个视觉反馈
+      lxd_phone.classList.remove('lxd_shaking');
+      void lxd_phone.offsetWidth;
+      lxd_phone.classList.add('lxd_shaking');
+    }
+
+    // 一次性摇动触发入口：冷却 1.5 秒，防止一次摇动连抽十几次
+    function lxd_triggerShake() {
+      var lxd_now = Date.now();
+      if (lxd_now - lxd_lastShake < 1500) { return; }
+      lxd_lastShake = lxd_now;
+      lxd_drawDish();
+    }
+
+    // 传感器回调：用 accelerationIncludingGravity 合成三轴加速度
+    function lxd_onMotion(e) {
+      var lxd_a = e.accelerationIncludingGravity;
+      if (!lxd_a || lxd_a.x === null) { return; }   // 有事件但没数据，同样当不支持
+      if (!lxd_gotMotion) {
+        lxd_gotMotion = true;
+        lxd_status.classList.remove('lxd_warn');
+        lxd_status.textContent = '传感器已就绪 · 摇一摇手机即可抽取';
+      }
+      // 合成加速度 = √(x² + y² + z²)，静止时约等于 9.8
+      var lxd_g = Math.sqrt(
+        (lxd_a.x || 0) * (lxd_a.x || 0) +
+        (lxd_a.y || 0) * (lxd_a.y || 0) +
+        (lxd_a.z || 0) * (lxd_a.z || 0)
+      );
+      lxd_readout.textContent = '合成加速度：' + lxd_g.toFixed(1);
+      if (lxd_g > 18) { lxd_triggerShake(); }       // 超过阈值 18 判定为摇动
+    }
+
+    // 开始监听：iOS 需要先申请权限，其他平台直接监听
+    function lxd_startMotion() {
+      if (!window.DeviceMotionEvent) { lxd_fallback('当前设备不支持，请用手机打开'); return; }
+
+      // iOS 13+ 的权限接口存在时才需要申请
+      if (typeof DeviceMotionEvent.requestPermission === 'function') {
+        lxd_authBtn.style.display = 'inline-block';
+        lxd_status.textContent = 'iOS 设备需要先授权才能使用摇一摇';
+        if (!lxd_permAsked) { return; }
+      }
+
+      window.addEventListener('devicemotion', lxd_onMotion, { passive: true });
+
+      // 3 秒内一条数据都没收到，说明确实没有传感器，切到降级提示
+      setTimeout(function () {
+        if (!lxd_gotMotion) { lxd_fallback('当前设备不支持，请用手机打开'); }
+      }, 3000);
+    }
+
+    // 降级：给出明确提示，按钮始终可用，不报错、不白屏
+    function lxd_fallback(lxd_msg) {
+      lxd_status.classList.add('lxd_warn');
+      lxd_status.textContent = lxd_msg + ' —— 可以直接点下方「点我抽一次」';
+      lxd_readout.textContent = '合成加速度：不可用';
+    }
+
+    // 用户点击授权按钮：iOS 走 requestPermission，其他平台直接开始监听
+    lxd_authBtn.addEventListener('click', function () {
+      lxd_permAsked = true;
+      if (typeof DeviceMotionEvent.requestPermission === 'function') {
+        DeviceMotionEvent.requestPermission().then(function (lxd_state) {
+          if (lxd_state === 'granted') {
+            lxd_authBtn.style.display = 'none';
+            lxd_status.textContent = '已授权 · 摇一摇手机即可抽取';
+            window.addEventListener('devicemotion', lxd_onMotion, { passive: true });
+          } else {
+            lxd_fallback('权限被拒绝，传感器不可用');
+          }
+        }).catch(function () {
+          lxd_fallback('权限申请失败');
+        });
+      } else {
+        lxd_authBtn.style.display = 'none';
+        window.addEventListener('devicemotion', lxd_onMotion, { passive: true });
+      }
+    });
+
+    // 降级按钮：不依赖任何传感器，直接抽一道菜
+    lxd_drawBtn.addEventListener('click', function () {
+      lxd_lastShake = 0;   // 手动抽不受冷却限制
+      lxd_drawDish();
+    });
+
+    // 页面加载后立刻尝试启动传感器监听
+    lxd_startMotion();
+  </script>
+</body>
+</html>
