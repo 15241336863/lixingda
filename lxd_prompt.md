@@ -355,3 +355,11 @@ https://spontaneous-valkyrie-4e4229.netlify.app/swiper-lesson 查看这个链接
 **提示词**:
 
 任务三的图片给我换成菜谱
+
+---
+
+**时间**: 2026-11-18
+**模型**: DeepSeek-V4.1-Flash
+**提示词**:
+
+`/d:/HuaweiMoveData/Users/HW/Desktop/高级网页设计/任务三.mp4``/d:/HuaweiMoveData/Users/HW/Desktop/高级网页设计/任务四.mp4`将任务三的测试视频放到任务三中，任务四也是一样的

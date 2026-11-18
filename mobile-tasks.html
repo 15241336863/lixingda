@@ -244,6 +244,17 @@
     }
     .lxd_z-tools button:active { transform: scale(.95); }
 
+    /* 任务三、任务四共用的测试视频 */
+    .lxd_video {
+      display: block;
+      width: 100%;
+      max-width: 440px;
+      margin: 16px auto 0;
+      border-radius: 14px;
+      background: #05070a;
+      border: 1px solid rgba(255, 255, 255, .12);
+    }
+
     /* 鼠标可拖动时给个手势光标，拖拽中变成抓紧 */
     .lxd_z-viewer { cursor: grab; }
     .lxd_z-viewer.lxd_grabbing { cursor: grabbing; }
@@ -563,6 +574,7 @@
       <button id="lxd_z_reset" aria-label="还原">1x</button>
       <button id="lxd_z_in" aria-label="放大">＋</button>
     </div>
+    <video class="lxd_video" src="任务三.mp4" controls playsinline preload="metadata"></video>
     <p class="lxd_foot">
       <b>手机</b>：双指缩放 1x~4x、双击 1x/2x、放大后单指拖动。<br>
       <b>电脑</b>：鼠标滚轮缩放、按住图片拖动、双击切换 1x/2x。缩回 1x 自动居中。
@@ -590,6 +602,7 @@
     </div>
 
     <div class="lxd_s-readout" id="lxd_t_readout">左右倾斜 γ 0.0° · 前后倾斜 β 0.0°</div>
+    <video class="lxd_video" src="任务四.mp4" controls playsinline preload="metadata"></video>
     <div class="lxd_s-meta" id="lxd_s_meta">摇一摇手机抽一道菜 · 左右倾斜手机，手机和背景会产生视差位移</div>
 
     <div class="lxd_foot">
