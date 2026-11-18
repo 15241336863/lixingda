@@ -258,55 +258,74 @@
       pointer-events: none;
     }
 
-    /* ══════════ 任务四：摇一摇 ══════════ */
-    .lxd_s-phone {
-      width: 88px;
-      height: 156px;
-      margin: 8px auto 0;
-      border: 3px solid #6b5c85;
-      border-radius: 16px;
+    /* ══════════ 任务四：倾斜视差 ══════════ */
+    .lxd_t-scene {
       position: relative;
-      background: rgba(255, 255, 255, .03);
+      width: 100%;
+      height: min(58vh, 460px);
+      overflow: hidden;
+      border-radius: 20px;
+      background: radial-gradient(circle at 50% 42%, #2b2442, #0c0a12 72%);
+      touch-action: pan-y;
     }
-    .lxd_s-phone::after {
-      content: "";
+    .lxd_t-layer {
       position: absolute;
-      left: 50%; bottom: 8px;
-      width: 28px; height: 4px;
-      border-radius: 2px;
-      background: #6b5c85;
-      transform: translateX(-50%);
+      will-change: transform;
+      transition: transform .18s ease-out;
+      pointer-events: none;
     }
-    .lxd_s-phone.lxd_shaking { animation: lxd_shake .38s ease; }
-    @keyframes lxd_shake {
-      0%, 100% { transform: translateX(0) rotate(0); }
-      20% { transform: translateX(-11px) rotate(-7deg); }
-      45% { transform: translateX(9px) rotate(6deg); }
-      70% { transform: translateX(-5px) rotate(-3deg); }
+    /* 背景层：铺满并轻微虚化，倾斜时几乎不动 */
+    .lxd_t-back {
+      left: -8%; top: -8%;
+      width: 116%; height: 116%;
+      object-fit: cover;
+      opacity: .42;
+      filter: blur(1.5px) saturate(.85);
     }
-    .lxd_s-result {
-      margin: 18px auto 0;
-      max-width: 400px;
-      min-height: 126px;
-      border-radius: 18px;
-      background: linear-gradient(150deg, rgba(255,255,255,.09), rgba(255,255,255,.03));
-      border: 1px solid rgba(255, 255, 255, .12);
-      padding: 20px 18px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      gap: 8px;
-      text-align: center;
+    /* 中景层 */
+    .lxd_t-mid {
+      left: 6%; top: 12%;
+      width: 60%; height: 50%;
+      object-fit: cover;
+      border-radius: 14px;
+      box-shadow: 0 18px 40px rgba(0, 0, 0, .55);
     }
-    .lxd_s-result.lxd_pop { animation: lxd_pop .45s cubic-bezier(.2, 1.5, .4, 1); }
-    @keyframes lxd_pop {
-      0% { transform: scale(.7); opacity: 0; }
-      100% { transform: scale(1); opacity: 1; }
+    /* 前景层：位移最大，视差最明显 */
+    .lxd_t-front {
+      right: 5%; bottom: 9%;
+      width: 54%; height: 46%;
+      object-fit: cover;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, .16);
+      box-shadow: 0 24px 50px rgba(0, 0, 0, .6);
     }
-    .lxd_s-emoji { font-size: 38px; line-height: 1; }
-    .lxd_s-dish { font-size: 21px; font-weight: 800; letter-spacing: 3px; color: #ffd79a; }
-    .lxd_s-meta { font-size: 12.5px; color: #b9aecb; line-height: 1.8; }
+    .lxd_t-title {
+      left: 20px; top: 18px;
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: 5px;
+      color: #fff;
+      text-shadow: 0 6px 20px rgba(0, 0, 0, .65);
+    }
+    .lxd_t-title span {
+      display: block;
+      margin-top: 7px;
+      font-size: 11px;
+      letter-spacing: 2px;
+      color: #ffd79a;
+      font-weight: 600;
+    }
+    .lxd_t-badge {
+      position: absolute;
+      left: 14px; bottom: 13px;
+      font-size: 11.5px;
+      color: #d7cfc0;
+      background: rgba(0, 0, 0, .52);
+      border-radius: 999px;
+      padding: 5px 12px;
+      font-variant-numeric: tabular-nums;
+      pointer-events: none;
+    }
 
     .lxd_s-status {
       margin: 16px auto 0;
@@ -385,7 +404,7 @@
 <body>
   <div class="lxd_top">
     <h1>移 动 端 触 摸 交 互</h1>
-    <p>四个任务合一 · 事件记录 / 手势卡片 / 图片查看器 / 摇一摇</p>
+    <p>四个任务合一 · 事件记录 / 手势卡片 / 图片查看器 / 倾斜视差</p>
   </div>
 
   <!-- 四个任务的切换按钮 -->
@@ -529,28 +548,33 @@
 
   <!-- ══════════ 任务四 ══════════ -->
   <section class="lxd_panel" id="lxd_p4">
-    <div class="lxd_s-phone" id="lxd_s_phone"></div>
-    <div class="lxd_s-status" id="lxd_s_status">正在等待传感器数据…</div>
-
-    <div class="lxd_s-result" id="lxd_s_result">
-      <div class="lxd_s-emoji">🍽️</div>
-      <div class="lxd_s-dish">还没有菜谱</div>
-      <div class="lxd_s-meta">摇一摇手机，或者点下面的按钮</div>
+    <div class="lxd_t-scene" id="lxd_t_scene">
+      <img class="lxd_t-layer lxd_t-back" data-depth="14" src="swiper-imgs/fuxing_1.jpg" alt="复兴号">
+      <img class="lxd_t-layer lxd_t-mid" data-depth="30" src="swiper-imgs/c919_1.jpg" alt="C919 大飞机">
+      <img class="lxd_t-layer lxd_t-front" data-depth="46" src="swiper-imgs/adora_1.jpg" alt="爱达·魔都号">
+      <div class="lxd_t-layer lxd_t-title" data-depth="20">倾斜视差<span>TILT PARALLAX</span></div>
+      <div class="lxd_t-badge" id="lxd_t_badge">γ 0.0° · β 0.0°</div>
     </div>
+
+    <div class="lxd_s-status" id="lxd_t_status">正在等待方向传感器数据…</div>
 
     <div style="text-align:center">
-      <button class="lxd_btn" id="lxd_s_draw">点我抽一次</button>
-      <button class="lxd_btn lxd_ghost" id="lxd_s_auth" style="display:none">授权使用传感器</button>
+      <button class="lxd_btn lxd_ghost" id="lxd_t_auth" style="display:none">授权使用方向传感器</button>
     </div>
 
-    <div class="lxd_s-readout" id="lxd_s_readout">合成加速度：—</div>
+    <div class="lxd_s-readout" id="lxd_t_readout">左右倾斜 γ 0.0° · 前后倾斜 β 0.0°</div>
 
     <div class="lxd_foot">
+      <h3>实现思路</h3>
+      <p>
+        用 <code>deviceorientation</code> 读取 <code>gamma</code>（左右倾斜，-90~90°）和 <code>beta</code>（前后倾斜）；<br>
+        首次读数记为 0°，之后只取相对变化量，避免手机本来就斜着拿导致画面偏到一边；<br>
+        每层图片带一个 <code>data-depth</code>，位移 = 倾斜比例 × 深度：前景 46px、中景 30px、文字 20px、背景 14px，越靠前动得越多，于是产生视差。
+      </p>
       <h3>为什么必须做降级？</h3>
       <p>
-        ① 电脑浏览器与部分安卓机没有加速度传感器，<code>devicemotion</code> 根本不触发，页面会空白；<br>
-        ② iOS 13+ 必须由用户点击后调用 <code>DeviceMotionEvent.requestPermission()</code>，否则拿不到数据；<br>
-        ③ 用户可能关掉"运动与健身"权限。所以要有一个不依赖传感器的按钮入口，保证功能永远可用。
+        电脑没有方向传感器、部分安卓机不上报数据、iOS 13+ 还要 <code>DeviceOrientationEvent.requestPermission()</code> 授权。
+        收不到数据时自动切到鼠标模拟：鼠标在画面里的横向位置直接当作倾斜量，保证任何设备都能演示。
       </p>
     </div>
   </section>
@@ -969,122 +993,102 @@
       lxd_z_zoomTo(1, lxd_z_viewer.clientWidth / 2, lxd_z_viewer.clientHeight / 2, true);
     });
 
-    /* ══════════════ 任务四：摇一摇 ══════════════ */
-    var lxd_s_phone = document.getElementById('lxd_s_phone');
-    var lxd_s_status = document.getElementById('lxd_s_status');
-    var lxd_s_result = document.getElementById('lxd_s_result');
-    var lxd_s_readout = document.getElementById('lxd_s_readout');
-    var lxd_s_draw = document.getElementById('lxd_s_draw');
-    var lxd_s_auth = document.getElementById('lxd_s_auth');
+    /* ══════════════ 任务四：倾斜视差 ══════════════ */
+    var lxd_t_scene = document.getElementById('lxd_t_scene');
+    var lxd_t_layers = document.querySelectorAll('.lxd_t-layer');
+    var lxd_t_status = document.getElementById('lxd_t_status');
+    var lxd_t_badge = document.getElementById('lxd_t_badge');
+    var lxd_t_readout = document.getElementById('lxd_t_readout');
+    var lxd_t_auth = document.getElementById('lxd_t_auth');
 
-    var lxd_s_dishes = [
-      { emoji: '🍜', name: '兰州牛肉面', meta: '一清二白三红四绿五黄 · 汤头最见功夫' },
-      { emoji: '🥟', name: '韭菜猪肉饺', meta: '皮薄馅大 · 蘸醋加蒜，冬天最幸福' },
-      { emoji: '🍲', name: '番茄牛腩煲', meta: '炖足两小时 · 汤汁拌饭能吃两碗' },
-      { emoji: '🍚', name: '扬州炒饭', meta: '粒粒分明 · 虾仁火腿青豆一样不少' },
-      { emoji: '🍗', name: '可乐鸡翅', meta: '零失败家常菜 · 收汁到发亮最好吃' },
-      { emoji: '🥘', name: '麻婆豆腐', meta: '麻辣鲜香酥 · 一勺盖在米饭上' },
-      { emoji: '🍤', name: '蒜蓉粉丝虾', meta: '蒸 8 分钟 · 蒜香全被粉丝吸走' },
-      { emoji: '🍥', name: '三鲜馄饨', meta: '皮滑汤鲜 · 撒一把紫菜和虾皮' }
-    ];
+    var lxd_t_baseGamma = 0;   // 首次读到的左右角度，作为零点
+    var lxd_t_baseBeta = 0;    // 首次读到的前后角度，作为零点
+    var lxd_t_gotOrient = false;
+    var lxd_t_permAsked = false;
 
-    var lxd_s_lastShake = 0;
-    var lxd_s_gotMotion = false;
-    var lxd_s_permAsked = false;
-
-    // 随机抽一道菜，更新卡片并播放弹出与摇晃动画
-    function lxd_s_drawDish() {
-      var lxd_d = lxd_s_dishes[Math.floor(Math.random() * lxd_s_dishes.length)];
-      lxd_s_result.innerHTML =
-        '<div class="lxd_s-emoji">' + lxd_d.emoji + '</div>' +
-        '<div class="lxd_s-dish">' + lxd_d.name + '</div>' +
-        '<div class="lxd_s-meta">' + lxd_d.meta + '</div>';
-
-      lxd_s_result.classList.remove('lxd_pop');
-      void lxd_s_result.offsetWidth;
-      lxd_s_result.classList.add('lxd_pop');
-
-      lxd_s_phone.classList.remove('lxd_shaking');
-      void lxd_s_phone.offsetWidth;
-      lxd_s_phone.classList.add('lxd_shaking');
+    // 把倾斜角度换算成每层位移：位移 = 倾斜比例 × 该层深度，越靠前动得越多
+    function lxd_t_apply(lxd_gamma, lxd_beta) {
+      var lxd_rx = Math.max(-1, Math.min(1, lxd_gamma / 30));
+      var lxd_ry = Math.max(-1, Math.min(1, lxd_beta / 30));
+      lxd_t_layers.forEach(function (lxd_el) {
+        var lxd_depth = parseFloat(lxd_el.dataset.depth) || 0;
+        lxd_el.style.transform = 'translate3d(' +
+          (lxd_rx * lxd_depth).toFixed(1) + 'px,' +
+          (lxd_ry * lxd_depth * 0.6).toFixed(1) + 'px,0)';
+      });
+      lxd_t_badge.textContent = 'γ ' + lxd_gamma.toFixed(1) + '° · β ' + lxd_beta.toFixed(1) + '°';
+      lxd_t_readout.textContent = '左右倾斜 γ ' + lxd_gamma.toFixed(1) + '° · 前后倾斜 β ' + lxd_beta.toFixed(1) + '°';
     }
 
-    // 摇动触发入口：1.5 秒冷却，防止一次摇动连抽多次
-    function lxd_s_trigger() {
-      var lxd_now = Date.now();
-      if (lxd_now - lxd_s_lastShake < 1500) { return; }
-      lxd_s_lastShake = lxd_now;
-      lxd_s_drawDish();
-    }
-
-    // 传感器回调：合成三轴加速度，超过 18 判定为摇动
-    function lxd_s_onMotion(e) {
-      var lxd_a = e.accelerationIncludingGravity;
-      if (!lxd_a || lxd_a.x === null) { return; }
-      if (!lxd_s_gotMotion) {
-        lxd_s_gotMotion = true;
-        lxd_s_status.classList.remove('lxd_warn');
-        lxd_s_status.textContent = '传感器已就绪 · 摇一摇手机即可抽取';
+    // 传感器回调：第一次读数当作零点，之后只取相对变化量
+    function lxd_t_onOrient(e) {
+      if (e.gamma === null || e.gamma === undefined) { return; }
+      if (!lxd_t_gotOrient) {
+        lxd_t_gotOrient = true;
+        lxd_t_baseGamma = e.gamma;
+        lxd_t_baseBeta = e.beta || 0;
+        lxd_t_status.classList.remove('lxd_warn');
+        lxd_t_status.textContent = '传感器已就绪 · 左右倾斜手机看视差（当前角度已设为 0°）';
+        lxd_t_auth.style.display = 'none';
       }
-      var lxd_g = Math.sqrt(
-        (lxd_a.x || 0) * (lxd_a.x || 0) +
-        (lxd_a.y || 0) * (lxd_a.y || 0) +
-        (lxd_a.z || 0) * (lxd_a.z || 0)
-      );
-      lxd_s_readout.textContent = '合成加速度：' + lxd_g.toFixed(1);
-      if (lxd_g > 18) { lxd_s_trigger(); }
+      lxd_t_apply(e.gamma - lxd_t_baseGamma, (e.beta || 0) - lxd_t_baseBeta);
     }
 
-    // 开始监听传感器：iOS 需要先申请权限
-    function lxd_s_start() {
-      if (!window.DeviceMotionEvent) { lxd_s_fallback('当前设备不支持，请用手机打开'); return; }
-      if (typeof DeviceMotionEvent.requestPermission === 'function' && !lxd_s_permAsked) {
-        lxd_s_auth.style.display = 'inline-block';
-        lxd_s_status.textContent = 'iOS 设备需要先授权才能使用摇一摇';
+    // 收不到传感器时的降级：用鼠标在画面内的位置模拟倾斜
+    function lxd_t_mouseTilt(e) {
+      if (lxd_t_gotOrient) { return; }
+      var lxd_rect = lxd_t_scene.getBoundingClientRect();
+      var lxd_rx = ((e.clientX - lxd_rect.left) / lxd_rect.width) * 2 - 1;
+      var lxd_ry = ((e.clientY - lxd_rect.top) / lxd_rect.height) * 2 - 1;
+      lxd_t_apply(lxd_rx * 30, lxd_ry * 30);
+    }
+
+    // 开始监听方向传感器：iOS 需要用户点击后才能申请权限
+    function lxd_t_start() {
+      if (!window.DeviceOrientationEvent) { lxd_t_fallback('当前设备不支持方向传感器'); return; }
+      if (typeof DeviceOrientationEvent.requestPermission === 'function' && !lxd_t_permAsked) {
+        lxd_t_auth.style.display = 'inline-block';
+        lxd_t_status.textContent = 'iOS 设备需要先授权方向传感器';
         return;
       }
-      window.addEventListener('devicemotion', lxd_s_onMotion, { passive: true });
+      window.addEventListener('deviceorientation', lxd_t_onOrient);
       setTimeout(function () {
-        if (!lxd_s_gotMotion) { lxd_s_fallback('当前设备不支持，请用手机打开'); }
-      }, 3000);
+        if (!lxd_t_gotOrient) { lxd_t_fallback('没有收到方向数据'); }
+      }, 2500);
     }
 
-    // 降级提示：按钮始终可用，不报错不白屏
-    function lxd_s_fallback(lxd_msg) {
-      lxd_s_status.classList.add('lxd_warn');
-      lxd_s_status.textContent = lxd_msg + ' —— 可以直接点下方「点我抽一次」';
-      lxd_s_readout.textContent = '合成加速度：不可用';
+    // 降级提示：切到鼠标模拟，保证任何设备都能演示
+    function lxd_t_fallback(lxd_msg) {
+      lxd_t_status.classList.add('lxd_warn');
+      lxd_t_status.textContent = lxd_msg + ' —— 把鼠标移到画面上左右移动，同样能看视差';
+      lxd_t_scene.style.cursor = 'ew-resize';
     }
 
     // 授权按钮：iOS 走 requestPermission，其他平台直接监听
-    lxd_s_auth.addEventListener('click', function () {
-      lxd_s_permAsked = true;
-      if (typeof DeviceMotionEvent.requestPermission === 'function') {
-        DeviceMotionEvent.requestPermission().then(function (lxd_state) {
+    lxd_t_auth.addEventListener('click', function () {
+      lxd_t_permAsked = true;
+      if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+        DeviceOrientationEvent.requestPermission().then(function (lxd_state) {
           if (lxd_state === 'granted') {
-            lxd_s_auth.style.display = 'none';
-            lxd_s_status.textContent = '已授权 · 摇一摇手机即可抽取';
-            window.addEventListener('devicemotion', lxd_s_onMotion, { passive: true });
+            lxd_t_auth.style.display = 'none';
+            window.addEventListener('deviceorientation', lxd_t_onOrient);
           } else {
-            lxd_s_fallback('权限被拒绝，传感器不可用');
+            lxd_t_fallback('权限被拒绝，传感器不可用');
           }
         }).catch(function () {
-          lxd_s_fallback('权限申请失败');
+          lxd_t_fallback('权限申请失败');
         });
       } else {
-        lxd_s_auth.style.display = 'none';
-        lxd_s_start();
+        lxd_t_auth.style.display = 'none';
+        lxd_t_start();
       }
     });
 
-    // 降级按钮：不依赖传感器，直接抽一道菜
-    lxd_s_draw.addEventListener('click', function () {
-      lxd_s_lastShake = 0;
-      lxd_s_drawDish();
-    });
+    // 鼠标在画面上移动时模拟倾斜（有真实传感器时自动失效）
+    lxd_t_scene.addEventListener('mousemove', lxd_t_mouseTilt);
 
     // 启动传感器监听
-    lxd_s_start();
+    lxd_t_start();
   </script>
 </body>
 </html>
