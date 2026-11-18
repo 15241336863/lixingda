@@ -347,3 +347,11 @@ https://spontaneous-valkyrie-4e4229.netlify.app/swiper-lesson 查看这个链接
 **提示词**:
 
 我是说手机的那个画面换成下面的那个菜的图片
+
+---
+
+**时间**: 2026-11-18
+**模型**: DeepSeek-V4.1-Flash
+**提示词**:
+
+任务三的图片给我换成菜谱

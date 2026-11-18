@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1200" viewBox="0 0 1200 1200">
+  作者：李兴达　建立时间：2026-11-18
+  <defs>
+    <linearGradient id="lxd_paper" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fdfaf3"/>
+      <stop offset="1" stop-color="#f5ecdb"/>
+    </linearGradient>
+    <pattern id="lxd_dots" width="22" height="22" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1" fill="#e7dcc8"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="1200" fill="#ece2cf"/>
+  <rect x="22" y="22" width="1156" height="1156" fill="url(#lxd_paper)"/>
+  <rect x="22" y="22" width="1156" height="1156" fill="url(#lxd_dots)" opacity=".6"/>
+  <rect x="44" y="44" width="1112" height="1112" fill="none" stroke="#d9c8aa" stroke-width="2"/>
+  <rect x="56" y="56" width="1088" height="1088" fill="none" stroke="#e8ddc8" stroke-width="1"/>
+
+  <g font-family="'Microsoft YaHei','PingFang SC','Hiragino Sans GB',sans-serif">
+    <text x="90" y="122" font-size="21" letter-spacing="7" fill="#b08a5a">LXD KITCHEN · 家常菜谱</text>
+    <text x="90" y="208" font-size="62" font-weight="700" letter-spacing="5" fill="#2f2418">番茄牛腩煲</text>
+    <text x="92" y="254" font-size="22" letter-spacing="2" fill="#8a7358">4 人份 · 约 2 小时 · 一锅炖 · 汤汁拌饭最香</text>
+    <line x1="90" y1="288" x2="1110" y2="288" stroke="#d9c8aa" stroke-width="2"/>
+
+    <g transform="translate(1024 152)">
+      <circle r="66" fill="none" stroke="#c2603c" stroke-width="4"/>
+      <circle r="56" fill="none" stroke="#c2603c" stroke-width="1" stroke-dasharray="4 5"/>
+      <text y="-6" text-anchor="middle" font-size="24" fill="#c2603c" letter-spacing="2">李兴达</text>
+      <text y="26" text-anchor="middle" font-size="20" fill="#c2603c" letter-spacing="1">私房菜</text>
+    </g>
+
+    <text x="90" y="348" font-size="27" font-weight="700" letter-spacing="4" fill="#2f2418">食材</text>
+    <text x="90" y="382" font-size="17" letter-spacing="4" fill="#a8906c">INGREDIENTS</text>
+
+    <g font-size="26" fill="#3a2e20">
+      <text x="90" y="440">牛腩</text>
+      <text x="380" y="440" font-size="24" fill="#7a664d" text-anchor="end">600 g</text>
+      <text x="90" y="502">番茄</text>
+      <text x="380" y="502" font-size="24" fill="#7a664d" text-anchor="end">4 个</text>
+      <text x="90" y="564">洋葱</text>
+      <text x="380" y="564" font-size="24" fill="#7a664d" text-anchor="end">半个</text>
+      <text x="90" y="626">姜片</text>
+      <text x="380" y="626" font-size="24" fill="#7a664d" text-anchor="end">4 片</text>
+      <text x="90" y="688">番茄膏</text>
+      <text x="380" y="688" font-size="24" fill="#7a664d" text-anchor="end">2 大勺</text>
+      <text x="90" y="750">生抽</text>
+      <text x="380" y="750" font-size="24" fill="#7a664d" text-anchor="end">2 勺</text>
+      <text x="90" y="812">冰糖</text>
+      <text x="380" y="812" font-size="24" fill="#7a664d" text-anchor="end">10 g</text>
+      <text x="90" y="874">盐 · 葱花</text>
+      <text x="380" y="874" font-size="24" fill="#7a664d" text-anchor="end">适量</text>
+    </g>
+    <g stroke="#e4d8c2" stroke-width="1.5">
+      <line x1="90" y1="460" x2="380" y2="460"/>
+      <line x1="90" y1="522" x2="380" y2="522"/>
+      <line x1="90" y1="584" x2="380" y2="584"/>
+      <line x1="90" y1="646" x2="380" y2="646"/>
+      <line x1="90" y1="708" x2="380" y2="708"/>
+      <line x1="90" y1="770" x2="380" y2="770"/>
+      <line x1="90" y1="832" x2="380" y2="832"/>
+      <line x1="90" y1="894" x2="380" y2="894"/>
+    </g>
+
+    <line x1="436" y1="332" x2="436" y2="894" stroke="#e4d8c2" stroke-width="1.5"/>
+
+    <text x="470" y="348" font-size="27" font-weight="700" letter-spacing="4" fill="#2f2418">做法</text>
+    <text x="470" y="382" font-size="17" letter-spacing="4" fill="#a8906c">STEPS</text>
+
+    <g>
+      <circle cx="492" cy="440" r="21" fill="#c2603c"/>
+      <text x="492" y="448" text-anchor="middle" font-size="21" font-weight="700" fill="#fdfaf3">1</text>
+      <text x="530" y="449" font-size="25" fill="#3a2e20">牛腩切 3cm 块，冷水下锅加姜片，焯 5 分钟撇净浮沫，</text>
+      <text x="530" y="483" font-size="25" fill="#3a2e20">捞出用温水冲净备用。</text>
+
+      <circle cx="492" cy="550" r="21" fill="#c2603c"/>
+      <text x="492" y="558" text-anchor="middle" font-size="21" font-weight="700" fill="#fdfaf3">2</text>
+      <text x="530" y="559" font-size="25" fill="#3a2e20">热锅冷油炒香洋葱与姜片，下番茄块炒到出沙，加番茄膏</text>
+      <text x="530" y="593" font-size="25" fill="#3a2e20">炒匀上色。</text>
+
+      <circle cx="492" cy="660" r="21" fill="#c2603c"/>
+      <text x="492" y="668" text-anchor="middle" font-size="21" font-weight="700" fill="#fdfaf3">3</text>
+      <text x="530" y="669" font-size="25" fill="#3a2e20">倒入牛腩，加生抽、冰糖和没过食材的热水，大火烧开</text>
+      <text x="530" y="703" font-size="25" fill="#3a2e20">后转小火炖 90 分钟。</text>
+
+      <circle cx="492" cy="770" r="21" fill="#c2603c"/>
+      <text x="492" y="778" text-anchor="middle" font-size="21" font-weight="700" fill="#fdfaf3">4</text>
+      <text x="530" y="779" font-size="25" fill="#3a2e20">开盖收汁，加盐调味，撒葱花出锅，浇在米饭上直接开吃。</text>
+      <text x="530" y="813" font-size="25" fill="#3a2e20">剩下的汤别倒，拌面同样香。</text>
+    </g>
+
+    <rect x="90" y="928" width="1020" height="146" rx="14" fill="#f9f2e1" stroke="#e0d0b4"/>
+    <text x="120" y="974" font-size="24" font-weight="700" letter-spacing="2" fill="#b4552f">小贴士</text>
+    <text x="120" y="1016" font-size="23" fill="#5c4b36">番茄分两次下：一半先炒出沙做底味，一半最后 10 分钟再放，酸甜更有层次；</text>
+    <text x="120" y="1050" font-size="23" fill="#5c4b36">牛腩挑带筋的部位，炖足时间才软糯不柴。</text>
+
+    <text x="90" y="1132" font-size="18" letter-spacing="2" fill="#a8906c">双指放大可看清配料比例 · 李兴达 · 高级网页设计作业</text>
+  </g>
+</svg>
