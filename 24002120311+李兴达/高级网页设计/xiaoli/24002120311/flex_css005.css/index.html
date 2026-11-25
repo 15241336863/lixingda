@@ -82,6 +82,8 @@
         .note-card p { line-height: 1.8; color: var(--muted); font-size: 14px; }
         .main { padding: 36px 60px 60px; }
         .section-title { font-size: 26px; font-weight: 700; margin: 0 0 26px; color: #111827; }
+        .section-title.mt { margin-top: 52px; }
+        .section-sub { margin: -16px 0 22px; font-size: 14px; color: var(--muted); line-height: 1.8; }
         .project-list { display: grid; grid-template-columns: repeat(3, minmax(220px, 1fr)); gap: 22px; margin-top: 12px; }
         .project-item {
             display: block; text-decoration: none; background: var(--surface); border: 1px solid var(--line); border-radius: 18px;
@@ -95,13 +97,22 @@
             margin: 22px 0 18px; font-size: 28px; color: var(--green); background: var(--green-light);
         }
         .project-desc { line-height: 1.8; color: var(--muted); font-size: 14px; }
+        .need {
+            display: inline-block; margin-top: 12px; padding: 3px 10px; border-radius: 999px;
+            font-size: 11px; letter-spacing: 1px; color: #b45309;
+            background: rgba(217,108,77,.12); border: 1px solid rgba(217,108,77,.28);
+        }
         .prompt-box { margin-top: 38px; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 22px 20px; }
         .prompt-box h3 { font-size: 18px; color: #111827; margin-bottom: 10px; }
         .prompt-box p { color: var(--muted); line-height: 1.8; font-size: 14px; }
+        .prompt-box p + p { margin-top: 10px; }
         @media (max-width: 900px) {
             .hero { grid-template-columns: 1fr; }
             .project-list { grid-template-columns: 1fr; }
             .note-card { margin-top: 10px; }
+            .header { padding: 30px 20px 0; }
+            .main { padding: 26px 20px 40px; }
+            .topbar { padding: 0 20px; }
         }
     </style>
 </head>
@@ -112,7 +123,7 @@
                 <span class="brand-mark">A</span>
                 <span>李兴达 · 高级网页设计</span>
             </div>
-            <a href="#">查看本次实践要求</a>
+            <a href="#course">查看全部页面</a>
         </div>
 
         <header class="header">
@@ -128,18 +139,19 @@
 
                     <a class="cta" href="#course">课堂实践</a>
 
-                    <p>以结构为骨架，以视觉为表达，以交互为灵魂。这里汇总了课程中的主要实践内容，涵盖布局、字体图标、脚本逻辑与图形技术的综合展示。</p>
+                    <p>以结构为骨架，以视觉为表达，以交互为灵魂。本页汇总课程全部实践：基础布局与图标、脚本与事件、轮播与移动端交互，以及基于 Express 接口与 MySQL 数据的综合实践与 AI 知识库应用。</p>
                 </div>
 
                 <div class="note-card">
                     <h3>从基础开始，持续迭代</h3>
-                    <p>当前项目已从静态页面逐步扩展到具备布局、图标、交互、脚本等多个维度的综合实践内容，后续还将继续补充与完善更多模块。</p>
+                    <p>共 29 个实践页面，分三部分：课堂基础实践 10 个、综合实践（数据与 AI）5 个、早期综合练习 14 个。带「需本地后端」标记的页面要先启动项目后端才能看到数据。</p>
                 </div>
             </div>
         </header>
 
         <main class="main" id="course">
-            <h2 class="section-title">课堂目录</h2>
+            <h2 class="section-title">一、课堂基础实践</h2>
+            <p class="section-sub">布局、字体图标、SVG、函数与对象等课堂练习，均为原生代码，双击即可打开。</p>
 
             <div class="project-list">
                 <a class="project-item" href="review_flex005.html">
@@ -179,17 +191,217 @@
                     <div class="project-desc">将对象与方法结合页面场景，展现更真实的应用逻辑和内容渲染。</div>
                 </a>
 
-                <a class="project-item" href="#">
-                    <div class="project-tag">06 / Upcoming</div>
-                    <div class="icon-box">＋</div>
-                    <div class="project-title">后续模块</div>
-                    <div class="project-desc">更多课程实践将在后续继续补充完善，持续更新前端学习过程中的精华内容。</div>
+                <a class="project-item" href="function_apply.html">
+                    <div class="project-tag">06 / Function</div>
+                    <div class="icon-box">∑</div>
+                    <div class="project-title">函数综合应用</div>
+                    <div class="project-desc">多个函数协同完成计算与渲染，练习参数传递、返回值与调用顺序。</div>
+                </a>
+            </div>
+
+            <div class="project-list" style="margin-top: 22px;">
+                <a class="project-item" href="font/event_005.html">
+                    <div class="project-tag">07 / Event</div>
+                    <div class="icon-box">⚡</div>
+                    <div class="project-title">事件处理</div>
+                    <div class="project-desc">点击、输入等事件监听与回调，理解浏览器事件流与交互响应。</div>
+                </a>
+
+                <a class="project-item" href="font/JS_obj_fun005.html">
+                    <div class="project-tag">08 / Object</div>
+                    <div class="icon-box">⟲</div>
+                    <div class="project-title">对象与函数</div>
+                    <div class="project-desc">对象方法、this 指向与函数封装，练习面向对象的组织方式。</div>
+                </a>
+
+                <a class="project-item" href="font/obj005.html">
+                    <div class="project-tag">09 / Object</div>
+                    <div class="icon-box">▤</div>
+                    <div class="project-title">对象练习</div>
+                    <div class="project-desc">字面量对象与属性遍历，把数据与行为组织成可复用的结构。</div>
+                </a>
+            </div>
+
+            <div class="project-list" style="margin-top: 22px;">
+                <a class="project-item" href="font/dateType.html">
+                    <div class="project-tag">10 / DataType</div>
+                    <div class="icon-box">123</div>
+                    <div class="project-title">数据类型</div>
+                    <div class="project-desc">基本类型与引用类型的差异、类型转换与常见判断方法。</div>
+                </a>
+            </div>
+
+            <h2 class="section-title mt">二、综合实践 · 数据与 AI</h2>
+            <p class="section-sub">基于 Express（端口 8311）与 MySQL 的完整前后端实践。请先双击项目根目录 <code>lxd/start-backend.bat</code> 启动后端，再访问以下页面。</p>
+
+            <div class="project-list">
+                <a class="project-item" href="../../../../../../lxd/frontend/database.html">
+                    <div class="project-tag">11 / Database</div>
+                    <div class="icon-box">⛁</div>
+                    <div class="project-title">数据库连接测试</div>
+                    <div class="project-desc">输入 MySQL 主机、账号与密码，由后端实际连接并提示成功或失败原因。</div>
+                    <span class="need">需本地后端 8311</span>
+                </a>
+
+                <a class="project-item" href="../../../../../../lxd/frontend/recipe.html">
+                    <div class="project-tag">12 / MySQL</div>
+                    <div class="icon-box">🍲</div>
+                    <div class="project-title">家常菜谱库</div>
+                    <div class="project-desc">从 MySQL 表 lxd_recipe 读取 8 道菜谱，支持关键词搜索与分类筛选。</div>
+                    <span class="need">需本地后端 8311</span>
+                </a>
+
+                <a class="project-item" href="../../../../../../lxd/frontend/news.html">
+                    <div class="project-tag">13 / RESTful</div>
+                    <div class="icon-box">📰</div>
+                    <div class="project-title">科技新闻列表</div>
+                    <div class="project-desc">展示接口地址与 lxd_news 表中 8 条新闻，左图右文并支持搜索与栏目筛选。</div>
+                    <span class="need">需本地后端 8311</span>
+                </a>
+            </div>
+
+            <div class="project-list" style="margin-top: 22px;">
+                <a class="project-item" href="../../../../../../lxd/frontend/gallery.html">
+                    <div class="project-tag">14 / Gallery</div>
+                    <div class="icon-box">🖼</div>
+                    <div class="project-title">光影瞬间 · 图文列表</div>
+                    <div class="project-desc">展示 /api/gallery/list 与 lxd_gallery 表中的 8 组图文，配图为本地生成的 SVG 插图。</div>
+                    <span class="need">需本地后端 8311</span>
+                </a>
+
+                <a class="project-item" href="../../../../../../lxd/frontend/ai-chat.html">
+                    <div class="project-tag">15 / AI · RAG</div>
+                    <div class="icon-box">🤖</div>
+                    <div class="project-title">中华美食街 · AI 在线客服</div>
+                    <div class="project-desc">客服人设对话，硅基流动 / 七牛双平台切换；知识库上传 doc/docx/ppt/pptx/pdf 并基于资料问答，控制台输出收发数据。</div>
+                    <span class="need">需本地后端 8311</span>
+                </a>
+
+                <a class="project-item" href="../../../../../../lxd/frontend/index.html">
+                    <div class="project-tag">16 / Index</div>
+                    <div class="icon-box">⌂</div>
+                    <div class="project-title">综合实践首页（新版）</div>
+                    <div class="project-desc">带 canvas 粒子动画的新版导航首页，也可作为综合实践的独立入口。</div>
+                    <span class="need">需本地后端 8311</span>
+                </a>
+            </div>
+
+            <h2 class="section-title mt">三、早期综合练习</h2>
+            <p class="section-sub">项目根目录下的独立练习页面，路径已按本页位置换算，可直接打开。</p>
+
+            <div class="project-list">
+                <a class="project-item" href="../../../../../../swiper-task.html">
+                    <div class="project-tag">17 / Swiper</div>
+                    <div class="icon-box">▥</div>
+                    <div class="project-title">Swiper 轮播组件</div>
+                    <div class="project-desc">大国重器光影展：循环播放、七种切换效果、creative 电影墙与键盘控制。</div>
+                </a>
+
+                <a class="project-item" href="../../../../../../rank-list.html">
+                    <div class="project-tag">18 / Tab</div>
+                    <div class="icon-box">≡</div>
+                    <div class="project-title">新闻排行榜</div>
+                    <div class="project-desc">新闻 / 证券 / 理财 / 博客四个选项卡切换，排行榜前三名使用红色序号。</div>
+                </a>
+
+                <a class="project-item" href="../../../../../../tab-news.html">
+                    <div class="project-tag">19 / Tab</div>
+                    <div class="icon-box">▭</div>
+                    <div class="project-title">Tab 选项卡</div>
+                    <div class="project-desc">国内 / 省内 / 国际 / 最热四个选项卡，可复用的切换逻辑，先清选中态再设置当前项。</div>
+                </a>
+            </div>
+
+            <div class="project-list" style="margin-top: 22px;">
+                <a class="project-item" href="../../../../../../poem-gallery.html">
+                    <div class="project-tag">20 / Fetch</div>
+                    <div class="icon-box">诗</div>
+                    <div class="project-title">诗词图文列表</div>
+                    <div class="project-desc">上图下文结构，数据来自本地数据服务 /api/poems 与 /api/authors，支持搜索与按标题长度排序。</div>
+                    <span class="need">需诗词服务 3004</span>
+                </a>
+
+                <a class="project-item" href="../../../../../../starter-level1%200311%20L%20.html">
+                    <div class="project-tag">21 / DOM</div>
+                    <div class="icon-box">▦</div>
+                    <div class="project-title">学生成绩管理</div>
+                    <div class="project-desc">18 名学生五科成绩的概览统计、卡片渲染、不及格预警、搜索与排序。</div>
+                </a>
+
+                <a class="project-item" href="../../../../../../iconfont-1.html">
+                    <div class="project-tag">22 / Icon</div>
+                    <div class="icon-box">★</div>
+                    <div class="project-title">Font Awesome 图标</div>
+                    <div class="project-desc">以字体图标方式引入 Font Awesome，展示图标在品牌化页面中的用法。</div>
+                </a>
+            </div>
+
+            <div class="project-list" style="margin-top: 22px;">
+                <a class="project-item" href="../../../../../../iconfont-2.html">
+                    <div class="project-tag">23 / Icon</div>
+                    <div class="icon-box">◇</div>
+                    <div class="project-title">Lucide SVG 图标</div>
+                    <div class="project-desc">以 SVG 方式引入 Lucide 图标，对比字体图标在清晰度与可控性上的差异。</div>
+                </a>
+
+                <a class="project-item" href="../../../../../../iconfont-3.html">
+                    <div class="project-tag">24 / Mobile</div>
+                    <div class="icon-box">▤</div>
+                    <div class="project-title">移动端底部导航（字体图标）</div>
+                    <div class="project-desc">固定自适应宽度底部导航 4 项，含右上角数字徽章与红点提示。</div>
+                </a>
+
+                <a class="project-item" href="../../../../../../iconfont-4.html">
+                    <div class="project-tag">25 / Mobile</div>
+                    <div class="icon-box">▥</div>
+                    <div class="project-title">移动端底部导航（SVG）</div>
+                    <div class="project-desc">与上一页同结构，图标改用内联 SVG，便于统一控制颜色与尺寸。</div>
+                </a>
+            </div>
+
+            <div class="project-list" style="margin-top: 22px;">
+                <a class="project-item" href="../../../../../../mobile-tasks.html">
+                    <div class="project-tag">26 / Touch</div>
+                    <div class="icon-box">☰</div>
+                    <div class="project-title">移动端交互四关合辑</div>
+                    <div class="project-desc">事件记录、手势卡片、图片查看器与摇一摇四任务合一，单文件自包含，桌面鼠标同样可操作。</div>
+                </a>
+
+                <a class="project-item" href="../../../../../../mobile-gesture.html">
+                    <div class="project-tag">27 / Gesture</div>
+                    <div class="icon-box">⇄</div>
+                    <div class="project-title">手势卡片</div>
+                    <div class="project-desc">左右滑动切换 4 道菜品卡片，含阈值判断、圆点指示与箭头兜底。</div>
+                </a>
+
+                <a class="project-item" href="../../../../../../mobile-zoom.html">
+                    <div class="project-tag">28 / Pinch</div>
+                    <div class="icon-box">⤢</div>
+                    <div class="project-title">图片查看器</div>
+                    <div class="project-desc">双指缩放、双击放大与拖动平移，锚点缩放公式保证画面不跳。</div>
+                </a>
+            </div>
+
+            <div class="project-list" style="margin-top: 22px;">
+                <a class="project-item" href="../../../../../../mobile-sensor.html">
+                    <div class="project-tag">29 / Sensor</div>
+                    <div class="icon-box">📳</div>
+                    <div class="project-title">摇一摇抽菜谱</div>
+                    <div class="project-desc">基于加速度传感器判断摇动，抽中菜品显示在手机屏幕内，并提供点击兜底。</div>
+                </a>
+
+                <a class="project-item" href="../../../../../../lxd_prompt-records.html">
+                    <div class="project-tag">30 / Records</div>
+                    <div class="icon-box">✎</div>
+                    <div class="project-title">提示词记录</div>
+                    <div class="project-desc">课程实践过程中的提示词与模型记录，便于回溯每个页面的生成依据。</div>
                 </a>
             </div>
 
             <div class="prompt-box">
                 <h3>本提示词</h3>
                 <p>创建一个新页面，包括本目录下的所有网页的超链接，使用原生代码，不使用 CDN，新页面名称为 index.html，主题为李兴达的《高级网页设计》课堂实践，美化页面，课堂目录中包含 flex 复习、字体图标、其余模块后续在增加、JS 函数、JS 对象的应用、JS 对象。页面中包括本提示词。</p>
+                <p>本次更新：第一个 index 里的内容偏少，需要把全部网页规整进来 —— 保留课堂基础实践，新增「综合实践 · 数据与 AI」（数据库连接测试、家常菜谱库、科技新闻、图文列表、AI 客服含知识库）与「早期综合练习」（轮播、选项卡、诗词、成绩管理、图标、移动端交互等），并标注需本地后端才能访问的页面。</p>
             </div>
         </main>
     </div>
