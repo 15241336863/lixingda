@@ -547,3 +547,98 @@
 @media (max-width: 560px) {
   .lxd_kb-item { flex-direction: column; align-items: flex-start; }
 }
+
+/* ---------- 多模态工具（图像识别 / 语音识别） ---------- */
+.lxd_media {
+  margin-top: 18px;
+  padding: 18px 20px;
+  border: 1px solid rgba(120, 200, 255, .16);
+  border-radius: 14px;
+  background: rgba(14, 20, 32, .55);
+}
+
+.lxd_media-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #dbe6f7;
+}
+
+.lxd_media-sub {
+  margin: 6px 0 14px;
+  font-size: 12px;
+  color: #8fa3c8;
+}
+
+.lxd_media-sub code {
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: rgba(120, 200, 255, .1);
+  color: #9fd3f0;
+}
+
+.lxd_media-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.lxd_media-card {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding: 14px;
+  border: 1px solid rgba(255, 255, 255, .08);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, .03);
+}
+
+.lxd_media-name {
+  margin: 0;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #cfe0f5;
+}
+
+.lxd_media-desc {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.7;
+  color: #8fa3c8;
+}
+
+.lxd_vision-preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 96px;
+  padding: 8px;
+  border: 1px dashed rgba(120, 200, 255, .22);
+  border-radius: 10px;
+  font-size: 12px;
+  color: #6f83a6;
+  overflow: hidden;
+}
+
+.lxd_vision-preview img {
+  max-width: 100%;
+  max-height: 180px;
+  border-radius: 8px;
+}
+
+.lxd_vision-result {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.8;
+  color: #dbe6f7;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.lxd_vision-result:empty {
+  display: none;
+}
+
+@media (max-width: 760px) {
+  .lxd_media-grid { grid-template-columns: 1fr; }
+}

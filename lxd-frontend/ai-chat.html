@@ -57,6 +57,43 @@
       <div class="lxd_kb-list" id="lxd_kb_list"></div>
     </section>
 
+    <section class="lxd_media" id="lxd_media_panel">
+      <h2 class="lxd_media-title">多模态工具</h2>
+      <p class="lxd_media-sub">
+        接口 <code>POST /api/ai/vision</code> · <code>POST /api/ai/asr</code>
+      </p>
+
+      <div class="lxd_media-grid">
+        <article class="lxd_media-card">
+          <h3 class="lxd_media-name">图像识别</h3>
+          <p class="lxd_media-desc">上传一张图片，返回该图片的中文描述（硅基流动 Qwen3-VL）。</p>
+          <label class="lxd_kb-pick">
+            <input type="file" id="lxd_vision_file" accept="image/*">
+            <span>选择图片</span>
+          </label>
+          <div class="lxd_vision-preview" id="lxd_vision_preview">尚未选择图片</div>
+          <button class="lxd_kb-btn" id="lxd_vision_btn" type="button">识别并描述</button>
+          <p class="lxd_kb-status" id="lxd_vision_status"></p>
+          <p class="lxd_vision-result" id="lxd_vision_result"></p>
+        </article>
+
+        <article class="lxd_media-card">
+          <h3 class="lxd_media-name">语音识别</h3>
+          <p class="lxd_media-desc">现场录音或上传音频，转成文字（七牛 Qwen-Audio-3.0-ASR-Flash）。</p>
+          <div class="lxd_kb-actions">
+            <button class="lxd_kb-btn" id="lxd_asr_rec" type="button">开始录音</button>
+            <label class="lxd_kb-pick">
+              <input type="file" id="lxd_asr_file" accept="audio/*">
+              <span>选择音频</span>
+            </label>
+          </div>
+          <p class="lxd_kb-status" id="lxd_asr_status">尚未录音或选择音频</p>
+          <button class="lxd_kb-btn lxd_kb-btn-ghost" id="lxd_asr_btn" type="button">转成文字</button>
+          <p class="lxd_vision-result" id="lxd_asr_result"></p>
+        </article>
+      </div>
+    </section>
+
     <div class="lxd_chat-box" id="lxd_chat_box">
       <div class="lxd_msg lxd_ai">
         <span class="lxd_msg-who">小食</span>
@@ -137,7 +174,8 @@
     </footer>
   </main>
 
-  <script src="js/lxd_chat.js?v=20261125e"></script>
-  <script src="js/lxd_kb.js?v=20261125e"></script>
+  <script src="js/lxd_chat.js?v=20261125f"></script>
+  <script src="js/lxd_kb.js?v=20261125f"></script>
+  <script src="js/lxd_media.js?v=20261125f"></script>
 </body>
 </html>
