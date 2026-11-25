@@ -1,0 +1,222 @@
+<!--
+  姓名：李兴达 | 学号：24002120311 | 时间：2026-11-25 | 大模型：DeepSeek-V4.1-Flash
+  功能名称：多模态 AI 应用操作流程页，记录 AI 客服对话、图像识别、语音识别的实测步骤
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>多模态 AI 应用 · 操作流程 · 李兴达</title>
+  <link rel="stylesheet" href="css/lxd_guide.css">
+</head>
+<body class="lxd_guide-body">
+  <div class="lxd_guide-wrap">
+    <a class="lxd_guide-back" href="index.html">← 返回首页</a>
+
+    <header class="lxd_guide-hero">
+      <p class="lxd_guide-eyebrow">多 模 态 A I 应 用 · 操 作 流 程</p>
+      <h1 class="lxd_guide-title">三个功能怎么用：对话、图像、语音</h1>
+      <p class="lxd_guide-lead">
+        本页按真实操作顺序记录：启动服务 → AI 客服对话 → 图像识别 → 语音识别。
+        每一步都附本人实测截图与预期结果，照着做即可复现。
+      </p>
+    </header>
+
+    <section class="lxd_guide-card">
+      <div class="lxd_guide-step">
+        <span class="lxd_guide-num">0</span>
+        <h2 class="lxd_guide-h2">先看懂全局：三个功能共用一个后端</h2>
+      </div>
+      <p class="lxd_guide-sub">动手前必须明白</p>
+
+      <div class="lxd_guide-flow">
+        <span>浏览器页面</span><em>→</em>
+        <span>自己的后端 /api/ai/*</span><em>→</em>
+        <span>大模型接口</span><em>→</em>
+        <span>结果原路返回</span>
+      </div>
+
+      <p>
+        三个功能都走同一条链路，只是后端接口不同：对话走 <code class="lxd_guide-code" style="display:inline;padding:1px 5px;">/api/ai/chat</code>，
+        图像识别走 <code class="lxd_guide-code" style="display:inline;padding:1px 5px;">/api/ai/vision</code>，
+        语音识别走 <code class="lxd_guide-code" style="display:inline;padding:1px 5px;">/api/ai/asr</code>。
+      </p>
+
+      <div class="lxd_guide-tip">
+        🔑 <b>Key 不进前端。</b> API Key 只放在 <code>backend/.env</code>，浏览器只请求本站接口，由后端带 Key 转发。
+      </div>
+    </section>
+
+    <section class="lxd_guide-card">
+      <div class="lxd_guide-step">
+        <span class="lxd_guide-num">1</span>
+        <h2 class="lxd_guide-h2">启动后端并打开页面</h2>
+      </div>
+      <p class="lxd_guide-sub">所有功能的前提</p>
+
+      <ol>
+        <li>确认 MySQL 已启动，<code>backend/.env</code> 里的数据库与两个平台的 Key 已填好。</li>
+        <li>在项目根目录启动后端，端口固定 8311：</li>
+      </ol>
+
+      <div class="lxd_guide-code">node backend/server.js
+# 看到「服务已启动：http://localhost:8311」即成功</div>
+
+      <ol start="3">
+        <li>浏览器打开 <b>http://localhost:8311/ai-chat.html</b>（不要直接双击 html 文件，否则接口会因 file:// 协议失败）。</li>
+        <li>页面从上到下依次是：模型下拉框、知识库（RAG）、<b>多模态工具</b>（图像识别 / 语音识别）、对话区、实验报告。</li>
+      </ol>
+
+      <div class="lxd_guide-warn">
+        ⚠️ 改了 <code>.env</code> 必须重启后端才生效；页面更新后按 Ctrl + F5 强制刷新，避免读到缓存里的旧脚本。
+      </div>
+    </section>
+
+    <section class="lxd_guide-card">
+      <div class="lxd_guide-step">
+        <span class="lxd_guide-num">2</span>
+        <h2 class="lxd_guide-h2">功能一：AI 客服对话</h2>
+      </div>
+      <p class="lxd_guide-sub">文本输入 → 多轮对话 → 客服人设</p>
+
+      <ol>
+        <li>在顶部「模型」下拉里选择模型：硅基流动（Qwen2.5-7B / DeepSeek-V4.1-Flash / GLM-5.3-Flash）或七牛（conatus-free）。</li>
+        <li>在底部输入框输入问题，例如「你们几点开门」。</li>
+        <li>按 Enter 发送（Shift + Enter 换行），按钮变为「思考中」。</li>
+        <li>等待 1–3 秒，对话区出现「小食」的回答；F12 控制台可见 <code>[KB] 发送给大模型的数据</code> 与 <code>接收自大模型的数据</code>。</li>
+      </ol>
+
+      <div class="lxd_guide-shot">
+        <img src="images/guide/lxd_guide_chat.png" alt="AI 客服对话实测截图">
+      </div>
+      <p class="lxd_guide-cap">实测：提问「你们几点开门」，回答「我们每天的营业时间是 10:00-21:30…」</p>
+
+      <div class="lxd_guide-tip">
+        🧠 <b>预期结果：</b>回答只涉及营业时间、招牌菜、配送范围三类问题；问到写代码、天气、股票等会返回统一拒绝话术，说明客服人设提示词生效。
+      </div>
+    </section>
+
+    <section class="lxd_guide-card">
+      <div class="lxd_guide-step">
+        <span class="lxd_guide-num">3</span>
+        <h2 class="lxd_guide-h2">功能二：图像识别</h2>
+      </div>
+      <p class="lxd_guide-sub">上传图片 → 返回该图片的中文描述</p>
+
+      <ol>
+        <li>在「多模态工具」中找到「图像识别」卡片，点「选择图片」。</li>
+        <li>选一张本地图片（建议不超过 8MB，宽高需大于 28px），卡片内出现缩略预览。</li>
+        <li>点「识别并描述」，按钮变为「识别中…」。</li>
+        <li>等待返回，结果区显示中文描述，状态行标注所用模型 <code>Qwen/Qwen3-VL-8B-Instruct</code>。</li>
+      </ol>
+
+      <div class="lxd_guide-shot">
+        <img src="images/guide/lxd_guide_vision.png" alt="图像识别实测截图">
+      </div>
+      <p class="lxd_guide-cap">实测：上传测试图后，模型返回对画面主体、颜色、文字与整体氛围的完整描述</p>
+
+      <div class="lxd_guide-tip">
+        🧠 <b>工作原理：</b>前端把图片读成 base64 data URL，随 JSON 提交到 <code>POST /api/ai/vision</code>；后端转为 OpenAI 兼容的 <code>image_url</code> 多模态消息，再用已有的硅基流动 Key 请求视觉模型。
+      </div>
+    </section>
+
+    <section class="lxd_guide-card">
+      <div class="lxd_guide-step">
+        <span class="lxd_guide-num">4</span>
+        <h2 class="lxd_guide-h2">功能三：语音识别</h2>
+      </div>
+      <p class="lxd_guide-sub">录音或上传音频 → 输出文字</p>
+
+      <ol>
+        <li><b>方式一（现场录音）：</b>点「开始录音」，允许浏览器使用麦克风，对着麦克风说话，再点「停止录音（Ns）」；页面会自动把录音转成 16kHz 单声道 WAV。</li>
+        <li><b>方式二（已有音频）：</b>点「选择音频」上传本地文件（≤ 15MB）。</li>
+        <li>点「转成文字」，状态先显示「正在请求 /api/ai/asr …」。</li>
+        <li>识别完成后，结果区显示文字，状态行标注 <code>qwen-audio-3.0-asr-flash</code>。</li>
+      </ol>
+
+      <div class="lxd_guide-shot">
+        <img src="images/guide/lxd_guide_asr.png" alt="语音识别实测截图">
+      </div>
+      <p class="lxd_guide-cap">实测：上传一段英文语音，返回「Hello, this is a speech recognition test for the food street customer service.」</p>
+
+      <div class="lxd_guide-tip">
+        🧠 <b>容错设计：</b>七牛返回 429 限流时后端自动重试 3 次；七牛渠道异常时自动降级到硅基流动同一转写接口，状态行会显示实际使用的模型，功能不中断。
+      </div>
+    </section>
+
+    <section class="lxd_guide-card">
+      <div class="lxd_guide-step">
+        <span class="lxd_guide-num">5</span>
+        <h2 class="lxd_guide-h2">常见问题速查表</h2>
+      </div>
+      <p class="lxd_guide-sub">先看现象再改代码</p>
+
+      <table class="lxd_guide-table">
+        <thead>
+          <tr><th>现象</th><th>原因</th><th>解决</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>页面提示「请求失败，请确认后端已在 8311 端口启动」</td>
+            <td>后端没启动，或用 file:// 直接打开了 html</td>
+            <td>启动后端，并改用 http://localhost:8311/ai-chat.html</td>
+          </tr>
+          <tr>
+            <td>点「开始录音」没反应</td>
+            <td>浏览器未授权麦克风，或非 localhost 环境</td>
+            <td>在地址栏左侧允许麦克风权限，或改用「选择音频」</td>
+          </tr>
+          <tr>
+            <td>图像识别提示「图片过大」</td>
+            <td>图片超过 8MB</td>
+            <td>压缩图片后再上传</td>
+          </tr>
+          <tr>
+            <td>图像识别提示尺寸不合法</td>
+            <td>图片宽或高小于 28px</td>
+            <td>换一张正常尺寸的图片</td>
+          </tr>
+          <tr>
+            <td>语音识别返回 429</td>
+            <td>免费模型触发限流</td>
+            <td>后端会自动重试，稍等再点一次</td>
+          </tr>
+          <tr>
+            <td>语音识别提示「没有识别到有效语音」</td>
+            <td>录音太短、静音或声音过小</td>
+            <td>靠近麦克风重新录一段 2 秒以上的语音</td>
+          </tr>
+          <tr>
+            <td>刷新后还是旧界面</td>
+            <td>浏览器缓存了旧 css / js</td>
+            <td>按 Ctrl + F5 强制刷新</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="lxd_guide-card">
+      <div class="lxd_guide-step">
+        <span class="lxd_guide-num">6</span>
+        <h2 class="lxd_guide-h2">验收清单</h2>
+      </div>
+      <p class="lxd_guide-sub">逐项打勾即可交作业</p>
+
+      <ul class="lxd_guide-check">
+        <li>后端在 8311 端口启动，页面通过 http://localhost:8311/ai-chat.html 打开</li>
+        <li>AI 客服能回答营业时间、招牌菜、配送范围，越界问题返回统一拒绝话术</li>
+        <li>模型下拉可在硅基流动与七牛之间切换，切换后仍能正常对话</li>
+        <li>上传图片后能返回中文描述，状态行显示所用视觉模型</li>
+        <li>录音或上传音频后能输出文字，状态行显示 qwen-audio-3.0-asr-flash</li>
+        <li>浏览器控制台能看到发送给大模型与接收自大模型的数据</li>
+        <li>API Key 仅存在于 backend/.env，前端源码与 Git 中均无明文</li>
+      </ul>
+    </section>
+
+    <footer class="lxd_guide-footer">
+      <span>© 2026 李兴达 · 24002120311</span>
+    </footer>
+  </div>
+</body>
+</html>

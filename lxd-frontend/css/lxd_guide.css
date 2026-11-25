@@ -1,0 +1,252 @@
+/**
+ * 姓名：李兴达 | 学号：24002120311 | 时间：2026-11-25 | 大模型：DeepSeek-V4.1-Flash
+ * 功能：多模态 AI 应用操作流程页样式（浅色教学风）
+ */
+* { box-sizing: border-box; }
+
+.lxd_guide-body {
+  margin: 0;
+  padding: 0 20px 60px;
+  background: #f5f8fb;
+  color: #152238;
+  font-family: "Microsoft YaHei", "PingFang SC", system-ui, sans-serif;
+  line-height: 1.8;
+  -webkit-font-smoothing: antialiased;
+}
+
+.lxd_guide-wrap {
+  max-width: 880px;
+  margin: 0 auto;
+}
+
+.lxd_guide-back {
+  display: inline-block;
+  margin: 24px 0 8px;
+  font-size: 13px;
+  color: #1f6feb;
+  text-decoration: none;
+}
+
+.lxd_guide-back:hover { text-decoration: underline; }
+
+.lxd_guide-hero {
+  padding: 8px 0 26px;
+  text-align: center;
+}
+
+.lxd_guide-eyebrow {
+  margin: 0 0 10px;
+  font-size: 12px;
+  letter-spacing: .18em;
+  color: #5b708f;
+}
+
+.lxd_guide-title {
+  margin: 0 0 12px;
+  font-size: 30px;
+  line-height: 1.35;
+  color: #152238;
+}
+
+.lxd_guide-lead {
+  max-width: 640px;
+  margin: 0 auto;
+  font-size: 14px;
+  color: #5b708f;
+}
+
+.lxd_guide-card {
+  margin-bottom: 22px;
+  padding: 26px 28px;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 6px 20px rgba(21, 34, 56, .05);
+}
+
+.lxd_guide-step {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+
+.lxd_guide-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #1f6feb;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  flex: none;
+}
+
+.lxd_guide-h2 {
+  margin: 0;
+  font-size: 19px;
+  color: #152238;
+}
+
+.lxd_guide-sub {
+  margin: 0 0 16px;
+  font-size: 12.5px;
+  color: #8a9ab5;
+}
+
+.lxd_guide-card p {
+  margin: 10px 0;
+  font-size: 14px;
+}
+
+.lxd_guide-card ol,
+.lxd_guide-card ul {
+  margin: 10px 0;
+  padding-left: 22px;
+  font-size: 14px;
+}
+
+.lxd_guide-card li { margin: 6px 0; }
+
+.lxd_guide-card b { color: #152238; }
+
+.lxd_guide-code {
+  margin: 12px 0;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: #eef4fd;
+  color: #1a4fa0;
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 13px;
+  line-height: 1.7;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.lxd_guide-flow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 14px 0;
+  font-size: 13px;
+}
+
+.lxd_guide-flow span {
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: #e7f0ff;
+  color: #1a4fa0;
+}
+
+.lxd_guide-flow em {
+  color: #8a9ab5;
+  font-style: normal;
+}
+
+.lxd_guide-tip,
+.lxd_guide-warn {
+  margin: 14px 0;
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-size: 13px;
+  line-height: 1.75;
+}
+
+.lxd_guide-tip {
+  border-left: 3px solid #1f6feb;
+  background: #f2f7ff;
+  color: #2c4a6e;
+}
+
+.lxd_guide-warn {
+  border-left: 3px solid #e08a00;
+  background: #fff8ec;
+  color: #7a5200;
+}
+
+.lxd_guide-shot {
+  margin: 16px 0 6px;
+}
+
+.lxd_guide-shot img {
+  display: block;
+  width: 100%;
+  border: 1px solid #e3ebf6;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(21, 34, 56, .06);
+}
+
+.lxd_guide-cap {
+  margin: 8px 0 0;
+  font-size: 12px;
+  color: #8a9ab5;
+  text-align: center;
+}
+
+.lxd_guide-table {
+  width: 100%;
+  margin: 12px 0;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.lxd_guide-table th,
+.lxd_guide-table td {
+  padding: 9px 12px;
+  border-bottom: 1px solid #e8eef7;
+  text-align: left;
+  vertical-align: top;
+}
+
+.lxd_guide-table th {
+  background: #f5f8fb;
+  color: #2c4a6e;
+  font-weight: 600;
+}
+
+.lxd_guide-table code {
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: #eef4fd;
+  color: #1a4fa0;
+  font-size: 12px;
+}
+
+.lxd_guide-check {
+  margin: 10px 0;
+  padding-left: 0;
+  list-style: none;
+}
+
+.lxd_guide-check li {
+  position: relative;
+  padding-left: 26px;
+  font-size: 14px;
+}
+
+.lxd_guide-check li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  color: #1f9d55;
+  font-weight: 700;
+}
+
+.lxd_guide-footer {
+  margin-top: 30px;
+  padding-top: 18px;
+  border-top: 1px solid #e3ebf6;
+  font-size: 12px;
+  color: #8a9ab5;
+  text-align: center;
+}
+
+@media (max-width: 620px) {
+  .lxd_guide-title { font-size: 23px; }
+  .lxd_guide-card { padding: 20px 18px; }
+  .lxd_guide-table { font-size: 12px; }
+}
