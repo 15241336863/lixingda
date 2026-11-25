@@ -1,0 +1,53 @@
+<!--
+  姓名：李兴达 | 学号：24002120311 | 时间：2026-11-20 | 大模型：DeepSeek-V4.1-Flash
+  功能名称：科技新闻列表页，页面展示后端接口地址并从 lxd_news 表读取新闻数据
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>科技新闻列表 · 李兴达</title>
+  <link rel="stylesheet" href="css/lxd_index.css">
+  <link rel="stylesheet" href="css/lxd_news.css">
+</head>
+<body class="lxd_nw-body">
+  <main class="lxd_nw-page">
+    <a class="lxd_db-back" href="index.html">← 返回首页</a>
+
+    <header class="lxd_nw-head">
+      <p class="lxd_eyebrow">MYSQL · NEWS</p>
+      <h1 class="lxd_db-title">科技新闻列表</h1>
+      <p class="lxd_db-sub">新闻数据存放在 MySQL 表 <code>lxd_news</code>，由后端接口提供给本页面。</p>
+    </header>
+
+    <section class="lxd_nw-api">
+      <span class="lxd_nw-api-method">GET</span>
+      <a class="lxd_nw-api-url" id="lxd_nw_api_url" href="/api/news/list" target="_blank" rel="noopener">/api/news/list</a>
+      <p class="lxd_nw-api-tip">点击链接可在新标签查看接口返回的 JSON 数据；支持参数 <code>?keyword=芯片&amp;category=航天</code>。</p>
+    </section>
+
+    <div class="lxd_nw-toolbar">
+      <input class="lxd_db-input" id="lxd_nw_search" type="search" placeholder="搜索标题或摘要，如：芯片">
+      <div class="lxd_nw-tags" id="lxd_nw_tags">
+        <button class="lxd_nw-tag lxd_on" type="button" data-category="">全部</button>
+        <button class="lxd_nw-tag" type="button" data-category="人工智能">人工智能</button>
+        <button class="lxd_nw-tag" type="button" data-category="芯片">芯片</button>
+        <button class="lxd_nw-tag" type="button" data-category="航天">航天</button>
+        <button class="lxd_nw-tag" type="button" data-category="新能源">新能源</button>
+        <button class="lxd_nw-tag" type="button" data-category="互联网">互联网</button>
+      </div>
+    </div>
+
+    <p class="lxd_nw-status" id="lxd_nw_status">正在加载新闻…</p>
+    <div class="lxd_nw-list" id="lxd_nw_list"></div>
+
+    <footer class="lxd_footer">
+      <span>© 2026 李兴达</span>
+      <span>24002120311</span>
+    </footer>
+  </main>
+
+  <script src="js/lxd_news.js"></script>
+</body>
+</html>

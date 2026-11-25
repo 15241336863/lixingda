@@ -1,0 +1,50 @@
+<!--
+  姓名：李兴达 | 学号：24002120311 | 时间：2026-11-20 | 大模型：DeepSeek-V4.1-Flash
+  功能名称：菜谱数据库展示页，从 /api/recipe/list 读取 MySQL 数据并支持关键词与分类筛选
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>菜谱数据库 · 李兴达</title>
+  <link rel="stylesheet" href="css/lxd_index.css">
+  <link rel="stylesheet" href="css/lxd_recipe.css">
+</head>
+<body class="lxd_rc-body">
+  <main class="lxd_rc-page">
+    <a class="lxd_db-back" href="index.html">← 返回首页</a>
+
+    <header class="lxd_rc-head">
+      <p class="lxd_eyebrow">MYSQL · RECIPE</p>
+      <h1 class="lxd_db-title">家常菜谱库</h1>
+      <p class="lxd_db-sub">数据来自 MySQL 表 <code>lxd_recipe</code>，支持按菜名、食材搜索和分类筛选。</p>
+    </header>
+
+    <div class="lxd_rc-toolbar">
+      <input class="lxd_db-input lxd_rc-search" id="lxd_rc_search" type="search" placeholder="搜索菜名或食材，如：番茄">
+      <div class="lxd_rc-tags" id="lxd_rc_tags">
+        <button class="lxd_rc-tag lxd_on" type="button" data-category="">全部</button>
+        <button class="lxd_rc-tag" type="button" data-category="炖菜">炖菜</button>
+        <button class="lxd_rc-tag" type="button" data-category="面食">面食</button>
+        <button class="lxd_rc-tag" type="button" data-category="面点">面点</button>
+        <button class="lxd_rc-tag" type="button" data-category="主食">主食</button>
+        <button class="lxd_rc-tag" type="button" data-category="家常">家常</button>
+        <button class="lxd_rc-tag" type="button" data-category="川菜">川菜</button>
+        <button class="lxd_rc-tag" type="button" data-category="蒸菜">蒸菜</button>
+        <button class="lxd_rc-tag" type="button" data-category="汤点">汤点</button>
+      </div>
+    </div>
+
+    <p class="lxd_rc-status" id="lxd_rc_status">正在加载菜谱…</p>
+    <div class="lxd_rc-grid" id="lxd_rc_grid"></div>
+
+    <footer class="lxd_footer">
+      <span>© 2026 李兴达</span>
+      <span>24002120311</span>
+    </footer>
+  </main>
+
+  <script src="js/lxd_recipe.js"></script>
+</body>
+</html>

@@ -1,0 +1,170 @@
+@charset "utf-8";
+/*
+  姓名：李兴达 | 学号：24002120311 | 时间：2026-11-20 | 大模型：DeepSeek-V4.1-Flash
+  功能：菜谱展示页样式，搜索工具栏 + 菜谱卡片网格
+*/
+
+.lxd_rc-body {
+  display: flex;
+  justify-content: center;
+}
+
+.lxd_rc-page {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1040px;
+  padding: 48px 22px 40px;
+}
+
+.lxd_rc-head {
+  margin-bottom: 24px;
+}
+
+.lxd_db-sub code {
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: rgba(90, 209, 255, .12);
+  color: var(--lxd_accent);
+}
+
+/* ── 工具栏 ── */
+.lxd_rc-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid var(--lxd_line);
+  border-radius: 16px;
+  background: var(--lxd_card);
+  backdrop-filter: blur(6px);
+}
+
+.lxd_rc-search {
+  width: 100%;
+}
+
+.lxd_rc-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+.lxd_rc-tag {
+  padding: 7px 15px;
+  font-family: inherit;
+  font-size: 13px;
+  letter-spacing: 1px;
+  color: var(--lxd_muted);
+  background: rgba(255, 255, 255, .04);
+  border: 1px solid var(--lxd_line);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all .2s ease;
+}
+
+.lxd_rc-tag:hover {
+  color: var(--lxd_text);
+  border-color: rgba(90, 209, 255, .5);
+}
+
+.lxd_rc-tag.lxd_on {
+  color: #04121f;
+  font-weight: 700;
+  background: linear-gradient(135deg, #5ad1ff, #8b7dff);
+  border-color: transparent;
+}
+
+.lxd_rc-status {
+  margin: 18px 2px 12px;
+  font-size: 13px;
+  letter-spacing: 1px;
+  color: var(--lxd_muted);
+}
+
+.lxd_rc-status.lxd_err {
+  color: #ff9c9c;
+}
+
+/* ── 卡片网格 ── */
+.lxd_rc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.lxd_rc-card {
+  padding: 20px 18px;
+  border: 1px solid var(--lxd_line);
+  border-radius: 16px;
+  background: var(--lxd_card);
+  transition: transform .2s ease, border-color .2s ease;
+}
+
+.lxd_rc-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(90, 209, 255, .45);
+}
+
+.lxd_rc-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.lxd_rc-name {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.lxd_rc-cat {
+  flex: 0 0 auto;
+  padding: 2px 10px;
+  font-size: 11.5px;
+  border-radius: 999px;
+  color: var(--lxd_accent);
+  background: rgba(90, 209, 255, .12);
+  border: 1px solid rgba(90, 209, 255, .3);
+}
+
+.lxd_rc-meta {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 12px;
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: var(--lxd_muted);
+}
+
+.lxd_rc-label {
+  display: block;
+  margin: 10px 0 4px;
+  font-size: 11.5px;
+  letter-spacing: 2px;
+  color: rgba(147, 163, 196, .8);
+}
+
+.lxd_rc-text {
+  font-size: 13px;
+  line-height: 1.8;
+  color: #c7d3ea;
+}
+
+.lxd_rc-empty {
+  grid-column: 1 / -1;
+  padding: 40px 20px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--lxd_muted);
+  border: 1px dashed var(--lxd_line);
+  border-radius: 16px;
+}
+
+@media (max-width: 480px) {
+  .lxd_rc-page {
+    padding: 38px 16px 32px;
+  }
+}

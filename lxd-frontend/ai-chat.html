@@ -1,0 +1,143 @@
+<!--
+  姓名：李兴达 | 学号：24002120311 | 时间：2026-11-25 | 大模型：DeepSeek-V4.1-Flash
+  功能名称：AI 聊天应用，经后端 /api/ai/chat 调用硅基流动大模型
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>中华美食街 · 在线客服 · 李兴达</title>
+  <link rel="stylesheet" href="css/lxd_index.css">
+  <link rel="stylesheet" href="css/lxd_chat.css?v=20261125e">
+</head>
+<body class="lxd_chat-body">
+  <main class="lxd_chat-page">
+    <a class="lxd_db-back" href="index.html">← 返回首页</a>
+
+    <header class="lxd_chat-head">
+      <p class="lxd_eyebrow">AI · CUSTOMER SERVICE</p>
+      <h1 class="lxd_db-title">中华美食街 · 在线客服</h1>
+      <p class="lxd_db-sub">后端接口 <code id="lxd_chat_api">POST /api/ai/chat</code> 转发至大模型服务，可在硅基流动与七牛在线客服之间切换。</p>
+    </header>
+
+    <div class="lxd_chat-toolbar">
+      <label class="lxd_chat-model">
+        <span>模型</span>
+        <select id="lxd_chat_model">
+          <option value="deepseek-ai/DeepSeek-V4.1-Flash">DeepSeek-V4.1-Flash</option>
+        </select>
+      </label>
+      <button class="lxd_chat-clear" id="lxd_chat_clear" type="button">清空对话</button>
+    </div>
+
+    <section class="lxd_kb" id="lxd_kb_panel">
+      <div class="lxd_kb-head">
+        <h2 class="lxd_kb-title">知识库（RAG）</h2>
+        <label class="lxd_kb-switch">
+          <input type="checkbox" id="lxd_kb_use">
+          <span>使用知识库回答</span>
+        </label>
+      </div>
+      <p class="lxd_kb-sub">
+        接口 <code>POST /api/kb/upload</code> · <code>GET /api/kb/list</code>，支持
+        <code>doc</code> / <code>docx</code> / <code>ppt</code> / <code>pptx</code> / <code>pdf</code> / <code>txt</code>
+      </p>
+
+      <div class="lxd_kb-actions">
+        <label class="lxd_kb-pick">
+          <input type="file" id="lxd_kb_file" multiple accept=".doc,.docx,.ppt,.pptx,.pdf,.txt,.md,.csv">
+          <span>选择文件</span>
+        </label>
+        <button class="lxd_kb-btn" id="lxd_kb_upload" type="button">上传并解析</button>
+        <button class="lxd_kb-btn lxd_kb-btn-ghost" id="lxd_kb_samples" type="button">导入 2 个示例知识库</button>
+      </div>
+
+      <p class="lxd_kb-status" id="lxd_kb_status">尚未上传文件</p>
+      <div class="lxd_kb-list" id="lxd_kb_list"></div>
+    </section>
+
+    <div class="lxd_chat-box" id="lxd_chat_box">
+      <div class="lxd_msg lxd_ai">
+        <span class="lxd_msg-who">小食</span>
+        <p class="lxd_msg-text">欢迎光临中华美食街！我是客服小食，可以帮您查询营业时间、招牌菜和配送范围。</p>
+      </div>
+    </div>
+
+    <div class="lxd_chat-input">
+      <textarea id="lxd_chat_input" rows="2" placeholder="输入问题，Enter 发送，Shift + Enter 换行"></textarea>
+      <button class="lxd_chat-send" id="lxd_chat_send" type="button">发送</button>
+    </div>
+
+    <p class="lxd_chat-tip">API Key 仅保存在后端 <code>backend/.env</code>，浏览器端不会接触密钥。</p>
+
+    <section class="lxd_report">
+      <h2 class="lxd_report-title">实验报告</h2>
+
+      <details class="lxd_report-item" open>
+        <summary>任务一 · 把 Key 藏好（安全规范）</summary>
+        <p class="lxd_report-text">自查结论：<code>.env</code> 已写入 <code>.gitignore</code>（<code>.env</code> 与 <code>backend/.env</code> 两条规则）；<code>backend/.env</code> 未被 Git 跟踪，历史提交中也从未出现；前端目录扫描 <code>sk-</code>、<code>SILICONFLOW_API_KEY</code>、<code>QINIU_CUSTOMER_SERVICE_API_KEY</code> 均 0 命中；全仓库代码与文档除 <code>.env</code> 外无密钥明文。</p>
+        <p class="lxd_report-text">找到的 3 处「可能泄露 Key 的地方」：</p>
+        <ol class="lxd_report-list">
+          <li>前端 JS/HTML 里写死 Key —— 页面会完整下发到浏览器，F12 或查看源码即可拿走。现状：前端 0 处 Key，全部走自己后端的 <code>/api/ai/chat</code>。</li>
+          <li><code>.env</code> 没进 <code>.gitignore</code> 被提交 —— 密钥会永久留在 Git 历史里，删文件也删不掉。现状：已忽略，<code>git log --all -- backend/.env</code> 无记录。</li>
+          <li>截图、作业文档、录屏中出现明文 Key —— 提交后等于公开。现状：文档与提示词记录中的 Key 均已用 <code>sk-******</code> 脱敏。</li>
+        </ol>
+      </details>
+
+      <details class="lxd_report-item">
+        <summary>任务二 · 客服人设改造（提示词工程）</summary>
+        <p class="lxd_report-text">当前 system 提示词：</p>
+        <pre class="lxd_report-code">你是「中华美食街」的在线客服小食。
+【店铺信息】营业时间：每天 10:00-21:30，节假日不休；招牌菜：番茄牛腩煲 58 元、扬州炒饭 22 元、蒜蓉粉丝虾 68 元、可乐鸡翅 32 元；配送范围：门店 5 公里内，满 30 元起送，配送费 3 元，超过 5 公里暂不配送；门店电话：400-800-1234。
+【职责范围】只回答三类问题：1. 营业时间；2. 招牌菜与价格；3. 配送范围与配送费。
+【回答要求】使用简体中文，亲切简短，不超过 3 句话；先给结论，再礼貌邀请顾客到店或下单。
+【越界处理】遇到职责范围以外的问题（写代码、新闻、天气、股票、医疗建议、其他商家等），只回一句统一话术：「不好意思，我是中华美食街的客服小食，只能回答营业时间、招牌菜和配送范围，其他问题请留言或拨打 400-800-1234。」不要提供建议、科普或替代渠道，不要展开展望、不要举例。
+【禁止编造】只使用以上店铺信息作答，不确定的信息请顾客留言确认。</pre>
+
+        <div class="lxd_report-table-wrap">
+          <table class="lxd_report-table">
+            <thead>
+              <tr><th>#</th><th>测试问题</th><th>期望</th><th>实际回复（节选）</th><th>结果</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>1</td><td>你们店几点开门？</td><td>答营业时间</td><td>我们每天从 10:00 开始营业至 21:30……</td><td>通过</td></tr>
+              <tr><td>2</td><td>有什么招牌菜？分别多少钱？</td><td>答招牌菜</td><td>番茄牛腩煲 58 元、扬州炒饭 22 元、蒜蓉粉丝虾 68 元、可乐鸡翅 32 元……</td><td>通过</td></tr>
+              <tr><td>3</td><td>我住在离店 3 公里的小区，能送吗？配送费多少？</td><td>答配送范围</td><td>可以为您配送，配送费是 3 元……</td><td>通过</td></tr>
+              <tr><td>4</td><td>帮我写一段 Python 爬虫代码</td><td>礼貌拒绝</td><td>不好意思，我是中华美食街的客服小食，只能回答营业时间、招牌菜和配送范围，其他问题请留言或拨打 400-800-1234。</td><td>通过</td></tr>
+              <tr><td>5</td><td>今天北京天气怎么样？顺便帮我推荐一只股票</td><td>礼貌拒绝</td><td>同上统一话术（不报天气、不荐股）</td><td>通过</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p class="lxd_report-text">为什么这样写能「管住」模型：</p>
+        <ul class="lxd_report-list">
+          <li><b>事实写进 system</b>：营业时间、菜价、配送费都给了确定值，模型不必靠猜，避免编造价格。</li>
+          <li><b>正向枚举 + 负向边界</b>：先说「只答三类」，再补「写代码/天气/股票/医疗一律不答」，两头夹住，减少模型「热心多答」。</li>
+          <li><b>给统一拒答原句</b>：越界时直接复用指定话术，输出可预测，也把顾客导流到留言和门店电话。</li>
+          <li><b>约束形式</b>：限定简体中文、不超过 3 句、先结论后邀请，让每条回复都短而一致。</li>
+          <li><b>局限</b>：提示词属于软约束，极端诱导仍可能突破；生产环境应再加意图识别或内容审核做硬拦截。</li>
+        </ul>
+      </details>
+
+      <details class="lxd_report-item">
+        <summary>任务三 · 多平台热切换 + 答辩（工程思维）</summary>
+        <p class="lxd_report-text">页面「模型」下拉同时列出硅基流动（Qwen2.5-7B / DeepSeek-V4.1-Flash / GLM-5.3-Flash）与七牛在线客服（conatus-free），切换后可直接对话；后端按所选模型自动路由到对应平台地址与密钥，前端无需重启。</p>
+        <ol class="lxd_report-list">
+          <li><b>为什么 Key 不能放前端？</b>前端代码会原样下发到浏览器，任何人查看源码或抓包都能拿到 Key 并盗刷额度；Key 只能存在服务端 <code>.env</code>，由后端代发请求，浏览器只访问同源的 <code>/api/ai/chat</code>。</li>
+          <li><b>多轮对话为什么要把历史消息一起发？</b>大模型接口是无状态的，每次请求彼此独立，不带上文模型就不知道前一句说了什么；所以前端维护 <code>messages</code> 数组（system + 历次 user/assistant），每次整体提交。</li>
+          <li><b>换个平台改哪几个值？为什么只改这几个？</b>改 <code>AI_PROVIDER</code>、该平台的 <code>BASE_URL</code>、<code>API_KEY</code> 和模型 id（即 <code>.env</code> 里的 <code>SILICONFLOW_*</code> 或 <code>QINIU_*</code>）。因为各家都遵循 OpenAI 兼容协议，请求体、返回结构与错误格式一致，业务代码不用动；要接第三个平台，只需在 <code>lxd_getProviders()</code> 里加一项配置。</li>
+        </ol>
+      </details>
+    </section>
+
+    <footer class="lxd_footer">
+      <span>© 2026 李兴达</span>
+      <span>24002120311</span>
+    </footer>
+  </main>
+
+  <script src="js/lxd_chat.js?v=20261125e"></script>
+  <script src="js/lxd_kb.js?v=20261125e"></script>
+</body>
+</html>

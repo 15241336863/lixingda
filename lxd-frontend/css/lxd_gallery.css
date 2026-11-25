@@ -1,0 +1,123 @@
+@charset "utf-8";
+/*
+  姓名：李兴达 | 学号：24002120311 | 时间：2026-11-20 | 大模型：DeepSeek-V4.1-Flash
+  功能：图文列表页样式，图片卡片网格
+*/
+
+.lxd_gl-body {
+  display: flex;
+  justify-content: center;
+}
+
+.lxd_gl-page {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1040px;
+  padding: 48px 22px 40px;
+}
+
+.lxd_gl-head {
+  margin-bottom: 22px;
+}
+
+.lxd_db-sub code {
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: rgba(90, 209, 255, .12);
+  color: var(--lxd_accent);
+}
+
+/* ── 网格 ── */
+.lxd_gl-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.lxd_gl-card {
+  overflow: hidden;
+  border: 1px solid var(--lxd_line);
+  border-radius: 16px;
+  background: var(--lxd_card);
+  transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+}
+
+.lxd_gl-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(90, 209, 255, .45);
+  box-shadow: 0 14px 28px rgba(0, 0, 0, .28);
+}
+
+.lxd_gl-thumb {
+  position: relative;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+  background: rgba(255, 255, 255, .04);
+}
+
+.lxd_gl-thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .35s ease;
+}
+
+.lxd_gl-card:hover .lxd_gl-thumb img {
+  transform: scale(1.05);
+}
+
+.lxd_gl-cat {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 3px 10px;
+  font-size: 11.5px;
+  letter-spacing: 1px;
+  color: #04121f;
+  background: rgba(255, 255, 255, .88);
+  border-radius: 999px;
+}
+
+.lxd_gl-body-box {
+  padding: 14px 16px 16px;
+}
+
+.lxd_gl-title {
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: .5px;
+}
+
+.lxd_gl-desc {
+  margin-top: 7px;
+  font-size: 13px;
+  line-height: 1.75;
+  color: #c7d3ea;
+}
+
+.lxd_gl-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 11px;
+  font-size: 12px;
+  color: rgba(147, 163, 196, .85);
+}
+
+.lxd_gl-empty {
+  grid-column: 1 / -1;
+  padding: 36px 18px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--lxd_muted);
+  border: 1px dashed var(--lxd_line);
+  border-radius: 14px;
+}
+
+@media (max-width: 480px) {
+  .lxd_gl-page {
+    padding: 38px 16px 32px;
+  }
+}

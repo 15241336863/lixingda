@@ -1,0 +1,101 @@
+<!--
+  姓名：李兴达 | 学号：24002120311 | 时间：2026-11-20 | 大模型：DeepSeek-V4.1-Flash
+  功能名称：综合实践首页，展示个人信息并以导航卡片汇总已完成页面
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>高级网页设计综合实践 · 李兴达</title>
+  <link rel="stylesheet" href="css/lxd_index.css">
+</head>
+<body>
+  <!-- canvas 背景动画：粒子连线 -->
+  <canvas class="lxd_bg" id="lxd_canvas"></canvas>
+
+  <main class="lxd_page">
+    <header class="lxd_hero">
+      <p class="lxd_eyebrow">ADVANCED WEB DESIGN · 2026</p>
+      <h1 class="lxd_title">高级网页设计综合实践</h1>
+      <p class="lxd_sub">原生 HTML / CSS / JavaScript &nbsp;·&nbsp; Express 接口 &nbsp;·&nbsp; MySQL 数据</p>
+
+      <ul class="lxd_meta">
+        <li class="lxd_meta-item">
+          <span class="lxd_label">姓名</span>
+          <span class="lxd_value">李兴达</span>
+        </li>
+        <li class="lxd_meta-item">
+          <span class="lxd_label">学号</span>
+          <span class="lxd_value">24002120311</span>
+        </li>
+        <li class="lxd_meta-item">
+          <span class="lxd_label">项目名称</span>
+          <span class="lxd_value">高级网页设计综合实践</span>
+        </li>
+        <li class="lxd_meta-item">
+          <span class="lxd_label">项目类别</span>
+          <span class="lxd_tags">
+            <b class="lxd_tag">自选</b>
+            <b class="lxd_tag">模仿</b>
+          </span>
+        </li>
+      </ul>
+    </header>
+
+    <section class="lxd_nav">
+      <div class="lxd_nav-head">
+        <h2 class="lxd_nav-title">页面导航</h2>
+        <span class="lxd_nav-count" id="lxd_nav_count">已完成 7 个页面</span>
+      </div>
+
+      <div class="lxd_cards" id="lxd_cards">
+        <a class="lxd_card" href="index.html">
+          <span class="lxd_card-no">01</span>
+          <h3 class="lxd_card-title">首页</h3>
+          <p class="lxd_card-desc">个人信息与全部页面入口，背景为 canvas 粒子连线动画。</p>
+        </a>
+        <a class="lxd_card" href="database.html">
+          <span class="lxd_card-no">02</span>
+          <h3 class="lxd_card-title">数据库连接测试</h3>
+          <p class="lxd_card-desc">输入 MySQL 账号密码，由后端尝试连接并提示成功或失败原因。</p>
+        </a>
+        <a class="lxd_card" href="recipe.html">
+          <span class="lxd_card-no">03</span>
+          <h3 class="lxd_card-title">家常菜谱库</h3>
+          <p class="lxd_card-desc">从 MySQL 表 lxd_recipe 读取 8 道菜谱，支持关键词搜索与分类筛选。</p>
+        </a>
+        <a class="lxd_card" href="news.html">
+          <span class="lxd_card-no">04</span>
+          <h3 class="lxd_card-title">科技新闻列表</h3>
+          <p class="lxd_card-desc">展示 /api/news/list 接口地址与 lxd_news 表中的 8 条科技新闻，支持搜索与栏目筛选。</p>
+        </a>
+        <a class="lxd_card" href="gallery.html">
+          <span class="lxd_card-no">05</span>
+          <h3 class="lxd_card-title">光影瞬间 · 图文列表</h3>
+          <p class="lxd_card-desc">展示 /api/gallery/list 接口与 lxd_gallery 表中的 8 组图文，配图为本地生成的 SVG 插图。</p>
+        </a>
+        <a class="lxd_card" href="ai-chat.html">
+          <span class="lxd_card-no">06</span>
+          <h3 class="lxd_card-title">中华美食街 · AI 在线客服</h3>
+          <p class="lxd_card-desc">客服人设对话：只答营业时间、招牌菜、配送范围；支持硅基流动 / 七牛双平台切换与实验报告；新增知识库（RAG）上传 doc/docx/ppt/pptx/pdf 并基于资料问答。</p>
+        </a>
+        <a class="lxd_card" href="../../xiaoli/24002120311+李兴达/高级网页设计/xiaoli/24002120311/flex_css005.css/index.html">
+          <span class="lxd_card-no">07</span>
+          <h3 class="lxd_card-title">完整页面目录（课程总首页）</h3>
+          <p class="lxd_card-desc">汇总课程全部 30 个页面：课堂基础实践、综合实践（数据与 AI）、早期综合练习，均带超链接入口。</p>
+        </a>
+      </div>
+
+      <p class="lxd_hint">后续每新建一个 html 页面，都会在这里追加超链接入口。</p>
+    </section>
+
+    <footer class="lxd_footer">
+      <span>© 2026 李兴达</span>
+      <span>24002120311</span>
+    </footer>
+  </main>
+
+  <script src="js/lxd_canvas.js"></script>
+</body>
+</html>

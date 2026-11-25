@@ -1,0 +1,244 @@
+@charset "utf-8";
+/*
+  姓名：李兴达 | 学号：24002120311 | 时间：2026-11-20 | 大模型：DeepSeek-V4.1-Flash
+  功能：科技新闻列表页样式，接口信息面板 + 新闻条目列表
+*/
+
+.lxd_nw-body {
+  display: flex;
+  justify-content: center;
+}
+
+.lxd_nw-page {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 900px;
+  padding: 48px 22px 40px;
+}
+
+.lxd_nw-head {
+  margin-bottom: 22px;
+}
+
+.lxd_db-sub code {
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: rgba(90, 209, 255, .12);
+  color: var(--lxd_accent);
+}
+
+/* ── 接口信息 ── */
+.lxd_nw-api {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  border: 1px solid rgba(90, 209, 255, .3);
+  border-radius: 13px;
+  background: rgba(90, 209, 255, .07);
+}
+
+.lxd_nw-api-method {
+  padding: 2px 9px;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #04121f;
+  background: linear-gradient(135deg, #5ad1ff, #8b7dff);
+  border-radius: 6px;
+}
+
+.lxd_nw-api-url {
+  font-size: 13.5px;
+  color: var(--lxd_accent);
+  text-decoration: none;
+  border-bottom: 1px dashed rgba(90, 209, 255, .5);
+  word-break: break-all;
+}
+
+.lxd_nw-api-url:hover {
+  color: #fff;
+}
+
+.lxd_nw-api-tip {
+  flex: 1 1 100%;
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--lxd_muted);
+}
+
+.lxd_nw-api-tip code {
+  color: var(--lxd_accent);
+}
+
+/* ── 工具栏 ── */
+.lxd_nw-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 16px;
+  padding: 16px;
+  border: 1px solid var(--lxd_line);
+  border-radius: 15px;
+  background: var(--lxd_card);
+}
+
+.lxd_nw-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.lxd_nw-tag {
+  padding: 6px 14px;
+  font-family: inherit;
+  font-size: 12.5px;
+  letter-spacing: 1px;
+  color: var(--lxd_muted);
+  background: rgba(255, 255, 255, .04);
+  border: 1px solid var(--lxd_line);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all .2s ease;
+}
+
+.lxd_nw-tag:hover {
+  color: var(--lxd_text);
+  border-color: rgba(90, 209, 255, .5);
+}
+
+.lxd_nw-tag.lxd_on {
+  color: #04121f;
+  font-weight: 700;
+  background: linear-gradient(135deg, #5ad1ff, #8b7dff);
+  border-color: transparent;
+}
+
+.lxd_nw-status {
+  margin: 16px 2px 10px;
+  font-size: 13px;
+  letter-spacing: 1px;
+  color: var(--lxd_muted);
+}
+
+.lxd_nw-status.lxd_err {
+  color: #ff9c9c;
+}
+
+/* ── 新闻列表 ── */
+.lxd_nw-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.lxd_nw-item {
+  display: flex;
+  gap: 14px;
+  padding: 14px;
+  border: 1px solid var(--lxd_line);
+  border-radius: 14px;
+  background: var(--lxd_card);
+  transition: transform .2s ease, border-color .2s ease;
+}
+
+.lxd_nw-item:hover {
+  transform: translateX(3px);
+  border-color: rgba(90, 209, 255, .45);
+}
+
+.lxd_nw-thumb {
+  flex: 0 0 148px;
+  height: 96px;
+  overflow: hidden;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, .04);
+}
+
+.lxd_nw-thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .35s ease;
+}
+
+.lxd_nw-item:hover .lxd_nw-thumb img {
+  transform: scale(1.06);
+}
+
+.lxd_nw-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.lxd_nw-item-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.lxd_nw-title {
+  font-size: 16.5px;
+  font-weight: 700;
+  line-height: 1.5;
+  letter-spacing: .5px;
+}
+
+.lxd_nw-cat {
+  flex: 0 0 auto;
+  padding: 2px 10px;
+  font-size: 11.5px;
+  border-radius: 999px;
+  color: var(--lxd_accent);
+  background: rgba(90, 209, 255, .12);
+  border: 1px solid rgba(90, 209, 255, .3);
+}
+
+.lxd_nw-summary {
+  margin-top: 9px;
+  font-size: 13px;
+  line-height: 1.85;
+  color: #c7d3ea;
+}
+
+.lxd_nw-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 11px;
+  font-size: 12px;
+  letter-spacing: .5px;
+  color: rgba(147, 163, 196, .85);
+}
+
+.lxd_nw-empty {
+  padding: 36px 18px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--lxd_muted);
+  border: 1px dashed var(--lxd_line);
+  border-radius: 14px;
+}
+
+@media (max-width: 560px) {
+  .lxd_nw-item {
+    flex-direction: column;
+  }
+
+  .lxd_nw-thumb {
+    flex: none;
+    width: 100%;
+    height: 150px;
+  }
+}
+
+@media (max-width: 480px) {
+  .lxd_nw-page {
+    padding: 38px 16px 32px;
+  }
+}

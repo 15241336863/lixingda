@@ -1,0 +1,64 @@
+<!--
+  姓名：李兴达 | 学号：24002120311 | 时间：2026-11-20 | 大模型：DeepSeek-V4.1-Flash
+  功能名称：MySQL 数据库连接测试页，输入账号密码后由后端尝试连接并返回成功或错误提示
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>数据库连接测试 · 李兴达</title>
+  <link rel="stylesheet" href="css/lxd_index.css">
+  <link rel="stylesheet" href="css/lxd_database.css">
+</head>
+<body class="lxd_db-body">
+  <main class="lxd_db-page">
+    <a class="lxd_db-back" href="index.html">← 返回首页</a>
+
+    <header class="lxd_db-head">
+      <p class="lxd_eyebrow">MYSQL CONNECTION</p>
+      <h1 class="lxd_db-title">数据库连接测试</h1>
+      <p class="lxd_db-sub">填写 MySQL 账号密码后点击连接，成功与失败都会给出提示。</p>
+    </header>
+
+    <form class="lxd_db-form" id="lxd_db_form" autocomplete="off">
+      <div class="lxd_db-field">
+        <label class="lxd_db-label" for="lxd_db_host">主机</label>
+        <input class="lxd_db-input" id="lxd_db_host" name="host" type="text" value="localhost" placeholder="localhost">
+      </div>
+
+      <div class="lxd_db-field">
+        <label class="lxd_db-label" for="lxd_db_user">用户名</label>
+        <input class="lxd_db-input" id="lxd_db_user" name="user" type="text" value="root" placeholder="root">
+      </div>
+
+      <div class="lxd_db-field">
+        <label class="lxd_db-label" for="lxd_db_password">密码</label>
+        <input class="lxd_db-input" id="lxd_db_password" name="password" type="password" placeholder="请输入数据库密码">
+      </div>
+
+      <div class="lxd_db-field">
+        <label class="lxd_db-label" for="lxd_db_name">数据库名（可选）</label>
+        <input class="lxd_db-input" id="lxd_db_name" name="database" type="text" placeholder="不填则只连接 MySQL 服务">
+      </div>
+
+      <button class="lxd_db-btn" id="lxd_db_submit" type="submit">连接数据库</button>
+    </form>
+
+    <div class="lxd_db-result" id="lxd_db_result" hidden>
+      <p class="lxd_db-result-title" id="lxd_db_result_title"></p>
+      <p class="lxd_db-result-msg" id="lxd_db_result_msg"></p>
+      <pre class="lxd_db-result-data" id="lxd_db_result_data" hidden></pre>
+    </div>
+
+    <p class="lxd_db-tip">默认账号密码来自后端 <code>backend/.env</code>，页面代码中不保存明文密码。</p>
+
+    <footer class="lxd_footer">
+      <span>© 2026 李兴达</span>
+      <span>24002120311</span>
+    </footer>
+  </main>
+
+  <script src="js/lxd_database.js"></script>
+</body>
+</html>

@@ -1,0 +1,198 @@
+@charset "utf-8";
+/*
+  姓名：李兴达 | 学号：24002120311 | 时间：2026-11-20 | 大模型：DeepSeek-V4.1-Flash
+  功能：数据库连接测试页样式，表单卡片 + 成功/失败提示
+*/
+
+.lxd_db-body {
+  display: flex;
+  justify-content: center;
+}
+
+.lxd_db-page {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 620px;
+  padding: 48px 22px 40px;
+}
+
+.lxd_db-back {
+  display: inline-block;
+  margin-bottom: 26px;
+  font-size: 13.5px;
+  letter-spacing: 1px;
+  color: var(--lxd_muted);
+  text-decoration: none;
+  transition: color .2s ease;
+}
+
+.lxd_db-back:hover {
+  color: var(--lxd_accent);
+}
+
+.lxd_db-head {
+  margin-bottom: 26px;
+}
+
+.lxd_db-title {
+  font-size: clamp(26px, 5vw, 38px);
+  font-weight: 800;
+  letter-spacing: 2px;
+  background: linear-gradient(100deg, #ffffff, #7fd8ff 52%, #a99cff 92%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.lxd_db-sub {
+  margin-top: 12px;
+  font-size: 13.5px;
+  color: var(--lxd_muted);
+  letter-spacing: 1px;
+}
+
+/* ── 表单 ── */
+.lxd_db-form {
+  padding: 26px 22px 24px;
+  border: 1px solid var(--lxd_line);
+  border-radius: 18px;
+  background: var(--lxd_card);
+  backdrop-filter: blur(6px);
+}
+
+.lxd_db-field {
+  margin-bottom: 16px;
+}
+
+.lxd_db-label {
+  display: block;
+  margin-bottom: 7px;
+  font-size: 12.5px;
+  letter-spacing: 2px;
+  color: var(--lxd_muted);
+}
+
+.lxd_db-input {
+  width: 100%;
+  height: 44px;
+  padding: 0 14px;
+  font-family: inherit;
+  font-size: 14.5px;
+  color: var(--lxd_text);
+  background: rgba(6, 12, 26, .65);
+  border: 1px solid var(--lxd_line);
+  border-radius: 10px;
+  outline: none;
+  transition: border-color .2s ease, box-shadow .2s ease;
+}
+
+.lxd_db-input::placeholder {
+  color: rgba(147, 163, 196, .55);
+}
+
+.lxd_db-input:focus {
+  border-color: rgba(90, 209, 255, .65);
+  box-shadow: 0 0 0 3px rgba(90, 209, 255, .14);
+}
+
+.lxd_db-btn {
+  width: 100%;
+  height: 48px;
+  margin-top: 6px;
+  font-family: inherit;
+  font-size: 15.5px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: #04121f;
+  background: linear-gradient(135deg, #5ad1ff, #8b7dff);
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform .2s ease, box-shadow .2s ease, opacity .2s ease;
+}
+
+.lxd_db-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 26px rgba(90, 209, 255, .22);
+}
+
+.lxd_db-btn:disabled {
+  opacity: .6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* ── 结果提示 ── */
+.lxd_db-result {
+  margin-top: 18px;
+  padding: 16px 18px;
+  border-radius: 14px;
+  border: 1px solid var(--lxd_line);
+  background: rgba(12, 20, 38, .7);
+}
+
+.lxd_db-result.lxd_ok {
+  border-color: rgba(74, 222, 160, .55);
+  background: rgba(16, 60, 45, .45);
+}
+
+.lxd_db-result.lxd_err {
+  border-color: rgba(255, 120, 120, .55);
+  background: rgba(66, 20, 26, .45);
+}
+
+.lxd_db-result-title {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+}
+
+.lxd_ok .lxd_db-result-title {
+  color: #6ff0b4;
+}
+
+.lxd_err .lxd_db-result-title {
+  color: #ff9c9c;
+}
+
+.lxd_db-result-msg {
+  font-size: 13.5px;
+  line-height: 1.85;
+  color: var(--lxd_text);
+  word-break: break-all;
+}
+
+.lxd_db-result-data {
+  margin-top: 10px;
+  padding: 10px 12px;
+  font-size: 12.5px;
+  line-height: 1.7;
+  color: var(--lxd_muted);
+  background: rgba(0, 0, 0, .35);
+  border-radius: 8px;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.lxd_db-tip {
+  margin-top: 16px;
+  font-size: 12px;
+  line-height: 1.8;
+  color: rgba(147, 163, 196, .72);
+}
+
+.lxd_db-tip code {
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: rgba(90, 209, 255, .12);
+  color: var(--lxd_accent);
+}
+
+@media (max-width: 480px) {
+  .lxd_db-form {
+    padding: 20px 16px 18px;
+  }
+}
