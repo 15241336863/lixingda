@@ -1,0 +1,26 @@
+{
+  "code": 0,
+  "message": "ok",
+  "data": [
+    { "id": "p101", "cat": "living", "name": "云朵现代简约沙发", "sub": "北美橡木框架·布艺软包", "img": "sofa-modern.png", "price": 3299, "old": 4299, "sales": 1832, "stock": 86, "rate": 4.9, "tag": "热卖", "desc": "高回弹海绵坐感，可拆洗布艺面料，扶手圆润包边，适合中小户型客厅。" },
+    { "id": "p102", "cat": "living", "name": "L型转角布艺沙发", "sub": "贵妃榻·实木高脚", "img": "l-sofa.jpg", "price": 4599, "old": 5599, "sales": 1267, "stock": 52, "rate": 4.8, "tag": "热卖", "desc": "L型贵妃位设计，座深舒适，可折叠储物脚踏，大客厅首选。" },
+    { "id": "p103", "cat": "living", "name": "皮质单人休闲沙发", "sub": "头层牛皮·可躺可摇", "img": "leather-sofa.jpg", "price": 2199, "old": 2699, "sales": 934, "stock": 40, "rate": 4.9, "tag": "", "desc": "头层牛皮触感细腻，可调节靠背，摇椅功能，午休看书都惬意。" },
+    { "id": "p104", "cat": "living", "name": "大理石纹岩板茶几", "sub": "天然纹理·储物抽屉", "img": "marble-table.jpg", "price": 1299, "old": 1699, "sales": 2104, "stock": 120, "rate": 4.8, "tag": "新品", "desc": "岩板台面耐磨防烫，下置双层储物格，简约不占地。" },
+    { "id": "p105", "cat": "living", "name": "现代实木电视柜", "sub": "原木色·大容量抽屉", "img": "tv-cabinet.jpg", "price": 1699, "old": 2099, "sales": 1508, "stock": 76, "rate": 4.7, "tag": "", "desc": "北美橡木直拼，双抽双门，走线孔设计，承重稳固。" },
+    { "id": "p201", "cat": "bedroom", "name": "实木双人床", "sub": "北美橡木·齐边设计", "img": "bed-solid.png", "price": 4599, "old": 5699, "sales": 2890, "stock": 63, "rate": 4.9, "tag": "爆款", "desc": "新西兰松木排骨架，齐边可贴墙，承重稳固，简约耐看。" },
+    { "id": "p202", "cat": "bedroom", "name": "三门实木衣柜", "sub": "原木色·大容量", "img": "wardrobe.png", "price": 5999, "old": 7399, "sales": 1120, "stock": 30, "rate": 4.8, "tag": "", "desc": "三门对开，可调节层板，挂衣区充足，环保水性漆。" },
+    { "id": "p203", "cat": "bedroom", "name": "实木床头柜", "sub": "原木色·单抽单开", "img": "nightstand.png", "price": 699, "old": 899, "sales": 3456, "stock": 150, "rate": 4.8, "tag": "热卖", "desc": "小巧实用，圆角设计，可放床头小物，原木温润。" },
+    { "id": "p204", "cat": "bedroom", "name": "实木梳妆台", "sub": "带镜·三抽收纳", "img": "dresser.jpg", "price": 1999, "old": 2499, "sales": 876, "stock": 44, "rate": 4.7, "tag": "新品", "desc": "自带化妆镜，三抽收纳，桌角圆润，卧室梳妆两相宜。" },
+    { "id": "p205", "cat": "bedroom", "name": "简约卧室系列套装", "sub": "床+柜+床头柜组合", "img": "bedroom-simple.jpg", "price": 10999, "old": 13999, "sales": 356, "stock": 18, "rate": 4.9, "tag": "套装", "desc": "床、床头柜、衣柜一价配齐，风格统一，省心省力。" },
+    { "id": "p301", "cat": "dining", "name": "实木伸缩餐桌", "sub": "北美橡木·可伸缩", "img": "dining-table.jpg", "price": 2899, "old": 3599, "sales": 1674, "stock": 58, "rate": 4.8, "tag": "热卖", "desc": "1.2米可伸至1.6米，轻松应对家庭聚餐，原木温润。" },
+    { "id": "p302", "cat": "dining", "name": "布艺餐椅", "sub": "软包坐垫·实木腿", "img": "fabric-chair.jpg", "price": 459, "old": 599, "sales": 5230, "stock": 200, "rate": 4.8, "tag": "爆款", "desc": "软包坐垫舒适，实木椅腿稳固，多色可选。" },
+    { "id": "p303", "cat": "dining", "name": "实木餐边柜", "sub": "大容量·长虹玻璃", "img": "sideboard.jpg", "price": 2199, "old": 2699, "sales": 989, "stock": 66, "rate": 4.7, "tag": "", "desc": "长虹玻璃柜门，内置层板，收纳餐具酒具，台面可作水吧。" },
+    { "id": "p304", "cat": "dining", "name": "高脚吧台椅", "sub": "原木·可旋转", "img": "bar-stool.jpg", "price": 359, "old": 459, "sales": 2130, "stock": 130, "rate": 4.6, "tag": "", "desc": "吧台/岛台绝配，可旋转座面，脚踏设计更舒适。" },
+    { "id": "p305", "cat": "dining", "name": "北欧餐厅系列套装", "sub": "餐桌+四椅组合", "img": "dining-nordic.jpg", "price": 4999, "old": 6399, "sales": 745, "stock": 25, "rate": 4.8, "tag": "套装", "desc": "餐桌配四把餐椅，风格统一，樱桃木色温润雅致。" },
+    { "id": "p401", "cat": "office", "name": "电动升降办公桌", "sub": "双电机·记忆高度", "img": "lift-desk.jpg", "price": 2799, "old": 3499, "sales": 1560, "stock": 70, "rate": 4.9, "tag": "新品", "desc": "双电机静音升降，三档记忆高度，久坐健康之选。" },
+    { "id": "p402", "cat": "office", "name": "人体工学椅", "sub": "腰靠·扶手可调", "img": "ergo-chair.png", "price": 1899, "old": 2399, "sales": 2340, "stock": 90, "rate": 4.9, "tag": "爆款", "desc": "自适应腰靠，4D扶手，网布透气，久坐不累。" },
+    { "id": "p403", "cat": "office", "name": "实木书柜", "sub": "开放格·大容量", "img": "bookshelf.jpg", "price": 2499, "old": 2999, "sales": 1120, "stock": 55, "rate": 4.8, "tag": "", "desc": "开放格设计，可调节层板，储物展示两相宜。" },
+    { "id": "p404", "cat": "office", "name": "实木会议桌", "sub": "大板直拼·沉稳", "img": "meeting-table.jpg", "price": 6999, "old": 8599, "sales": 210, "stock": 12, "rate": 4.8, "tag": "套装", "desc": "大板直拼桌面，多人会议适用，原木大气沉稳。" },
+    { "id": "p405", "cat": "office", "name": "现代办公系列套装", "sub": "桌+椅+书柜组合", "img": "office-modern.jpg", "price": 8999, "old": 10999, "sales": 468, "stock": 20, "rate": 4.8, "tag": "套装", "desc": "办公桌、人体工学椅、书柜一站配齐，办公更高效。" }
+  ]
+}

@@ -1,0 +1,42 @@
+﻿/* 姓名：李兴达 | 学号：24002120311 | 时间：2026-11-27 | 大模型：DeepSeek-V4.1-Flash
+   功能：iconfont 图标样式（本地字体）
+*/
+/**
+ * iconfont.css —— iconfont.cn 图标库样式
+ * 引用方式：
+ *   1. Symbol 方式（本项目采用）：在 HTML 引入 js/iconfont.js
+ *      然后使用 <svg class="icon"><use xlink:href="#icon-home"/></svg>
+ *   2. 若从 iconfont.cn 下载了字体文件（.woff2/.woff/.ttf），
+ *      取消下面 @font-face 注释，并使用 <i class="iconfont icon-home"></i>
+ */
+
+/* ===== SVG Symbol 通用样式（iconfont.cn Symbol 模式标准样式） ===== */
+.icon {
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.15em;
+  fill: currentColor;
+  overflow: hidden;
+}
+
+/* ===== 若使用字体图标方式，取消下面注释 =====
+@font-face {
+  font-family: "iconfont";
+  src: url('iconfont.woff2') format('woff2'),
+       url('iconfont.woff') format('woff'),
+       url('iconfont.ttf') format('truetype');
+}
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+}
+.icon-home:before      { content: "\e600"; }
+.icon-all:before       { content: "\e601"; }
+.icon-category:before  { content: "\e602"; }
+.icon-cart:before      { content: "\e603"; }
+.icon-user:before      { content: "\e604"; }
+.icon-search:before    { content: "\e605"; }
+*/
+

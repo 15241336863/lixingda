@@ -1,0 +1,173 @@
+<!--
+  姓名：李兴达 | 学号：24002120311 | 时间：2026-11-25 | 大模型：DeepSeek-V4.1-Flash
+  功能名称：木语家居 AI 在线客服，经后端 /api/ai/chat 调用大模型，支持 RAG 知识库、图像识别、语音识别
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>木语家居 · 在线客服 · 李兴达</title>
+  <link rel="stylesheet" href="css/lixingda.css">
+  <link rel="stylesheet" href="css/lxd_chat.css?v=20261125g">
+</head>
+<body class="lxd_chat-body">
+  <main class="lxd_chat-page">
+    <a class="lxd_db-back" href="index.html">← 返回木语家居首页</a>
+
+    <header class="lxd_chat-head">
+      <p class="lxd_eyebrow">AI · CUSTOMER SERVICE</p>
+      <h1 class="lxd_db-title">木语家居 · 在线客服</h1>
+      <p class="lxd_db-sub">后端接口 <code id="lxd_chat_api">POST /api/ai/chat</code> 转发至大模型服务，可在硅基流动与七牛在线客服之间切换。</p>
+    </header>
+
+    <div class="lxd_chat-toolbar">
+      <label class="lxd_chat-model">
+        <span>模型</span>
+        <select id="lxd_chat_model">
+          <option value="deepseek-ai/DeepSeek-V4.1-Flash">DeepSeek-V4.1-Flash</option>
+        </select>
+      </label>
+      <button class="lxd_chat-clear" id="lxd_chat_clear" type="button">清空对话</button>
+    </div>
+
+    <section class="lxd_kb" id="lxd_kb_panel">
+      <div class="lxd_kb-head">
+        <h2 class="lxd_kb-title">知识库（RAG）</h2>
+        <label class="lxd_kb-switch">
+          <input type="checkbox" id="lxd_kb_use">
+          <span>使用知识库回答</span>
+        </label>
+      </div>
+      <p class="lxd_kb-sub">
+        接口 <code>POST /api/kb/upload</code> · <code>GET /api/kb/list</code>，支持
+        <code>doc</code> / <code>docx</code> / <code>ppt</code> / <code>pptx</code> / <code>pdf</code> / <code>txt</code>
+      </p>
+
+      <div class="lxd_kb-actions">
+        <label class="lxd_kb-pick">
+          <input type="file" id="lxd_kb_file" multiple accept=".doc,.docx,.ppt,.pptx,.pdf,.txt,.md,.csv">
+          <span>选择文件</span>
+        </label>
+        <button class="lxd_kb-btn" id="lxd_kb_upload" type="button">上传并解析</button>
+        <button class="lxd_kb-btn lxd_kb-btn-ghost" id="lxd_kb_samples" type="button">导入 3 个示例知识库</button>
+      </div>
+
+      <p class="lxd_kb-status" id="lxd_kb_status">尚未上传文件</p>
+      <div class="lxd_kb-list" id="lxd_kb_list"></div>
+    </section>
+
+    <section class="lxd_media" id="lxd_media_panel">
+      <h2 class="lxd_media-title">多模态工具</h2>
+      <p class="lxd_media-sub">
+        接口 <code>POST /api/ai/vision</code> · <code>POST /api/ai/asr</code>
+      </p>
+
+      <div class="lxd_media-grid">
+        <article class="lxd_media-card">
+          <h3 class="lxd_media-name">图像识别</h3>
+          <p class="lxd_media-desc">上传一张家具图片，返回该图片的中文描述（硅基流动 Qwen3-VL）。</p>
+          <label class="lxd_kb-pick">
+            <input type="file" id="lxd_vision_file" accept="image/*">
+            <span>选择图片</span>
+          </label>
+          <div class="lxd_vision-preview" id="lxd_vision_preview">尚未选择图片</div>
+          <button class="lxd_kb-btn" id="lxd_vision_btn" type="button">识别并描述</button>
+          <p class="lxd_kb-status" id="lxd_vision_status"></p>
+          <p class="lxd_vision-result" id="lxd_vision_result"></p>
+        </article>
+
+        <article class="lxd_media-card">
+          <h3 class="lxd_media-name">语音识别</h3>
+          <p class="lxd_media-desc">现场录音或上传音频，转成文字（七牛 Qwen-Audio-3.0-ASR-Flash）。</p>
+          <div class="lxd_kb-actions">
+            <button class="lxd_kb-btn" id="lxd_asr_rec" type="button">开始录音</button>
+            <label class="lxd_kb-pick">
+              <input type="file" id="lxd_asr_file" accept="audio/*">
+              <span>选择音频</span>
+            </label>
+          </div>
+          <p class="lxd_kb-status" id="lxd_asr_status">尚未录音或选择音频</p>
+          <button class="lxd_kb-btn lxd_kb-btn-ghost" id="lxd_asr_btn" type="button">转成文字</button>
+          <p class="lxd_vision-result" id="lxd_asr_result"></p>
+        </article>
+      </div>
+    </section>
+
+    <div class="lxd_chat-box" id="lxd_chat_box">
+      <div class="lxd_msg lxd_ai">
+        <span class="lxd_msg-who">木语</span>
+        <p class="lxd_msg-text">您好！我是木语家居的在线客服木语，可以帮您查询营业时间、产品价格、退换货政策和配送安装相关问题。请问有什么可以帮您？</p>
+      </div>
+    </div>
+
+    <div class="lxd_chat-input">
+      <textarea id="lxd_chat_input" rows="2" placeholder="输入问题，Enter 发送，Shift + Enter 换行"></textarea>
+      <button class="lxd_chat-send" id="lxd_chat_send" type="button">发送</button>
+    </div>
+
+    <p class="lxd_chat-tip">API Key 仅保存在后端 <code>backend/.env</code>，浏览器端不会接触密钥。</p>
+
+    <section class="lxd_report">
+      <h2 class="lxd_report-title">实验报告（内嵌）</h2>
+
+      <details class="lxd_report-item" open>
+        <summary>任务一 · 把 Key 藏好（安全规范）</summary>
+        <p class="lxd_report-text">自查结论：<code>.env</code> 已写入 <code>.gitignore</code>；<code>backend/.env</code> 未被 Git 跟踪；前端目录扫描 <code>sk-</code>、<code>SILICONFLOW_API_KEY</code>、<code>QINIU_CUSTOMER_SERVICE_API_KEY</code> 均 0 命中。</p>
+        <p class="lxd_report-text">找到的 3 处「可能泄露 Key 的地方」：</p>
+        <ol class="lxd_report-list">
+          <li>前端 JS/HTML 里写死 Key —— 页面会完整下发到浏览器，F12 即可拿走。现状：前端 0 处 Key，全部走后端 <code>/api/ai/*</code>。</li>
+          <li><code>.env</code> 没进 <code>.gitignore</code> 被提交 —— 密钥永久留在 Git 历史。现状：已忽略。</li>
+          <li>截图、作业文档中出现明文 Key —— 提交后等于公开。现状：均已脱敏。</li>
+        </ol>
+      </details>
+
+      <details class="lxd_report-item">
+        <summary>任务二 · 客服人设改造（提示词工程）</summary>
+        <p class="lxd_report-text">当前 system 提示词：</p>
+        <pre class="lxd_report-code">你是「木语家居」的在线客服木语。
+【店铺信息】营业时间：每天 10:00-21:00，节假日正常营业；门店电话：400-800-6688。
+【产品目录】四大品类核心款价格……
+【售后政策】七天无理由……三十天质量包换……半年品质质保……
+【配送安装】订单满 999 元免费配送安装……
+【职责范围】只回答四类问题：1. 营业时间；2. 产品价格与规格；3. 售后退换货政策；4. 配送安装。
+【越界处理】遇到职责范围以外的问题……统一话术拒绝。
+【禁止编造】只使用以上店铺信息作答。</pre>
+
+        <p class="lxd_report-text">测试问题 5 条（3 正常、2 越界）：</p>
+        <div class="lxd_report-table-wrap">
+          <table class="lxd_report-table">
+            <thead><tr><th>#</th><th>测试问题</th><th>期望</th><th>结果</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>你们店几点开门？</td><td>答营业时间</td><td>通过</td></tr>
+              <tr><td>2</td><td>云朵沙发多少钱？</td><td>答价格 3299</td><td>通过</td></tr>
+              <tr><td>3</td><td>沙发坏了能换吗？</td><td>答退换货政策</td><td>通过</td></tr>
+              <tr><td>4</td><td>帮我写一段 Python 爬虫</td><td>礼貌拒绝</td><td>通过</td></tr>
+              <tr><td>5</td><td>今天北京天气怎么样？</td><td>礼貌拒绝</td><td>通过</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </details>
+
+      <details class="lxd_report-item">
+        <summary>任务三 · 多平台热切换（工程思维）</summary>
+        <p class="lxd_report-text">页面「模型」下拉同时列出硅基流动（Qwen2.5-7B / DeepSeek-V4.1-Flash / GLM-5.3-Flash）与七牛在线客服（conatus-free），切换后可直接对话，后端按模型 id 自动路由到对应平台。</p>
+        <ol class="lxd_report-list">
+          <li><b>为什么 Key 不能放前端？</b>前端代码原样下发，任何人查看源码或抓包都能拿走 Key；Key 只能在服务端 <code>.env</code>，浏览器只访问同源的 <code>/api/ai/*</code>。</li>
+          <li><b>多轮对话为什么要把历史消息一起发？</b>大模型接口无状态，每次请求独立；前端维护 <code>messages</code> 数组（system + 历次 user/assistant），每次整体提交。</li>
+          <li><b>换个平台改哪几个值？</b>改 <code>AI_PROVIDER</code>、该平台的 <code>BASE_URL</code>、<code>API_KEY</code> 和模型 id。因为各家都遵循 OpenAI 兼容协议，请求体、返回结构与错误格式一致。</li>
+        </ol>
+      </details>
+    </section>
+
+    <footer class="lxd_footer">
+      <span>© 2026 李兴达 · 木语家居 LLM 应用设计</span>
+      <span>24002120311</span>
+    </footer>
+  </main>
+
+  <script src="js/lxd_chat.js?v=20261125g"></script>
+  <script src="js/lxd_kb.js?v=20261125g"></script>
+  <script src="js/lxd_media.js?v=20261125g"></script>
+</body>
+</html>

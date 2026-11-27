@@ -1,0 +1,243 @@
+<!--
+  姓名：李兴达 | 学号：24002120311 | 时间：2026-11-27 | 大模型：DeepSeek-V4.1-Flash
+  功能名称：商品详情页：URL 传参取 id 加载详情与相关推荐
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>商品详情 · 木语家居 | 24002120311 李兴达</title>
+<link rel="stylesheet" href="css/lixingda.css">
+</head>
+<body>
+<main class="li-page li-page-detail" id="liPage">
+  <header class="li-topbar">
+    <button class="li-back" data-back>&#8592;</button>
+    <h1>商品详情</h1>
+    <a class="li-side" href="cart.html" title="购物车"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 4h2.2l2.2 11.5h9.7L20 8H6.2"/><circle cx="9" cy="19.5" r="1.3"/><circle cx="17" cy="19.5" r="1.3"/></svg><span class="li-tab-badge"></span></a>
+  </header>
+
+  <div class="li-loader" id="liLoader"><div class="li-spinner"></div></div>
+
+  <!-- 详情主体（JS 渲染：四板块全部纵向排列，可连续滚动） -->
+  <div id="liDetail"></div>
+</main>
+
+<!-- 底部购买栏 -->
+<div class="li-buybar li-hidden" id="liBuyBar">
+  <div class="li-bnav">
+    <a href="profile.html" data-b="user"><span class="li-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3.8"/><path d="M4.5 20c.6-3.8 3.8-6 7.5-6s6.9 2.2 7.5 6"/></svg></span>我的</a>
+    <a href="cart.html" data-b="cart"><span class="li-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 4h2.2l2.2 11.5h9.7L20 8H6.2"/><circle cx="9" cy="19.5" r="1.3"/><circle cx="17" cy="19.5" r="1.3"/></svg></span>购物车<span class="li-tab-badge"></span></a>
+    <a href="index.html" data-b="home"><span class="li-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 11l8-7 8 7"/><path d="M6 9.5V20h12V9.5"/><path d="M10 20v-5.5h4V20"/></svg></span>首页</a>
+  </div>
+  <div class="li-bbtns">
+    <button class="li-btn" id="liAddBtn">加入购物车</button>
+    <button class="li-btn li-buy" id="liBuyNow">立即抢购</button>
+  </div>
+</div>
+
+<script src="js/app.js"></script>
+<script>
+(function () {
+  var id = new URLSearchParams(location.search).get('id') || 'p101';
+  var prod = null;
+
+  // 倒计时
+  function tick() {
+    var el = document.getElementById('liCountdown');
+    if (!el) return;
+    var sec = parseInt(el.getAttribute('data-sec') || '12900', 10);
+    if (sec <= 0) sec = 3 * 3600;
+    sec--;
+    el.setAttribute('data-sec', sec);
+    var h = String(Math.floor(sec / 3600)).padStart(2, '0');
+    var m = String(Math.floor((sec % 3600) / 60)).padStart(2, '0');
+    var s = String(sec % 60).padStart(2, '0');
+    el.innerHTML = '<b>距活动结束</b><div class="li-cd-nums"><span>' + h + '</span><span>' + m + '</span><span>' + s + '</span></div>';
+  }
+
+  function render() {
+    var p = prod;
+    var tags = '<span class="li-ptag">限时抢7折</span><span class="li-ptag li-blue">店长补贴</span>';
+    var disc = Math.round(p.price / 0.7);
+    var sold = p.sales;
+
+    // 板块1：商品（图 + 促销 + 标题 + 规格/配送）
+    var secGoods =
+      '<div class="li-dsec" id="liSec-goods">' +
+        '<div class="li-dmain"><img src="img/' + p.img + '" alt="' + p.name + '"></div>' +
+        '<div class="li-promo">' +
+          '<span class="li-plabel">限时折扣</span>' +
+          '<span class="li-pnow"><i>¥</i>' + p.price + '</span>' +
+          '<span class="li-pold">¥' + disc + '</span>' +
+          '<span class="li-psold">已售' + sold + '件</span>' +
+          '<div class="li-countdown" id="liCountdown" data-sec="12900"></div>' +
+        '</div>' +
+        '<div class="li-dhead">' +
+          '<div class="li-promo-tags">' + tags + '</div>' +
+          '<div class="li-dtitle">' + p.name + '</div>' +
+        '</div>' +
+        '<div class="li-drows">' +
+          '<div class="li-drow"><span class="li-dlabel">促销</span><span class="li-dvalue">满3500元减50元，满6000元减100元</span><span class="li-darrow"></span></div>' +
+          '<div class="li-drow"><span class="li-dlabel">规格</span><span class="li-dvalue">请选择 · 尺寸 · 数量</span><span class="li-darrow"></span></div>' +
+          '<div class="li-drow"><span class="li-dlabel">配送</span><span class="li-dvalue">商家配送</span><span class="li-darrow"></span></div>' +
+        '</div>' +
+      '</div>';
+
+    // 板块2：评论
+    var secComment =
+      '<div class="li-dsec" id="liSec-comment">' +
+        '<div class="li-rev-head"><b>商品评论</b><span class="li-good">好评率 ' + (Math.round(p.rate * 20)) + '%</span></div>' +
+        '<div class="li-rev-summary">' +
+          '<div class="li-rs-score"><b>' + (Math.round(p.rate * 20) / 20) + '</b><span>综合评分</span></div>' +
+          '<div class="li-rs-bars">' +
+            '<div class="li-rsbar"><span>好评</span><i><em style="width:90%"></em></i><b>' + (Math.round(p.rate * 20)) + '%</b></div>' +
+            '<div class="li-rsbar"><span>中评</span><i><em style="width:8%"></em></i><b>8%</b></div>' +
+            '<div class="li-rsbar"><span>差评</span><i><em style="width:2%"></em></i><b>2%</b></div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="li-rev-tags"><span>质量很好</span><span>物流快</span><span>做工精致</span><span>和图片一致</span></div>' +
+        '<div class="li-rev-list" id="liRevList"></div>' +
+      '</div>';
+
+    // 板块3：详情
+    var secDetail =
+      '<div class="li-dsec" id="liSec-detail">' +
+        '<div class="li-ddesc">' +
+          '<h4>产品描述</h4><p>' + p.desc + '</p>' +
+          '<img class="li-dbigimg" src="img/' + p.img + '" alt="' + p.name + '">' +
+          '<h4 style="margin-top:14px">产品参数</h4>' +
+          '<p>主材：北美FAS级橡木 / 环保水性漆<br>适用空间：' + ({living:'客厅',bedroom:'卧室',dining:'餐厅',office:'办公'}[p.cat] || '全屋') + '<br>售后：7天无理由退换 · 3年质保</p>' +
+        '</div>' +
+      '</div>';
+
+    // 板块4：相关推荐
+    var secRecom =
+      '<div class="li-dsec" id="liSec-recom">' +
+        '<div class="li-sec"><h2>相关推荐</h2></div>' +
+        '<div class="li-prod-grid" id="liRel"></div>' +
+      '</div>';
+
+    // 吸顶导航标签（锚点定位，不切换内容）
+    var tabs = '<nav class="li-dtabs" id="liDTabs">' +
+      '<a class="li-dtab li-on" data-t="goods" href="#liSec-goods">商品</a>' +
+      '<a class="li-dtab" data-t="comment" href="#liSec-comment">评论</a>' +
+      '<a class="li-dtab" data-t="detail" href="#liSec-detail">详情</a>' +
+      '<a class="li-dtab" data-t="recom" href="#liSec-recom">推荐</a></nav>';
+
+    // 四板块全部纵向渲染（可连续滚动），tabs 吸顶
+    document.getElementById('liDetail').innerHTML =
+      tabs +
+      secGoods +
+      secComment +
+      secDetail +
+      secRecom;
+
+    // 渲染评论 + 相关推荐子内容
+    renderReviews();
+    renderRel();
+
+    // 倒计时
+    tick();
+    window.clearInterval(window.__liT);
+    window.__liT = setInterval(tick, 1000);
+
+    // 显示底部栏
+    document.getElementById('liLoader').classList.add('li-hidden');
+    document.getElementById('liBuyBar').classList.remove('li-hidden');
+
+    // 标签点击 → 平滑滚动到对应板块（锚点定位，不切换）
+    document.getElementById('liDTabs').addEventListener('click', function (e) {
+      var t = e.target.closest ? e.target.closest('.li-dtab') : null;
+      if (!t) return;
+      e.preventDefault();
+      var sec = document.getElementById('liSec-' + t.getAttribute('data-t'));
+      if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+
+    // 滚动时高亮当前板块对应的标签（吸顶定位反馈）
+    var tabEls = document.querySelectorAll('#liDTabs .li-dtab');
+    var secIds = ['liSec-goods', 'liSec-comment', 'liSec-detail', 'liSec-recom'];
+    var onScroll = function () {
+      var y = window.scrollY || document.documentElement.scrollTop;
+      var current = 'goods';
+      var tabTop = document.getElementById('liDTabs').offsetTop;
+      // 判断滚动位置落在哪个板块
+      var i = 0;
+      for (i = 0; i < secIds.length; i++) {
+        var s = document.getElementById(secIds[i]);
+        if (s && s.offsetTop <= y + tabTop + 60) current = secIds[i].replace('liSec-', '');
+      }
+      tabEls.forEach(function (tb) {
+        tb.classList.toggle('on', tb.getAttribute('data-t') === current);
+      });
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  }
+
+  function renderReviews() {
+    var box = document.getElementById('liRevList');
+    if (!box) return;
+    LI.getReviews().then(function (revs) {
+      // 按当前商品名匹配；若无专属评论则用同系列/高好评兜底
+      var mine = revs.filter(function (r) { return r.product === prod.name; });
+      var list = mine.length ? mine : revs.filter(function (r) { return r.rate >= 4; });
+      list = list.slice(0, 3);
+      box.innerHTML = list.map(function (r) {
+        var stars = '★★★★★'.slice(0, r.rate) + '☆☆☆☆☆'.slice(0, 5 - r.rate);
+        return '<div class="li-rev">' +
+          '<div class="li-ruser"><span class="li-ravatar">' + r.user.slice(0, 1) + '</span><b>' + r.user + '</b><span class="li-rtime">' + r.time + '</span></div>' +
+          '<div class="li-rstars">' + stars + '</div>' +
+          '<div class="li-rtext">' + r.text + '</div>' +
+          '<div class="li-rpic"><img src="img/' + prod.img + '" alt="实拍图"><img src="img/' + prod.img + '" alt="实拍图"></div>' +
+          '<div class="li-rfoot"><span>颜色分类：' + ({living:'原木色',bedroom:'橡木色',dining:'胡桃色',office:'浅木色'}[prod.cat] || '默认色') + '</span><button class="li-rlike" data-like>有用(' + (10 + r.rate * 13) + ')</button></div>' +
+          '</div>';
+      }).join('') || '<div class="li-empty"><p>暂无评论</p></div>';
+      // 点赞交互
+      box.querySelectorAll('.li-rlike').forEach(function (b) {
+        b.addEventListener('click', function () {
+          var n = parseInt(b.textContent.replace(/\D/g, ''), 10) + 1;
+          b.textContent = '有用(' + n + ')';
+          b.classList.add('liked');
+        });
+      });
+    }).catch(function () { box.innerHTML = '<div class="li-empty"><p>评论加载失败</p></div>'; });
+  }
+
+  function renderRel() {
+    var box = document.getElementById('liRel');
+    if (!box) return;
+    LI.queryProducts({ cat: prod.cat, page: 1, size: 8 }).then(function (data) {
+      var rel = data.list.filter(function (x) { return String(x.id) !== String(prod.id); }).slice(0, 4);
+      box.innerHTML = rel.map(LI.prodCard).join('');
+      rel.forEach(function (x) { LI.refreshFavBtn(x.id); });
+    }).catch(function (err) {
+      console.error('[detail.html] 相关推荐加载失败', err);
+    });
+  }
+
+  // 加载商品详情（优先接口，失败回退本地 JSON）
+  LI.getProductDetail(id).then(function (p) {
+    prod = p;
+    document.title = p.name + ' · 木语家居 | 24002120311 李兴达';
+    render();
+  }).catch(function (err) {
+    console.error('[detail.html] 商品详情加载失败', err);
+    document.getElementById('liLoader').classList.add('li-hidden');
+    document.getElementById('liDetail').innerHTML =
+      '<div class="li-empty"><p>商品加载失败：' + (err && err.message ? err.message : '未知错误') + '</p><p style="font-size:12px;margin-top:8px">请确认在浏览器地址栏正确打开，或重新刷新页面</p></div>';
+  });
+
+  // 加入购物车 / 立即抢购
+  document.getElementById('liAddBtn').addEventListener('click', function () {
+    if (LI.needLogin()) return; LI.addCart(prod, 1);
+  });
+  document.getElementById('liBuyNow').addEventListener('click', function () {
+    if (LI.needLogin()) return; LI.addCart(prod, 1); LI.toast('已抢购成功，去结算吧'); setTimeout(function(){ location.href='cart.html'; }, 600);
+  });
+})();
+</script>
+</body>
+</html>

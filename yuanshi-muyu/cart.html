@@ -1,0 +1,162 @@
+<!--
+  姓名：李兴达 | 学号：24002120311 | 时间：2026-11-27 | 大模型：DeepSeek-V4.1-Flash
+  功能名称：购物车页：加入购物车、数量与金额计算
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>购物车 · 木语家居 | 24002120311 李兴达</title>
+<link rel="stylesheet" href="css/lixingda.css">
+</head>
+<body>
+<main class="li-page">
+  <header class="li-topbar">
+    <button class="li-back" data-back>&#8592;</button>
+    <h1>购物车</h1>
+    <div></div>
+  </header>
+
+  <div class="li-container">
+    <div id="liCartList"></div>
+    <div class="li-empty li-hidden" id="liEmpty">
+      <svg viewBox="0 0 200 200" width="160" height="160" style="display:block;margin:0 auto 12px">
+        <circle cx="100" cy="100" r="82" fill="#f4f4f4"/>
+        <path d="M56 78 L144 78 L134 138 L66 138 Z" fill="#e6e6e6"/>
+        <rect x="54" y="72" width="92" height="9" rx="2" fill="#e6e6e6"/>
+        <line x1="76" y1="88" x2="74" y2="128" stroke="#f4f4f4" stroke-width="5" stroke-linecap="round"/>
+        <line x1="92" y1="88" x2="91" y2="128" stroke="#f4f4f4" stroke-width="5" stroke-linecap="round"/>
+        <line x1="108" y1="88" x2="109" y2="128" stroke="#f4f4f4" stroke-width="5" stroke-linecap="round"/>
+        <line x1="124" y1="88" x2="126" y2="128" stroke="#f4f4f4" stroke-width="5" stroke-linecap="round"/>
+        <line x1="116" y1="82" x2="148" y2="124" stroke="#d8d8d8" stroke-width="9" stroke-linecap="round"/>
+      </svg>
+      <p>暂无商品加入购物车，快去选购</p>
+      <a href="list.html" class="li-btn" style="margin-top:14px">去逛逛</a>
+    </div>
+
+    <div class="li-recom" id="liRecom">
+      <div class="li-recom-head"><span></span><b>推荐商品</b><span></span></div>
+      <div class="li-recom-grid" id="liRecomGrid"></div>
+    </div>
+
+    <div class="li-settle li-hidden" id="liSettle">
+      <div class="li-total">合计（<span id="liSelCount">0</span>件）</div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <div class="li-price" id="liTotal">¥0</div>
+        <button class="li-btn" id="liCheckout">结算</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<nav class="li-tab5">
+  <a href="index.html" data-tab="home" class=""><span class="li-ico"><svg viewBox="0 0 24 24"><path fill-rule="evenodd" d="M12 3 4 10.5h1.8V20h12.4v-9.5H20L12 3z M10.3 14.5h3.4V20h-3.4z" fill="currentColor"/></svg></span>首页</a>
+  <a href="all.html" data-tab="all" class=""><span class="li-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="4" width="14" height="16" rx="3.5"/><path d="M9 13.5c.8 1.3 1.8 2 3 2s2.2-.7 3-2"/></svg></span>全部商品</a>
+  <a href="list.html" data-tab="cat" class=""><span class="li-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><path d="M13 14h7M13 18h7"/></svg></span>分类</a>
+  <a href="cart.html" data-tab="cart" class="li-on"><span class="li-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 4h2.2l2.2 11.5h9.7L20 8H6.2"/><circle cx="9" cy="19.5" r="1.3"/><circle cx="17" cy="19.5" r="1.3"/></svg></span>购物车<span class="li-tab-badge"></span></a>
+  <a href="profile.html" data-tab="user" class=""><span class="li-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3.8"/><path d="M4.5 20c.6-3.8 3.8-6 7.5-6s6.9 2.2 7.5 6"/></svg></span>个人中心</a>
+</nav>
+
+<script src="js/app.js"></script>
+<script>
+(function () {
+  LI.setTab('cart');
+  let sel = {};
+
+  function render() {
+    const box = document.getElementById('liCartList');
+    const empty = document.getElementById('liEmpty');
+    const settle = document.getElementById('liSettle');
+    box.innerHTML = '';
+
+    if (!LI.cart.length) {
+      empty.classList.remove('li-hidden');
+      settle.classList.add('li-hidden');
+      return;
+    }
+    empty.classList.add('li-hidden');
+    settle.classList.remove('li-hidden');
+
+    LI.cart.forEach(function (item) {
+      const on = !!sel[item.id];
+      const row = document.createElement('div');
+      row.className = 'li-cart-item';
+      row.innerHTML =
+        '<div class="li-cart-check"><div class="li-checkbox ' + (on ? 'on' : '') + '" data-sel="' + item.id + '">' + (on ? '&#10003;' : '') + '</div></div>' +
+        '<img src="img/' + item.img + '" alt="' + item.name + '">' +
+        '<div class="li-cart-info">' +
+          '<div class="li-name">' + item.name + '</div>' +
+          '<div class="li-sub">' + item.sub + '</div>' +
+          '<div class="li-cart-foot">' +
+            '<div class="li-price"><i>¥</i>' + item.price + '</div>' +
+            '<div class="li-stepper">' +
+              '<button data-minus="' + item.id + '">&#8722;</button>' +
+              '<span>' + item.qty + '</span>' +
+              '<button data-plus="' + item.id + '">+</button>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+      box.appendChild(row);
+    });
+    update();
+  }
+
+  function update() {
+    let n = 0, t = 0;
+    LI.cart.forEach(function (i) { if (sel[i.id]) { n += i.qty; t += i.qty * i.price; } });
+    document.getElementById('liSelCount').textContent = n;
+    document.getElementById('liTotal').textContent = '¥' + t;
+  }
+
+  document.getElementById('liCartList').addEventListener('click', function (e) {
+    const s = e.target.closest('[data-sel]');
+    if (s) { sel[s.dataset.sel] = !sel[s.dataset.sel]; render(); return; }
+    const p = e.target.closest('[data-plus]');
+    if (p) { LI.setQty(p.dataset.plus, LI.cart.find(i => i.id === p.dataset.plus).qty + 1); render(); return; }
+    const m = e.target.closest('[data-minus]');
+    if (m) {
+      const it = LI.cart.find(i => i.id === m.dataset.minus);
+      if (it.qty === 1) { LI.delCart(m.dataset.minus); }
+      else { LI.setQty(m.dataset.minus, it.qty - 1); }
+      render();
+    }
+  });
+
+  document.getElementById('liCheckout').addEventListener('click', function () {
+    if (LI.needLogin()) return;
+    if (!Object.keys(sel).length) { LI.toast('请先勾选商品'); return; }
+    LI.toast('下单成功，感谢购买！');
+    // 清除已选商品
+    Object.keys(sel).forEach(function (id) { LI.delCart(id); });
+    sel = {};
+    setTimeout(render, 400);
+  });
+
+  // 默认全选
+  LI.cart.forEach(function (i) { sel[i.id] = true; });
+  render();
+
+  // 渲染推荐商品（6个，2行3列，常驻底部）
+  LI.getProducts().then(function (all) {
+    var grid = document.getElementById('liRecomGrid');
+    var picks = all.slice(0, 6);
+    grid.innerHTML = picks.map(function (p) {
+      var oldPrice = Math.round(p.price * 1.43);
+      return '<a class="li-recom-card" href="detail.html?id=' + p.id + '">' +
+        '<img src="img/' + p.img + '" alt="' + p.name + '">' +
+        '<div class="li-recom-info">' +
+          '<div class="li-recom-name">【限时抢7折】' + p.name + '</div>' +
+          '<div class="li-recom-tag">限时抢</div>' +
+          '<div class="li-recom-price">' +
+            '<span><span class="now">¥' + p.price + '</span><span class="old">¥' + oldPrice + '</span></span>' +
+            '<svg class="li-recom-cart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2.2l2.2 11.5h9.7L20 8H6.2"/><circle cx="9" cy="19.5" r="1.3"/><circle cx="17" cy="19.5" r="1.3"/></svg>' +
+          '</div>' +
+        '</div>' +
+      '</a>';
+    }).join('');
+  });
+})();
+</script>
+</body>
+</html>

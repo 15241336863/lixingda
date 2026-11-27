@@ -1,0 +1,713 @@
+<!--
+  姓名：李兴达 | 学号：24002120311 | 时间：2026-11-27 | 大模型：DeepSeek-V4.1-Flash
+  功能名称：后台管理：登录拦截、KPI 与 ECharts 仪表盘、商品/分类/订单增删改查
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>后台管理 · 木语家居 | 24002120311 李兴达</title>
+<link rel="stylesheet" href="css/lixingda.css">
+<link rel="stylesheet" href="css/lxd_admin.css">
+</head>
+<body>
+<main class="li-page li-admin-page">
+  <header class="li-topbar">
+    <button class="li-back" data-back>&#8592;</button>
+    <h1>后台管理</h1>
+    <div style="display:flex;align-items:center;gap:6px">
+      <span id="liAdminUser" style="font-size:11px;color:#8a8276"></span>
+      <button class="li-mini-btn" id="liAdminLogout">退出</button>
+    </div>
+  </header>
+
+  <div class="li-container">
+    <!-- 后台一级 Tab -->
+    <div class="li-admin-tabs" id="liAdminTabs">
+      <button class="li-admin-tab li-on" data-tab="dash">仪表盘</button>
+      <button class="li-admin-tab" data-tab="product">商品管理</button>
+      <button class="li-admin-tab" data-tab="category">分类管理</button>
+      <button class="li-admin-tab" data-tab="order">订单管理</button>
+    </div>
+
+    <!-- 仪表盘 -->
+    <section class="li-admin-sec" id="liTab-dash">
+      <div class="li-panel">
+        <div class="li-panel-head">
+          <h3>数据概览</h3>
+          <button class="li-mini-btn" id="liRefreshStat">刷新</button>
+        </div>
+        <div class="li-kpis li-kpis-3" id="liKpis">
+          <div class="li-kpi"><b>-</b><span>商品总数</span></div>
+        </div>
+      </div>
+      <div class="li-panel">
+        <div class="li-panel-head"><h3>分类商品数量</h3></div>
+        <div class="li-chart-box" id="liChartCat"></div>
+      </div>
+      <div class="li-panel">
+        <div class="li-panel-head"><h3>近 7 天订单趋势</h3></div>
+        <div class="li-chart-box" id="liChartTrend"></div>
+      </div>
+    </section>
+
+    <!-- 商品管理 -->
+    <section class="li-admin-sec li-hidden" id="liTab-product">
+      <div class="li-panel">
+        <div class="li-panel-head">
+          <h3>商品列表</h3>
+          <button class="li-mini-btn li-primary" id="liAddProduct">新增商品</button>
+        </div>
+        <div class="li-toolbar">
+          <input type="text" id="liProductKw" placeholder="搜索商品名称 / 描述">
+          <button class="li-mini-btn" id="liProductSearch">搜索</button>
+          <button class="li-mini-btn" id="liProductReset">重置</button>
+        </div>
+        <div class="li-table-wrap">
+          <table class="li-admin-table">
+            <thead><tr><th>ID</th><th>名称</th><th>分类</th><th>价格</th><th>库存</th><th>销量</th><th>操作</th></tr></thead>
+            <tbody id="liProductBody"><tr><td colspan="7" class="li-admin-empty">加载中…</td></tr></tbody>
+          </table>
+        </div>
+        <div class="li-pager" id="liProductPager"></div>
+      </div>
+    </section>
+
+    <!-- 分类管理 -->
+    <section class="li-admin-sec li-hidden" id="liTab-category">
+      <div class="li-panel">
+        <div class="li-panel-head">
+          <h3>分类列表</h3>
+          <button class="li-mini-btn li-primary" id="liAddCategory">新增分类</button>
+        </div>
+        <div class="li-toolbar">
+          <input type="text" id="liCategoryKw" placeholder="搜索分类名称 / 标识">
+          <button class="li-mini-btn" id="liCategorySearch">搜索</button>
+          <button class="li-mini-btn" id="liCategoryReset">重置</button>
+        </div>
+        <div class="li-table-wrap">
+          <table class="li-admin-table">
+            <thead><tr><th>ID</th><th>标识</th><th>名称</th><th>图标</th><th>商品数</th><th>操作</th></tr></thead>
+            <tbody id="liCategoryBody"><tr><td colspan="6" class="li-admin-empty">加载中…</td></tr></tbody>
+          </table>
+        </div>
+        <div class="li-pager" id="liCategoryPager"></div>
+      </div>
+    </section>
+
+    <!-- 订单管理 -->
+    <section class="li-admin-sec li-hidden" id="liTab-order">
+      <div class="li-panel">
+        <div class="li-panel-head">
+          <h3>订单列表</h3>
+          <button class="li-mini-btn li-primary" id="liAddOrder">新增订单</button>
+        </div>
+        <div class="li-toolbar">
+          <input type="text" id="liOrderKw" placeholder="搜索订单号 / 用户">
+          <select id="liOrderStatus">
+            <option value="">全部状态</option>
+            <option value="待付款">待付款</option>
+            <option value="待发货">待发货</option>
+            <option value="配送中">配送中</option>
+            <option value="已签收">已签收</option>
+            <option value="退款售后">退款售后</option>
+          </select>
+          <button class="li-mini-btn" id="liOrderSearch">搜索</button>
+          <button class="li-mini-btn" id="liOrderReset">重置</button>
+        </div>
+        <div class="li-table-wrap">
+          <table class="li-admin-table">
+            <thead><tr><th>ID</th><th>订单号</th><th>用户</th><th>金额</th><th>状态</th><th>创建时间</th><th>操作</th></tr></thead>
+            <tbody id="liOrderBody"><tr><td colspan="7" class="li-admin-empty">加载中…</td></tr></tbody>
+          </table>
+        </div>
+        <div class="li-pager" id="liOrderPager"></div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<!-- 通用弹窗表单 -->
+<div class="li-modal-mask li-hidden" id="liModalMask"></div>
+<div class="li-modal li-hidden" id="liModal">
+  <div class="li-modal-head">
+    <b id="liModalTitle">编辑</b>
+    <button class="li-modal-close" id="liModalClose">&#10005;</button>
+  </div>
+  <form class="li-modal-body" id="liModalForm" onsubmit="return false"></form>
+  <div class="li-modal-foot">
+    <button type="button" class="li-btn-cancel" id="liModalCancel">取消</button>
+    <button type="button" class="li-btn-save" id="liModalSave">保存</button>
+  </div>
+</div>
+
+<nav class="li-tab5">
+  <a href="index.html" data-tab="home"><span class="li-ico"><svg viewBox="0 0 24 24"><path fill-rule="evenodd" d="M12 3 4 10.5h1.8V20h12.4v-9.5H20L12 3z M10.3 14.5h3.4V20h-3.4z" fill="currentColor"/></svg></span>首页</a>
+  <a href="all.html" data-tab="all"><span class="li-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="4" width="14" height="16" rx="3.5"/><path d="M9 13.5c.8 1.3 1.8 2 3 2s2.2-.7 3-2"/></svg></span>全部商品</a>
+  <a href="list.html" data-tab="cat"><span class="li-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><path d="M13 14h7M13 18h7"/></svg></span>分类</a>
+  <a href="cart.html" data-tab="cart"><span class="li-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 4h2.2l2.2 11.5h9.7L20 8H6.2"/><circle cx="9" cy="19.5" r="1.3"/><circle cx="17" cy="19.5" r="1.3"/></svg></span>购物车<span class="li-tab-badge"></span></a>
+  <a href="profile.html" data-tab="user" class="li-on"><span class="li-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3.8"/><path d="M4.5 20c.6-3.8 3.8-6 7.5-6s6.9 2.2 7.5 6"/></svg></span>个人中心</a>
+</nav>
+
+<script src="js/echarts.min.js"></script>
+<script src="js/app.js"></script>
+<script>
+(function () {
+  // 登录拦截：未登录直接跳转登录页
+  if (!LI.isLogin()) { location.href = 'login.html'; return; }
+
+  var STATUS = ['待付款', '待发货', '配送中', '已签收', '退款售后'];
+  var cats = [];
+  var charts = { cat: null, trend: null };
+  var modalSubmit = null;
+  var state = {
+    product: { page: 1, size: 8, kw: '' },
+    category: { page: 1, size: 8, kw: '' },
+    order: { page: 1, size: 8, kw: '', status: '' }
+  };
+
+  /* ---------- 通用工具 ---------- */
+
+  // HTML 转义，避免弹窗表单值破坏结构
+  function esc(v) {
+    return String(v === undefined || v === null ? '' : v)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  // 统一错误处理：401 清理登录态并跳转，其余提示错误信息
+  function handleError(err) {
+    console.error('[admin] 请求失败', err);
+    if (err && err.code === 401) {
+      LI.logout();
+      LI.toast('登录已失效，请重新登录');
+      setTimeout(function () { location.href = 'login.html'; }, 700);
+      return;
+    }
+    LI.toast((err && err.message) || '操作失败，请稍后再试');
+  }
+
+  // 分类 key 转中文名称
+  function catName(key) {
+    var hit = cats.find(function (c) { return c.key === key; });
+    return hit ? hit.name : key;
+  }
+
+  // 订单状态标签样式序号
+  function statusIndex(s) {
+    var i = STATUS.indexOf(s);
+    return i < 0 ? 1 : i;
+  }
+
+  /* ---------- 弹窗 ---------- */
+
+  // 打开发送弹窗，fields 支持 input/select/textarea
+  function openModal(title, fields, values, onSubmit) {
+    document.getElementById('liModalTitle').textContent = title;
+    var form = document.getElementById('liModalForm');
+    form.innerHTML = fields.map(function (f) {
+      var val = values && values[f.key] !== undefined ? values[f.key] : '';
+      var label = '<label>' + esc(f.label);
+      if (f.type === 'select') {
+        var opts = (f.options || []).map(function (o) {
+          var ov = o.value !== undefined ? o.value : o;
+          var ot = o.label !== undefined ? o.label : o;
+          return '<option value="' + esc(ov) + '"' + (String(ov) === String(val) ? ' selected' : '') + '>' + esc(ot) + '</option>';
+        }).join('');
+        return label + '<select data-k="' + esc(f.key) + '">' + opts + '</select></label>';
+      }
+      if (f.type === 'textarea') {
+        return label + '<textarea data-k="' + esc(f.key) + '" placeholder="' + esc(f.placeholder || '') + '">' + esc(val) + '</textarea></label>';
+      }
+      return label + '<input data-k="' + esc(f.key) + '" type="' + esc(f.type || 'text') + '" value="' + esc(val) + '" placeholder="' + esc(f.placeholder || '') + '"></label>';
+    }).join('');
+    modalSubmit = function () {
+      var payload = {};
+      form.querySelectorAll('[data-k]').forEach(function (el) { payload[el.dataset.k] = el.value; });
+      onSubmit(payload);
+    };
+    document.getElementById('liModalMask').classList.remove('li-hidden');
+    document.getElementById('liModal').classList.remove('li-hidden');
+  }
+
+  // 关闭弹窗并清空表单
+  function closeModal() {
+    document.getElementById('liModalMask').classList.add('li-hidden');
+    document.getElementById('liModal').classList.add('li-hidden');
+    document.getElementById('liModalForm').innerHTML = '';
+    modalSubmit = null;
+  }
+
+  /* ---------- 仪表盘 ---------- */
+
+  // 加载 KPI、分类分布与近 7 天趋势数据
+  function loadOverview() {
+    LI.request('/admin/stat/overview').then(function (data) {
+      renderKpis(data.kpi);
+      renderCatChart(data.catDist);
+      renderTrendChart(data.trend);
+      console.log('[admin] 统计概览加载完成', data);
+    }).catch(handleError);
+  }
+
+  // 渲染 KPI 指标卡
+  function renderKpis(kpi) {
+    var items = [
+      ['商品总数', kpi.productCount],
+      ['库存总量', kpi.stockTotal],
+      ['总销量', kpi.salesTotal],
+      ['订单总数', kpi.orderCount],
+      ['订单总额', '¥' + kpi.orderAmount],
+      ['注册用户', kpi.userCount]
+    ];
+    document.getElementById('liKpis').innerHTML = items.map(function (it) {
+      return '<div class="li-kpi"><b>' + esc(it[1]) + '</b><span>' + esc(it[0]) + '</span></div>';
+    }).join('');
+  }
+
+  // 初始化两个 ECharts 实例
+  function initCharts() {
+    if (!window.echarts) {
+      console.error('[admin] ECharts 未加载，请检查 js/echarts.min.js');
+      document.getElementById('liChartCat').innerHTML = '<div class="li-admin-empty">图表库未加载</div>';
+      return;
+    }
+    if (!charts.cat) charts.cat = window.echarts.init(document.getElementById('liChartCat'));
+    if (!charts.trend) charts.trend = window.echarts.init(document.getElementById('liChartTrend'));
+  }
+
+  // 渲染分类商品数量柱状图
+  function renderCatChart(list) {
+    initCharts();
+    if (!charts.cat || !list) return;
+    charts.cat.setOption({
+      color: ['#b08968'],
+      tooltip: { trigger: 'axis' },
+      grid: { left: 36, right: 14, top: 26, bottom: 28 },
+      xAxis: {
+        type: 'category',
+        data: list.map(function (x) { return x.name; }),
+        axisLine: { lineStyle: { color: '#e8e0d2' } },
+        axisLabel: { color: '#8a8276', fontSize: 11 }
+      },
+      yAxis: {
+        type: 'value',
+        minInterval: 1,
+        splitLine: { lineStyle: { color: '#f0e9de' } },
+        axisLabel: { color: '#8a8276', fontSize: 11 }
+      },
+      series: [{
+        type: 'bar',
+        barWidth: '46%',
+        data: list.map(function (x) { return x.count; }),
+        itemStyle: { borderRadius: [6, 6, 0, 0] },
+        label: { show: true, position: 'top', color: '#8a6f4d', fontSize: 11 }
+      }]
+    });
+  }
+
+  // 渲染近 7 天订单趋势折线图
+  function renderTrendChart(list) {
+    initCharts();
+    if (!charts.trend || !list) return;
+    charts.trend.setOption({
+      color: ['#8b6f47'],
+      tooltip: {
+        trigger: 'axis',
+        formatter: function (params) {
+          var p = params[0];
+          var row = list[p.dataIndex];
+          return row.date + '<br>订单数：' + row.count + ' 单<br>金额：¥' + row.amount;
+        }
+      },
+      grid: { left: 36, right: 14, top: 26, bottom: 28 },
+      xAxis: {
+        type: 'category',
+        boundaryGap: false,
+        data: list.map(function (x) { return x.date.slice(5); }),
+        axisLine: { lineStyle: { color: '#e8e0d2' } },
+        axisLabel: { color: '#8a8276', fontSize: 11 }
+      },
+      yAxis: {
+        type: 'value',
+        minInterval: 1,
+        splitLine: { lineStyle: { color: '#f0e9de' } },
+        axisLabel: { color: '#8a8276', fontSize: 11 }
+      },
+      series: [{
+        type: 'line',
+        smooth: true,
+        symbolSize: 6,
+        data: list.map(function (x) { return x.count; }),
+        lineStyle: { width: 2 },
+        areaStyle: { color: 'rgba(139,111,71,.12)' }
+      }]
+    });
+  }
+
+  /* ---------- 商品管理 ---------- */
+
+  // 加载商品分页数据
+  function loadProducts() {
+    var s = state.product;
+    var q = '?page=' + s.page + '&size=' + s.size + '&kw=' + encodeURIComponent(s.kw);
+    LI.request('/admin/products/list' + q).then(renderProducts).catch(handleError);
+  }
+
+  // 渲染商品表格与分页条
+  function renderProducts(data) {
+    var body = document.getElementById('liProductBody');
+    if (!data.list.length) {
+      body.innerHTML = '<tr><td colspan="7" class="li-admin-empty">暂无商品</td></tr>';
+    } else {
+      body.innerHTML = data.list.map(function (p) {
+        return '<tr>' +
+          '<td>' + p.id + '</td>' +
+          '<td class="li-cell-name" title="' + esc(p.name) + '">' + esc(p.name) + '</td>' +
+          '<td>' + esc(catName(p.cat)) + '</td>' +
+          '<td>¥' + p.price + '</td>' +
+          '<td>' + p.stock + '</td>' +
+          '<td>' + p.sales + '</td>' +
+          '<td><span class="li-op">' +
+            '<button class="li-mini-btn" data-edit-product="' + p.id + '">编辑</button>' +
+            '<button class="li-mini-btn li-danger" data-del-product="' + p.id + '">删除</button>' +
+          '</span></td>' +
+        '</tr>';
+      }).join('');
+      body.querySelectorAll('[data-edit-product]').forEach(function (b) {
+        b.addEventListener('click', function () {
+          var hit = data.list.find(function (x) { return String(x.id) === b.dataset.editProduct; });
+          if (hit) openProductModal(hit);
+        });
+      });
+      body.querySelectorAll('[data-del-product]').forEach(function (b) {
+        b.addEventListener('click', function () { removeProduct(b.dataset.delProduct); });
+      });
+    }
+    LI.renderPager(document.getElementById('liProductPager'), data, function (next) {
+      state.product.page = next;
+      loadProducts();
+    });
+  }
+
+  // 打开商品新增 / 编辑弹窗
+  function openProductModal(product) {
+    var fields = [
+      { key: 'name', label: '商品名称', placeholder: '如：云朵现代简约沙发' },
+      { key: 'cat', label: '所属分类', type: 'select', options: cats.map(function (c) { return { value: c.key, label: c.name }; }) },
+      { key: 'price', label: '现价（元）', type: 'number' },
+      { key: 'old', label: '原价（元）', type: 'number' },
+      { key: 'stock', label: '库存', type: 'number' },
+      { key: 'sales', label: '销量', type: 'number' },
+      { key: 'rating', label: '评分', type: 'number' },
+      { key: 'img', label: '图片文件名', placeholder: '如 sofa-modern.png' },
+      { key: 'sub', label: '副标题', placeholder: '如 北美橡木·布艺软包' },
+      { key: 'tag', label: '促销标签', placeholder: '热卖 / 新品 / 套装' },
+      { key: 'desc', label: '商品描述', type: 'textarea' }
+    ];
+    var values = product || { cat: cats.length ? cats[0].key : 'living', price: 0, old: 0, stock: 0, sales: 0, rating: 5 };
+    openModal(product ? '编辑商品 #' + product.id : '新增商品', fields, values, function (payload) {
+      payload.price = Number(payload.price) || 0;
+      payload.old = Number(payload.old) || 0;
+      payload.stock = Number(payload.stock) || 0;
+      payload.sales = Number(payload.sales) || 0;
+      payload.rating = Number(payload.rating) || 5;
+      var req = product
+        ? LI.request('/admin/products/' + product.id, { method: 'PUT', body: payload })
+        : LI.request('/admin/products/add', { method: 'POST', body: payload });
+      req.then(function () {
+        closeModal();
+        LI.toast('商品已保存');
+        loadProducts();
+        loadOverview();
+      }).catch(handleError);
+    });
+  }
+
+  // 删除商品并刷新列表
+  function removeProduct(id) {
+    if (!confirm('确定删除商品 #' + id + ' 吗？')) return;
+    LI.request('/admin/products/' + id, { method: 'DELETE' }).then(function () {
+      LI.toast('已删除');
+      loadProducts();
+      loadOverview();
+    }).catch(handleError);
+  }
+
+  /* ---------- 分类管理 ---------- */
+
+  // 加载分类列表（用于下拉与分类表格）
+  function loadCategories(callback) {
+    LI.request('/admin/categories/list').then(function (data) {
+      cats = data.list || [];
+      renderCategories();
+      if (callback) callback();
+    }).catch(handleError);
+  }
+
+  // 客户端筛选 + 分页渲染分类表格
+  function renderCategories() {
+    var s = state.category;
+    var list = cats.slice();
+    if (s.kw) {
+      list = list.filter(function (c) { return (c.name + c.key).indexOf(s.kw) > -1; });
+    }
+    var total = list.length;
+    var totalPages = Math.max(1, Math.ceil(total / s.size));
+    if (s.page > totalPages) s.page = totalPages;
+    var paged = list.slice((s.page - 1) * s.size, s.page * s.size);
+    var body = document.getElementById('liCategoryBody');
+    if (!total) {
+      body.innerHTML = '<tr><td colspan="6" class="li-admin-empty">暂无分类</td></tr>';
+    } else {
+      body.innerHTML = paged.map(function (c) {
+        return '<tr>' +
+          '<td>' + c.id + '</td>' +
+          '<td>' + esc(c.key) + '</td>' +
+          '<td>' + esc(c.name) + '</td>' +
+          '<td>' + esc(c.icon || '-') + '</td>' +
+          '<td>' + (c.count || 0) + '</td>' +
+          '<td><span class="li-op">' +
+            '<button class="li-mini-btn" data-edit-cat="' + c.id + '">编辑</button>' +
+            '<button class="li-mini-btn li-danger" data-del-cat="' + c.id + '">删除</button>' +
+          '</span></td>' +
+        '</tr>';
+      }).join('');
+      body.querySelectorAll('[data-edit-cat]').forEach(function (b) {
+        b.addEventListener('click', function () {
+          var hit = cats.find(function (x) { return String(x.id) === b.dataset.editCat; });
+          if (hit) openCategoryModal(hit);
+        });
+      });
+      body.querySelectorAll('[data-del-cat]').forEach(function (b) {
+        b.addEventListener('click', function () { removeCategory(b.dataset.delCat); });
+      });
+    }
+    LI.renderPager(document.getElementById('liCategoryPager'), { total: total, list: paged, page: s.page, size: s.size }, function (next) {
+      state.category.page = next;
+      renderCategories();
+    });
+  }
+
+  // 打开分类新增 / 编辑弹窗
+  function openCategoryModal(category) {
+    var fields = [
+      { key: 'key', label: '分类标识（小写字母/数字/-）', placeholder: '如 living' },
+      { key: 'name', label: '分类名称', placeholder: '如 客厅系列' },
+      { key: 'icon', label: '图标文件名', placeholder: '如 living.png' }
+    ];
+    openModal(category ? '编辑分类 #' + category.id : '新增分类', fields, category || {}, function (payload) {
+      var req = category
+        ? LI.request('/admin/categories/' + category.id, { method: 'PUT', body: payload })
+        : LI.request('/admin/categories/add', { method: 'POST', body: payload });
+      req.then(function () {
+        closeModal();
+        LI.toast('分类已保存');
+        loadCategories();
+        loadOverview();
+      }).catch(handleError);
+    });
+  }
+
+  // 删除分类并刷新列表
+  function removeCategory(id) {
+    if (!confirm('确定删除分类 #' + id + ' 吗？')) return;
+    LI.request('/admin/categories/' + id, { method: 'DELETE' }).then(function () {
+      LI.toast('已删除');
+      loadCategories();
+      loadOverview();
+    }).catch(handleError);
+  }
+
+  /* ---------- 订单管理 ---------- */
+
+  // 加载订单分页数据
+  function loadOrders() {
+    var s = state.order;
+    var q = '?page=' + s.page + '&size=' + s.size + '&kw=' + encodeURIComponent(s.kw) + '&status=' + encodeURIComponent(s.status);
+    LI.request('/admin/orders/list' + q).then(renderOrders).catch(handleError);
+  }
+
+  // 渲染订单表格与分页条
+  function renderOrders(data) {
+    var body = document.getElementById('liOrderBody');
+    if (!data.list.length) {
+      body.innerHTML = '<tr><td colspan="7" class="li-admin-empty">暂无订单</td></tr>';
+    } else {
+      body.innerHTML = data.list.map(function (o) {
+        return '<tr>' +
+          '<td>' + o.id + '</td>' +
+          '<td>' + esc(o.no) + '</td>' +
+          '<td>' + esc(o.user) + '</td>' +
+          '<td>¥' + o.amount + '</td>' +
+          '<td><span class="li-chip st-' + statusIndex(o.status) + '">' + esc(o.status) + '</span></td>' +
+          '<td style="white-space:nowrap">' + esc(o.createdAt) + '</td>' +
+          '<td><span class="li-op">' +
+            '<button class="li-mini-btn" data-edit-order="' + o.id + '">编辑</button>' +
+            '<button class="li-mini-btn li-danger" data-del-order="' + o.id + '">删除</button>' +
+          '</span></td>' +
+        '</tr>';
+      }).join('');
+      body.querySelectorAll('[data-edit-order]').forEach(function (b) {
+        b.addEventListener('click', function () {
+          var hit = data.list.find(function (x) { return String(x.id) === b.dataset.editOrder; });
+          if (hit) openOrderModal(hit);
+        });
+      });
+      body.querySelectorAll('[data-del-order]').forEach(function (b) {
+        b.addEventListener('click', function () { removeOrder(b.dataset.delOrder); });
+      });
+    }
+    LI.renderPager(document.getElementById('liOrderPager'), data, function (next) {
+      state.order.page = next;
+      loadOrders();
+    });
+  }
+
+  // 打开订单新增 / 编辑弹窗（编辑仅允许修改状态）
+  function openOrderModal(order) {
+    var fields;
+    if (order) {
+      fields = [{ key: 'status', label: '订单状态', type: 'select', options: STATUS }];
+    } else {
+      fields = [
+        { key: 'user', label: '下单用户', placeholder: '请输入用户昵称' },
+        { key: 'amount', label: '订单金额（元）', type: 'number' },
+        { key: 'status', label: '订单状态', type: 'select', options: STATUS }
+      ];
+    }
+    var values = order || { status: '待发货', amount: 0 };
+    openModal(order ? '编辑订单 #' + order.id : '新增订单', fields, values, function (payload) {
+      var req;
+      if (order) {
+        req = LI.request('/admin/orders/' + order.id, { method: 'PATCH', body: { status: payload.status } });
+      } else {
+        payload.amount = Number(payload.amount) || 0;
+        req = LI.request('/admin/orders/add', { method: 'POST', body: payload });
+      }
+      req.then(function () {
+        closeModal();
+        LI.toast('订单已保存');
+        loadOrders();
+        loadOverview();
+      }).catch(handleError);
+    });
+  }
+
+  // 删除订单并刷新列表
+  function removeOrder(id) {
+    if (!confirm('确定删除订单 #' + id + ' 吗？')) return;
+    LI.request('/admin/orders/' + id, { method: 'DELETE' }).then(function () {
+      LI.toast('已删除');
+      loadOrders();
+      loadOverview();
+    }).catch(handleError);
+  }
+
+  /* ---------- 页面初始化与事件绑定 ---------- */
+
+  // 切换后台一级 Tab 并按需加载数据
+  function switchTab(name) {
+    document.querySelectorAll('.li-admin-tab').forEach(function (b) {
+      b.classList.toggle('li-on', b.dataset.tab === name);
+    });
+    ['dash', 'product', 'category', 'order'].forEach(function (k) {
+      document.getElementById('liTab-' + k).classList.toggle('li-hidden', k !== name);
+    });
+    if (name === 'dash') { loadOverview(); }
+    if (name === 'product') { loadCategories(loadProducts); }
+    if (name === 'category') { loadCategories(); }
+    if (name === 'order') { loadOrders(); }
+  }
+
+  // 绑定顶部、工具条与弹窗事件
+  function bindEvents() {
+    document.getElementById('liAdminTabs').addEventListener('click', function (e) {
+      var b = e.target.closest('.li-admin-tab');
+      if (b) switchTab(b.dataset.tab);
+    });
+    document.getElementById('liRefreshStat').addEventListener('click', loadOverview);
+    document.getElementById('liAdminLogout').addEventListener('click', function () {
+      LI.logout();
+      location.href = 'login.html';
+    });
+
+    // 商品
+    document.getElementById('liAddProduct').addEventListener('click', function () {
+      loadCategories(function () { openProductModal(null); });
+    });
+    document.getElementById('liProductSearch').addEventListener('click', function () {
+      state.product.kw = document.getElementById('liProductKw').value.trim();
+      state.product.page = 1;
+      loadProducts();
+    });
+    document.getElementById('liProductReset').addEventListener('click', function () {
+      document.getElementById('liProductKw').value = '';
+      state.product.kw = '';
+      state.product.page = 1;
+      loadProducts();
+    });
+    document.getElementById('liProductKw').addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') document.getElementById('liProductSearch').click();
+    });
+
+    // 分类
+    document.getElementById('liAddCategory').addEventListener('click', function () { openCategoryModal(null); });
+    document.getElementById('liCategorySearch').addEventListener('click', function () {
+      state.category.kw = document.getElementById('liCategoryKw').value.trim();
+      state.category.page = 1;
+      renderCategories();
+    });
+    document.getElementById('liCategoryReset').addEventListener('click', function () {
+      document.getElementById('liCategoryKw').value = '';
+      state.category.kw = '';
+      state.category.page = 1;
+      renderCategories();
+    });
+    document.getElementById('liCategoryKw').addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') document.getElementById('liCategorySearch').click();
+    });
+
+    // 订单
+    document.getElementById('liAddOrder').addEventListener('click', function () { openOrderModal(null); });
+    document.getElementById('liOrderSearch').addEventListener('click', function () {
+      state.order.kw = document.getElementById('liOrderKw').value.trim();
+      state.order.status = document.getElementById('liOrderStatus').value;
+      state.order.page = 1;
+      loadOrders();
+    });
+    document.getElementById('liOrderReset').addEventListener('click', function () {
+      document.getElementById('liOrderKw').value = '';
+      document.getElementById('liOrderStatus').value = '';
+      state.order.kw = '';
+      state.order.status = '';
+      state.order.page = 1;
+      loadOrders();
+    });
+    document.getElementById('liOrderKw').addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') document.getElementById('liOrderSearch').click();
+    });
+
+    // 弹窗
+    document.getElementById('liModalMask').addEventListener('click', closeModal);
+    document.getElementById('liModalClose').addEventListener('click', closeModal);
+    document.getElementById('liModalCancel').addEventListener('click', closeModal);
+    document.getElementById('liModalSave').addEventListener('click', function () {
+      if (modalSubmit) modalSubmit();
+    });
+    window.addEventListener('resize', function () {
+      if (charts.cat) charts.cat.resize();
+      if (charts.trend) charts.trend.resize();
+    });
+  }
+
+  // 启动后台：显示当前用户，绑定事件并渲染仪表盘
+  document.getElementById('liAdminUser').textContent = (LI.current && (LI.current.nick || LI.current.account)) || '管理员';
+  bindEvents();
+  loadOverview();
+  loadCategories();
+})();
+</script>
+</body>
+</html>

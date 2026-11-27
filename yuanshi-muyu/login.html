@@ -1,0 +1,84 @@
+<!--
+  姓名：李兴达 | 学号：24002120311 | 时间：2026-11-27 | 大模型：DeepSeek-V4.1-Flash
+  功能名称：登录页：表单校验、登录态保持
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>登录 · 木语家居 | 24002120311 李兴达</title>
+<link rel="stylesheet" href="css/lixingda.css">
+<style>
+  .li-auth-page { display: flex; flex-direction: column; justify-content: center; min-height: 100vh; background: linear-gradient(160deg, #f7f3ec, #efe7da); }
+  .li-auth-logo { text-align: center; margin-bottom: 30px; }
+  .li-auth-logo img { width: 72px; height: 72px; border-radius: 20px; margin: 0 auto 12px; box-shadow: 0 10px 24px rgba(120,90,50,.2); }
+  .li-auth-logo h1 { font-size: 22px; color: #6f5636; }
+  .li-auth-logo p { font-size: 13px; color: #8a8276; }
+  .li-auth-card { background: #fff; border-radius: 18px; padding: 26px 22px; box-shadow: 0 12px 32px rgba(120,90,50,.12); }
+</style>
+</head>
+<body>
+<div class="li-auth-page">
+  <div class="li-container">
+    <div class="li-auth-logo">
+      <img src="img/products.png" alt="木语家居">
+      <h1>木语家居</h1>
+      <p>自然木语，温暖到家</p>
+    </div>
+
+    <div class="li-auth-card">
+      <form class="li-form" id="liLoginForm">
+        <div class="li-field">
+          <label>账号 / 手机号</label>
+          <input type="text" id="liLoginAccount" placeholder="请输入账号" required>
+        </div>
+        <div class="li-field">
+          <label>密码</label>
+          <input type="password" id="liLoginPwd" placeholder="请输入密码" required>
+        </div>
+        <button type="submit" class="li-btn li-block">登 录</button>
+      </form>
+      <div class="li-link">还没有账号？<a href="register.html">立即注册</a></div>
+      <div class="li-link"><a href="index.html" style="font-weight:400">返回首页</a></div>
+    </div>
+  </div>
+</div>
+
+<script src="js/app.js"></script>
+<script>
+(function () {
+  // 如已登录自动跳转
+  if (LI.isLogin()) { location.href = 'profile.html'; return; }
+
+  document.getElementById('liLoginForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    const account = document.getElementById('liLoginAccount').value.trim();
+    const pwd = document.getElementById('liLoginPwd').value.trim();
+    if (!account || !pwd) { LI.toast('请填写账号和密码'); return; }
+
+    // 优先调用后端登录接口；网络不可用时回退本地模拟账号，保证纯静态页面可用
+    LI.request('/user/login', { method: 'POST', body: { username: account, password: pwd } })
+      .then(function (data) {
+        LI.login(data);
+        LI.toast('登录成功，欢迎回来！');
+        setTimeout(function () { location.href = 'index.html'; }, 700);
+      })
+      .catch(function (err) {
+        console.error('[login.html] 登录失败', err);
+        if (!err.network) { LI.toast(err.message || '账号或密码错误'); return; }
+        // 接口不可用：本地模拟校验（默认 lixingda / 123456）
+        const users = LI.load('li_users', [
+          { account: 'lixingda', pwd: '123456', nick: '李兴达', level: '白银会员', points: 2680, orderCount: 12 }
+        ]);
+        const hit = users.find(function (u) { return (u.account === account || u.phone === account) && u.pwd === pwd; });
+        if (!hit) { LI.toast('账号或密码错误'); return; }
+        LI.login({ nick: hit.nick, account: hit.account, level: hit.level, points: hit.points, orderCount: hit.orderCount });
+        LI.toast('登录成功（离线模式）');
+        setTimeout(function () { location.href = 'index.html'; }, 700);
+      });
+  });
+})();
+</script>
+</body>
+</html>

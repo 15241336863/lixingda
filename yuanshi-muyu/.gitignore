@@ -1,0 +1,13 @@
+# 依赖与密钥
+node_modules/
+backend/.env
+backend/.env.*
+
+# 数据库文件（首次启动自动建表与导入种子数据）
+backend/db/*.db
+backend/db/*.db-journal
+
+# 日志与系统文件
+*.log
+.DS_Store
+Thumbs.db

@@ -1,0 +1,75 @@
+<!--
+  姓名：李兴达 | 学号：24002120311 | 时间：2026-11-27 | 大模型：DeepSeek-V4.1-Flash
+  功能名称：收货地址页：地址新增与选择
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>收货地址 · 木语家居 | 24002120311 李兴达</title>
+<link rel="stylesheet" href="css/lixingda.css">
+</head>
+<body>
+<main class="li-page">
+  <header class="li-topbar">
+    <button class="li-back" data-back>&#8592;</button>
+    <h1>收货地址</h1>
+    <div style="width:32px"></div>
+  </header>
+  <div class="li-container">
+    <div class="li-admin-card">
+      <h3>默认收货地址</h3>
+      <form class="li-form" id="liAddressForm">
+        <div class="li-field"><label for="liRecipient">收货人</label><input id="liRecipient" name="recipient" required maxlength="30" placeholder="请输入收货人姓名"></div>
+        <div class="li-field"><label for="liPhone">联系电话</label><input id="liPhone" name="phone" type="tel" required pattern="[0-9+() -]{6,20}" maxlength="20" placeholder="请输入联系电话"></div>
+        <div class="li-field"><label for="liAddress">详细地址</label><textarea id="liAddress" name="address" required maxlength="200" rows="3" placeholder="请输入省、市、区及详细地址" style="border:1px solid var(--li-line);border-radius:10px;padding:12px 14px;font-size:14px;background:var(--li-white);resize:vertical"></textarea></div>
+        <button class="li-btn li-block" type="submit">保存地址</button>
+      </form>
+      <p id="liAddressStatus" role="status" style="font-size:12px;color:var(--li-primary);margin-top:10px"></p>
+    </div>
+  </div>
+</main>
+<nav class="li-tab5">
+  <a href="index.html" data-tab="home"><span class="li-ico"><svg viewBox="0 0 24 24"><path fill-rule="evenodd" d="M12 3 4 10.5h1.8V20h12.4v-9.5H20L12 3z M10.3 14.5h3.4V20h-3.4z" fill="currentColor"/></svg></span>首页</a>
+  <a href="all.html" data-tab="all"><span class="li-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="4" width="14" height="16" rx="3.5"/><path d="M9 13.5c.8 1.3 1.8 2 3 2s2.2-.7 3-2"/></svg></span>全部商品</a>
+  <a href="list.html" data-tab="cat"><span class="li-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><path d="M13 14h7M13 18h7"/></svg></span>分类</a>
+  <a href="cart.html" data-tab="cart"><span class="li-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 4h2.2l2.2 11.5h9.7L20 8H6.2"/><circle cx="9" cy="19.5" r="1.3"/><circle cx="17" cy="19.5" r="1.3"/></svg></span>购物车<span class="li-tab-badge"></span></a>
+  <a href="profile.html" data-tab="user" class="li-on"><span class="li-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3.8"/><path d="M4.5 20c.6-3.8 3.8-6 7.5-6s6.9 2.2 7.5 6"/></svg></span>个人中心</a>
+</nav>
+<script src="js/app.js"></script>
+<script>
+(function () {
+  LI.setTab('user');
+  const form = document.getElementById('liAddressForm');
+  const status = document.getElementById('liAddressStatus');
+  const saved = LI.load('li_address', null);
+
+  function fill(address) {
+    document.getElementById('liRecipient').value = address.recipient || '';
+    document.getElementById('liPhone').value = address.phone || '';
+    document.getElementById('liAddress').value = address.address || '';
+  }
+
+  if (saved) fill(saved);
+  else {
+    LI.getUser().then(function (users) {
+      const user = LI.current || users[0] || {};
+      fill({ recipient: user.nick || '', phone: user.phone || '', address: user.address || '' });
+    }).catch(function () {});
+  }
+
+  form.addEventListener('submit', function (event) {
+    event.preventDefault();
+    const data = new FormData(form);
+    LI.save('li_address', {
+      recipient: data.get('recipient').trim(),
+      phone: data.get('phone').trim(),
+      address: data.get('address').trim()
+    });
+    status.textContent = '地址已保存';
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+{
+  "code": 0,
+  "message": "ok",
+  "data": [
+    { "id": "b1", "img": "living-modern.jpg", "title": "原木客厅 · 自然留白", "sub": "北美FAS级橡木，纯实木无贴皮", "link": "list.html?cat=living" },
+    { "id": "b2", "img": "bedroom-simple.jpg", "title": "静谧卧室 · 安稳入眠", "sub": "新西兰松木排骨架，环保水性漆", "link": "list.html?cat=bedroom" },
+    { "id": "b3", "img": "dining-nordic.jpg", "title": "北欧餐厅 · 温润餐叙", "sub": "樱桃木色温润纹理，一桌一椅皆匠心", "link": "list.html?cat=dining" }
+  ]
+}

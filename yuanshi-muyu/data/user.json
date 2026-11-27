@@ -1,0 +1,7 @@
+{
+  "code": 0,
+  "message": "ok",
+  "data": [
+    { "id": "u1", "account": "lixingda", "nick": "李兴达", "phone": "15241336863", "level": "白银会员", "points": 2680, "avatar": "products.png", "orderCount": 12, "address": "辽宁省大连市 大连东软信息学院博川校区" }
+  ]
+}

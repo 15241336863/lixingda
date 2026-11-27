@@ -1,0 +1,38 @@
+{
+  "code": 0,
+  "message": "ok",
+  "data": [
+    {
+      "id": 1,
+      "name": "客厅系列",
+      "en": "LIVING",
+      "desc": "沙发·茶几·电视柜·休闲椅",
+      "icon": "living.png",
+      "link": "list.html?cat=living"
+    },
+    {
+      "id": 2,
+      "name": "卧室系列",
+      "en": "BEDROOM",
+      "desc": "床·衣柜·床头柜·梳妆台",
+      "icon": "bedroom.png",
+      "link": "list.html?cat=bedroom"
+    },
+    {
+      "id": 3,
+      "name": "餐厅系列",
+      "en": "DINING",
+      "desc": "餐桌·餐椅·餐边柜·吧台椅",
+      "icon": "dining.png",
+      "link": "list.html?cat=dining"
+    },
+    {
+      "id": 4,
+      "name": "办公系列",
+      "en": "OFFICE",
+      "desc": "办公桌·人体工学椅·书柜",
+      "icon": "office.png",
+      "link": "list.html?cat=office"
+    }
+  ]
+}

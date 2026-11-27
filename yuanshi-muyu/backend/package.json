@@ -1,0 +1,20 @@
+{
+  "name": "yuanshi-muyu-llm",
+  "version": "1.0.0",
+  "description": "木语家居 LLM 应用设计实验 - 李兴达 24002120311",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "multer": "^1.4.5-lts.1",
+    "mysql2": "^3.10.0",
+    "adm-zip": "^0.5.10",
+    "cfb": "^1.2.0",
+    "pdf-parse": "^1.1.1",
+    "word-extractor": "^1.0.4"
+  }
+}
