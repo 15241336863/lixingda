@@ -35,6 +35,15 @@ function lxd_getProviders() {
       models: [
         { id: process.env.QINIU_CUSTOMER_SERVICE_MODEL || 'qiniu/conatus-free', name: 'conatus-free' }
       ]
+    },
+    {
+      id: 'zhipu',
+      name: '智谱 AI',
+      baseUrl: process.env.ZHIPU_BASE_URL || 'https://open.bigmodel.cn/api/paas/v4',
+      key: process.env.ZHIPU_API_KEY || '',
+      models: [
+        { id: process.env.ZHIPU_MODEL || 'glm-4.7-flash', name: 'glm-4.7-flash' }
+      ]
     }
   ];
   return lxd_all.filter(function (lxd_p) { return !!lxd_p.key; });
@@ -246,8 +255,13 @@ lxd_router.post('/vision', async function (lxd_req, lxd_res) {
   }
 
   var lxd_providers = lxd_getProviders();
-  var lxd_provider = lxd_providers.filter(function (lxd_p) { return lxd_p.id === 'siliconflow'; })[0] || lxd_providers[0];
-  var lxd_model = process.env.SILICONFLOW_VISION_MODEL || 'Qwen/Qwen3-VL-8B-Instruct';
+  // 优先使用智谱视觉模型，未配置时回退硅基流动
+  var lxd_zhipu = lxd_providers.filter(function (lxd_p) { return lxd_p.id === 'zhipu'; })[0];
+  var lxd_provider = lxd_zhipu ||
+    lxd_providers.filter(function (lxd_p) { return lxd_p.id === 'siliconflow'; })[0] || lxd_providers[0];
+  var lxd_model = lxd_zhipu
+    ? (process.env.ZHIPU_VISION_MODEL || 'glm-4.6v-flash')
+    : (process.env.SILICONFLOW_VISION_MODEL || 'Qwen/Qwen3-VL-8B-Instruct');
 
   if (!lxd_provider) {
     return lxd_res.json({ code: 1, msg: '未配置视觉模型服务商密钥，请检查 backend/.env', data: null });
