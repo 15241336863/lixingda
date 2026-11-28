@@ -50,18 +50,73 @@
       <h2>准备：连接智谱 AI</h2>
       <span class="lxd_meta">动手前 2 分钟</span>
     </div>
-    <p>本页所有 AI 能力都通过本地 Node 服务转发到 <b>智谱开放平台</b>，API Key 只保存在服务端
+    <p>本页所有 AI 能力都通过本地 Node 服务转发到 <b>智谱开放平台（BigModel）</b>，API Key 只保存在服务端
       <code>ai-note/.env</code> 中，<b>不会出现在浏览器代码里</b>。启动服务后右上角状态灯会变为「已连接」。</p>
 
+    <!-- 第 1 步：打开官网 -->
+    <div class="lxd_linkcard">
+      <div>
+        <span class="lxd_tag">第 1 步</span>
+        <b>打开智谱开放平台</b>
+        <a href="https://open.bigmodel.cn/" target="_blank" rel="noopener">https://open.bigmodel.cn/</a>
+      </div>
+      <div class="lxd_row">
+        <button class="lxd_copy" data-copy="https://open.bigmodel.cn/">复制链接</button>
+        <a class="lxd_btn lxd_btn_ghost lxd_btn_small" href="https://open.bigmodel.cn/" target="_blank" rel="noopener">打开网站</a>
+      </div>
+    </div>
+
+    <!-- 获取 Key 的完整流程 -->
+    <ol class="lxd_steps">
+      <li><b>注册并登录</b>：使用手机号在 <a href="https://open.bigmodel.cn/" target="_blank" rel="noopener">open.bigmodel.cn</a>
+        注册智谱账号，登录后点击页面右上角「控制台」。</li>
+      <li><b>完成实名认证</b>：控制台 → 个人中心 → <b>实名认证</b>，选择「个人实名认证」提交身份信息。
+        实名通过后可解锁 <b>500 万 tokens</b> 权益（官方提示审核约 7 个工作日），未实名时调用接口可能被拒绝。</li>
+      <li><b>创建 API Key</b>：控制台顶部导航点击「<b>API Key</b>」→ 右上角「<b>+ 新建 API Key</b>」→
+        填写名称（如 xiaoli）→ 创建后点「复制」，得到形如 <code>xxxxxxxx.xxxxxxxx</code> 的完整密钥（只显示一次，请立即保存）。</li>
+      <li><b>本地配置</b>：把 Key 写入 <code>ai-note/.env</code> 的 <code>ZHIPU_API_KEY</code>，再重启
+        <code>node server.js</code>，右上角状态灯变绿即接入成功。</li>
+    </ol>
+
+    <div class="lxd_callout">
+      <b>安全提醒：</b>API Key 等同于账号密码，只能放在服务端 <code>.env</code> 里，<b>不要</b>写进 HTML/JS、
+      不要截图外传、不要提交到 Git 仓库（本项目已用 .gitignore 排除）。
+    </div>
+
+    <!-- 真实操作截图 -->
+    <h3 class="lxd_subtitle">真实操作截图（智谱平台）</h3>
+    <div class="lxd_shots">
+      <figure>
+        <a href="img/zhipu/01-platform.png" target="_blank" rel="noopener">
+          <img src="img/zhipu/01-platform.png" alt="智谱开放平台首页">
+        </a>
+        <figcaption>① 打开 open.bigmodel.cn 官网首页</figcaption>
+      </figure>
+      <figure>
+        <a href="img/zhipu/02-verify.png" target="_blank" rel="noopener">
+          <img src="img/zhipu/02-verify.png" alt="实名认证页面">
+        </a>
+        <figcaption>② 个人中心 → 实名认证（个人认证 / 企业认证）</figcaption>
+      </figure>
+      <figure>
+        <a href="img/zhipu/03-console.png" target="_blank" rel="noopener">
+          <img src="img/zhipu/03-console.png" alt="控制台与 API Key 入口">
+        </a>
+        <figcaption>③ 文档页顶部导航：控制台 / 价格 / 财务 / API Key / 个人中心</figcaption>
+      </figure>
+      <figure>
+        <a href="img/zhipu/04-apikey.png" target="_blank" rel="noopener">
+          <img src="img/zhipu/04-apikey.png" alt="标准 API Key 页面">
+        </a>
+        <figcaption>④「+ 新建 API Key」创建后复制完整密钥</figcaption>
+      </figure>
+    </div>
+
+    <!-- 启动与配置 -->
     <div class="lxd_code">
       <div class="lxd_code_bar"><span>终端 · 启动本地服务</span><button class="lxd_copy" data-copy="cd ai-note&#10;node server.js">复制</button></div>
       <pre>cd ai-note
 node server.js          # 默认 http://localhost:8312</pre>
-    </div>
-
-    <div class="lxd_callout">
-      <b>提示：</b>如果状态显示「未连接」，说明服务没启动或端口被占用；先运行上面的命令，再点右侧按钮刷新状态。
-      <button class="lxd_btn lxd_btn_ghost" id="lxd_recheck">刷新连接状态</button>
     </div>
 
     <div class="lxd_code">
@@ -69,6 +124,11 @@ node server.js          # 默认 http://localhost:8312</pre>
       <pre>ZHIPU_API_KEY=你的Key
 ZHIPU_BASE_URL=https://open.bigmodel.cn/api/paas/v4
 ZHIPU_MODEL=glm-4.7-flash</pre>
+    </div>
+
+    <div class="lxd_callout">
+      <b>提示：</b>如果状态显示「未连接」，说明服务没启动或端口被占用；先运行上面的命令，再点右侧按钮刷新状态。
+      <button class="lxd_btn lxd_btn_ghost" id="lxd_recheck">刷新连接状态</button>
     </div>
   </section>
 
