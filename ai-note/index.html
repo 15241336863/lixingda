@@ -1,0 +1,264 @@
+<!--
+  姓名：李兴达 | 学号：24002120311 | 时间：2026-11-28 | 大模型：DeepSeek-V4.1-Flash
+  功能名称：AI 学习助手 —— 笔记整理 / 错题积累 / 答案解析（单页工作台）
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 笔记与错题助手 · 智谱 GLM 驱动</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232563eb'/%3E%3Ctext x='32' y='43' font-size='30' text-anchor='middle' fill='white' font-family='Arial'%3EAI%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/lxd_style.css">
+</head>
+<body>
+
+<!-- 顶部工具条 -->
+<div class="lxd_topbar">
+  <a class="lxd_pill" href="index.html">← 返回首页</a>
+  <div class="lxd_pill lxd_pill_status" id="lxd_aiStatus"><i class="lxd_dot"></i>正在检测 AI 服务…</div>
+</div>
+
+<!-- 首屏 -->
+<header class="lxd_hero">
+  <div class="lxd_badge">A I · 学 习 工 作 台</div>
+  <h1>把零散的课堂笔记，<br>变成 <span class="lxd_hl">可复习的知识</span></h1>
+  <p class="lxd_hero_sub">
+    基于智谱 GLM 大模型：一句话整理笔记要点、把做错的题沉淀成错题卡、<br>
+    再让 AI 逐题拆解考点与错因，形成「整理 → 积累 → 吃透」的学习闭环。
+  </p>
+  <div class="lxd_flow">
+    <span>粘贴笔记</span><i>→</i><span>AI 提炼要点</span><i>→</i><span>错题沉淀</span><i>→</i><span>逐题解析</span><i>→</i><span>复习清单</span>
+  </div>
+
+  <!-- 页面导航卡 -->
+  <nav class="lxd_navcard">
+    <a href="#lxd_s1"><em>第 1 步</em><b>笔记整理</b><small>长文本一键提炼</small></a>
+    <a href="#lxd_s2"><em>第 2 步</em><b>错题积累</b><small>错题卡 + AI 诊断</small></a>
+    <a href="#lxd_s3"><em>第 3 步</em><b>答案解析</b><small>考点 / 错因 / 步骤</small></a>
+    <a href="#lxd_s4"><em>第 4 步</em><b>复习清单</b><small>搜索 / 导出 / 勾选</small></a>
+    <a href="#lxd_s0"><em>准备</em><b>连接智谱 AI</b><small>服务状态与配置</small></a>
+  </nav>
+</header>
+
+<main class="lxd_main">
+
+  <!-- 0 准备 -->
+  <section class="lxd_card" id="lxd_s0">
+    <div class="lxd_card_head">
+      <span class="lxd_num">0</span>
+      <h2>准备：连接智谱 AI</h2>
+      <span class="lxd_meta">动手前 2 分钟</span>
+    </div>
+    <p>本页所有 AI 能力都通过本地 Node 服务转发到 <b>智谱开放平台</b>，API Key 只保存在服务端
+      <code>ai-note/.env</code> 中，<b>不会出现在浏览器代码里</b>。启动服务后右上角状态灯会变为「已连接」。</p>
+
+    <div class="lxd_code">
+      <div class="lxd_code_bar"><span>终端 · 启动本地服务</span><button class="lxd_copy" data-copy="cd ai-note&#10;node server.js">复制</button></div>
+      <pre>cd ai-note
+node server.js          # 默认 http://localhost:8312</pre>
+    </div>
+
+    <div class="lxd_callout">
+      <b>提示：</b>如果状态显示「未连接」，说明服务没启动或端口被占用；先运行上面的命令，再点右侧按钮刷新状态。
+      <button class="lxd_btn lxd_btn_ghost" id="lxd_recheck">刷新连接状态</button>
+    </div>
+
+    <div class="lxd_code">
+      <div class="lxd_code_bar"><span>ai-note/.env</span><button class="lxd_copy" data-copy="ZHIPU_API_KEY=你的Key&#10;ZHIPU_BASE_URL=https://open.bigmodel.cn/api/paas/v4&#10;ZHIPU_MODEL=glm-4.7-flash">复制</button></div>
+      <pre>ZHIPU_API_KEY=你的Key
+ZHIPU_BASE_URL=https://open.bigmodel.cn/api/paas/v4
+ZHIPU_MODEL=glm-4.7-flash</pre>
+    </div>
+  </section>
+
+  <!-- 1 笔记整理 -->
+  <section class="lxd_card" id="lxd_s1">
+    <div class="lxd_card_head">
+      <span class="lxd_num">1</span>
+      <h2>笔记整理：长文本 → 结构化要点</h2>
+      <span class="lxd_meta">老师讲完那一页就够用</span>
+    </div>
+    <p>把课堂上记的零散文字（或课本段落）粘进来，AI 会提炼<b>一句话总结、核心要点、公式/定义、以及值得追问的问题</b>，
+      生成结果可以一键存进「复习清单」。</p>
+
+    <div class="lxd_grid2">
+      <div class="lxd_panel">
+        <div class="lxd_field">
+          <label>学科</label>
+          <select id="lxd_noteSubject">
+            <option>高等数学</option><option>大学物理</option><option>数据结构</option>
+            <option>计算机网络</option><option>操作系统</option><option>英语</option><option>其他</option>
+          </select>
+        </div>
+        <div class="lxd_field">
+          <label>课堂笔记 / 教材原文</label>
+          <textarea id="lxd_noteInput" rows="10" placeholder="例：定积分的换元法……把 u = φ(x) 代入，注意换元必换限，且新上下限要与原变量对应……"></textarea>
+        </div>
+        <div class="lxd_row">
+          <button class="lxd_btn" id="lxd_noteRun">开始整理</button>
+          <button class="lxd_btn lxd_btn_ghost" id="lxd_noteClear">清空</button>
+          <span class="lxd_hint">建议 100～3000 字</span>
+        </div>
+      </div>
+
+      <div class="lxd_panel lxd_result">
+        <div class="lxd_result_head">
+          <b>AI 整理结果</b>
+          <button class="lxd_btn lxd_btn_small" id="lxd_noteSave" disabled>存入复习清单</button>
+        </div>
+        <div class="lxd_result_body" id="lxd_noteOut">
+          <div class="lxd_empty">整理结果会显示在这里</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2 错题积累 -->
+  <section class="lxd_card" id="lxd_s2">
+    <div class="lxd_card_head">
+      <span class="lxd_num">2</span>
+      <h2>错题积累：把每一道错题变成资产</h2>
+      <span class="lxd_meta">越错越值钱</span>
+    </div>
+    <p>录入题目、你的答案和正确答案，AI 会判断<b>错因类型</b>（概念不清 / 计算失误 / 审题偏差 / 方法不会），
+      并给出对应知识点与改进行动。保存后自动进入下方错题本。</p>
+
+    <div class="lxd_grid2">
+      <div class="lxd_panel">
+        <div class="lxd_row2">
+          <div class="lxd_field">
+            <label>学科</label>
+            <select id="lxd_wSubject">
+              <option>高等数学</option><option>大学物理</option><option>数据结构</option>
+              <option>计算机网络</option><option>操作系统</option><option>英语</option><option>其他</option>
+            </select>
+          </div>
+          <div class="lxd_field">
+            <label>知识点（可留空，AI 自动判断）</label>
+            <input id="lxd_wKnowledge" type="text" placeholder="如：定积分换元法">
+          </div>
+        </div>
+        <div class="lxd_field">
+          <label>题目</label>
+          <textarea id="lxd_wQuestion" rows="4" placeholder="粘贴题干，必要时补充选项"></textarea>
+        </div>
+        <div class="lxd_grid2 lxd_gap">
+          <div class="lxd_field">
+            <label>我的答案</label>
+            <textarea id="lxd_wMine" rows="3" placeholder="你当时写的答案"></textarea>
+          </div>
+          <div class="lxd_field">
+            <label>正确答案</label>
+            <textarea id="lxd_wRight" rows="3" placeholder="标准答案 / 老师讲解"></textarea>
+          </div>
+        </div>
+        <div class="lxd_row">
+          <button class="lxd_btn" id="lxd_wRun">AI 诊断并保存</button>
+          <button class="lxd_btn lxd_btn_ghost" id="lxd_wReset">重置表单</button>
+        </div>
+      </div>
+
+      <div class="lxd_panel lxd_result">
+        <div class="lxd_result_head">
+          <b>AI 错因诊断</b>
+          <span class="lxd_hint" id="lxd_wCount">错题 0 道</span>
+        </div>
+        <div class="lxd_result_body" id="lxd_wOut">
+          <div class="lxd_empty">诊断结果会显示在这里</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lxd_list_head">
+      <h3>我的错题本</h3>
+      <div class="lxd_row">
+        <input class="lxd_search" id="lxd_wSearch" type="search" placeholder="搜索题目 / 知识点 / 学科">
+        <select class="lxd_search" id="lxd_wFilter">
+          <option value="">全部学科</option>
+        </select>
+      </div>
+    </div>
+    <div class="lxd_wronglist" id="lxd_wList"></div>
+  </section>
+
+  <!-- 3 答案解析 -->
+  <section class="lxd_card" id="lxd_s3">
+    <div class="lxd_card_head">
+      <span class="lxd_num">3</span>
+      <h2>答案解析：从「做错」到「讲得清」</h2>
+      <span class="lxd_meta">费曼式复盘</span>
+    </div>
+    <p>选择一道错题，AI 会输出<b>考点定位、错因剖析、完整解题步骤、同类题变式</b>四部分，
+      把这道题彻底吃透；解析会一并保存到错题卡里。</p>
+
+    <div class="lxd_grid2">
+      <div class="lxd_panel">
+        <div class="lxd_field">
+          <label>选择要解析的错题</label>
+          <select id="lxd_aPick"><option value="">— 暂无可解析的错题 —</option></select>
+        </div>
+        <div class="lxd_preview" id="lxd_aPreview"><div class="lxd_empty">选择错题后，这里显示题目与你的答案</div></div>
+        <div class="lxd_row">
+          <button class="lxd_btn" id="lxd_aRun" disabled>生成详细解析</button>
+          <button class="lxd_btn lxd_btn_ghost" id="lxd_aCopy" disabled>复制解析</button>
+        </div>
+      </div>
+      <div class="lxd_panel lxd_result">
+        <div class="lxd_result_head"><b>AI 解析</b><span class="lxd_hint">已自动保存到该错题</span></div>
+        <div class="lxd_result_body" id="lxd_aOut">
+          <div class="lxd_empty">解析结果会显示在这里</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 复习清单 -->
+  <section class="lxd_card" id="lxd_s4">
+    <div class="lxd_card_head">
+      <span class="lxd_num">4</span>
+      <h2>复习清单：考前只看这一页</h2>
+      <span class="lxd_meta">笔记 & 解析汇总</span>
+    </div>
+    <p>所有整理过的笔记、带解析的错题都汇总在这里，支持搜索、勾选「已掌握」以及导出为 Markdown 文件。</p>
+
+    <div class="lxd_row lxd_row_between">
+      <div class="lxd_row">
+        <input class="lxd_search" id="lxd_rSearch" type="search" placeholder="搜索笔记 / 错题">
+        <select class="lxd_search" id="lxd_rKind">
+          <option value="all">全部内容</option>
+          <option value="note">仅笔记</option>
+          <option value="wrong">仅错题</option>
+        </select>
+      </div>
+      <button class="lxd_btn lxd_btn_ghost" id="lxd_rExport">导出 Markdown</button>
+    </div>
+    <div class="lxd_reviewlist" id="lxd_rList"></div>
+  </section>
+
+  <!-- 验收清单 -->
+  <section class="lxd_card" id="lxd_s5">
+    <div class="lxd_card_head">
+      <span class="lxd_num">✓</span>
+      <h2>使用清单：每次学习后 30 秒自检</h2>
+      <span class="lxd_meta">勾选后自动保存</span>
+    </div>
+    <ul class="lxd_checklist" id="lxd_checklist">
+      <li><label><input type="checkbox" data-k="note"> 今天的课堂笔记已经整理成要点</label></li>
+      <li><label><input type="checkbox" data-k="wrong"> 做错的题已录入错题本并完成诊断</label></li>
+      <li><label><input type="checkbox" data-k="analysis"> 至少一道错题生成了完整解析</label></li>
+      <li><label><input type="checkbox" data-k="review"> 复习清单里的内容已过一遍</label></li>
+      <li><label><input type="checkbox" data-k="mark"> 已掌握的条目已勾选归档</label></li>
+    </ul>
+  </section>
+
+  <footer class="lxd_footer">
+    <span>AI 笔记与错题助手 · 24002120311 李兴达</span>
+    <span>前端原生 HTML/CSS/JS · 后端 Node.js 转发智谱 GLM</span>
+  </footer>
+</main>
+
+<div class="lxd_toast" id="lxd_toast"></div>
+<script src="js/lxd_app.js"></script>
+</body>
+</html>
